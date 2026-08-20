@@ -17,7 +17,8 @@ payload. It may return content-local IDs, but it must not assign persistent cros
 IDs or write directly to Neo4j, PostgreSQL, or pgvector.
 
 The current `pipeline/metadata.py`, `pipeline/segmentation.py`, `pipeline/asr.py`,
-`pipeline/frames.py`, and `pipeline/ocr.py` modules provide dependency-free
-implementations of issues #3–#5. Real media probing, scene detection,
-Whisper-compatible transcription, frame decoding, and OCR can be supplied behind the
-same boundaries later; fixture inputs make local behavior deterministic.
+`pipeline/frames.py`, `pipeline/ocr.py`, and `pipeline/fusion.py` modules provide
+dependency-free implementations of issues #3–#6. Real media probing, scene detection,
+Whisper-compatible transcription, frame decoding, OCR, and structured VLM inference
+can be supplied behind the same boundaries later; fixture inputs make local behavior
+deterministic.
