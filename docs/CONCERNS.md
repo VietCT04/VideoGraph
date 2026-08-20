@@ -355,3 +355,26 @@ results. This is not a production reliability guarantee.
 
 Define the production queue, retry, idempotency, and result handoff under the deployment
 and indexing issues before connecting this service to durable backend jobs.
+
+---
+
+## C-014 — Deployment images still contain placeholder services
+
+**Status:** Open
+**Component:** Infrastructure / Runtime
+
+### Context
+
+The initial Dockerfiles and Compose file establish build context, volumes, environment
+names, and process-level health checks while the repository is still mostly fixture and
+documentation driven.
+
+### Risk
+
+A green container health check could be mistaken for a ready query, indexing, or AI
+inference service.
+
+### Recommended next action
+
+Replace the placeholder images with the real service entrypoints as their issues land,
+then make readiness checks validate the dependencies that the service actually needs.

@@ -330,6 +330,12 @@ During development, backend/databases can run locally while the AI Service runs 
 
 The monorepo does not imply a single deployment unit.
 
+Issue #24 adds root-context Dockerfiles and `infra/compose.yaml` for the static frontend,
+backend placeholder, PostgreSQL/pgvector, and Neo4j. The AI Service image is available
+under the optional `gpu` Compose profile. These files establish build context, volumes,
+and process-level health checks; the backend and AI Service business routes remain
+placeholders until their implementation issues land.
+
 ---
 
 ## 10. Scalability Direction

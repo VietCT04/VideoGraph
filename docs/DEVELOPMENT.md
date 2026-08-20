@@ -184,6 +184,28 @@ content, Moments, entities, and relations; `queries.json` contains grouped bench
 queries and expected evidence. Keep any future external or locally recorded media out of
 the repository unless its source and redistribution terms are documented.
 
+### Fixture benchmark harness
+
+Run `python benchmarks/run_benchmark.py` for the Markdown report or add `--format json`
+for machine-readable output. The harness reports graph-only, vector-only, and hybrid
+retrieval metrics over the controlled fixture and local stage timings. It does not start
+services, run model inference, or claim video indexing/VRAM measurements.
+
+### Deployment scaffold
+
+Issue #24 provides the local topology in `infra/compose.yaml`. Copy `.env.example` to
+`.env`, then run:
+
+```text
+docker compose --env-file .env -f infra/compose.yaml up --build
+```
+
+The default path starts frontend, backend placeholder, PostgreSQL/pgvector, and Neo4j.
+Use `--profile gpu` only when a Docker host with the NVIDIA runtime is available. Set
+`AI_SERVICE_URL` in the untracked `.env` file to a remote GPU service for the intended
+two-environment setup. Do not treat placeholder health responses as application
+readiness: dependencies are deliberately not checked until the real services exist.
+
 ---
 
 ## 7. Provider Abstractions

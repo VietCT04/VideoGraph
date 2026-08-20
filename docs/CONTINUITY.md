@@ -10,12 +10,11 @@ Do not use it as a full changelog.
 
 **Date:** 2026-08-20
 
-VideoGraph is at the first implementation stage. The repository skeleton now exists,
-with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#8 add dependency-free contract, temporal
-segmentation, timestamped ASR, visual evidence, structured multimodal fusion, semantic
-embeddings, and asynchronous serving boundaries; later application services remain
-fixture-backed.
+VideoGraph is at the first fixture-backed implementation stage. The repository contains
+ownership READMEs, viewer and creator-control demos, a synthetic creator-memory dataset,
+a dependency-free benchmark harness, and a root-context deployment scaffold. Production
+application code and model-backed retrieval are still pending; backend and AI Service
+containers are explicitly placeholders.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -448,13 +447,13 @@ Verification:
 
 ## Active Work
 
-Issues #1–#19, #23, and #25 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#19, #23–#25 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
 creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
 orchestration, result fusion, the grounded viewer query API, and durable creator
 indexing jobs, privacy/deletion controls, and permissioned grounded actions. Issue #21's
 creator-control slice is implemented on top of the issue-20 branch, and issue #22's
-dataset slice is implemented. The next workstream slice is issue #24's deployment assets;
+dataset slice is implemented. The requested implementation workstream is complete;
 shared contracts and live query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
@@ -519,9 +518,9 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement issue #24's honest local/deployment configuration and health checks.
-2. Freeze #2 shared extraction and retrieval-plan contracts.
-3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+1. Freeze #2 shared extraction and retrieval-plan contracts.
+2. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+3. Replace placeholder containers as backend and AI Service implementation issues land.
 4. Connect the benchmark to measured models and services before making production claims.
 5. Keep media licensing and audiovisual validity explicit if clips are added later.
 

@@ -38,6 +38,23 @@ The AI Service does not expose Neo4j or pgvector operations. Issue #8 implements
 routes with a FastAPI adapter when the optional dependency is installed and a matching
 standard-library fallback otherwise.
 
+### Deployment health signals (#24)
+
+The deployment scaffold exposes process-level health signals without claiming that the
+application APIs are implemented:
+
+```text
+GET /health
+GET /healthz
+GET /readyz
+```
+
+The backend and AI Service placeholder images return JSON with `placeholder: true` and
+`dependencies_checked: false`; their health status only means that the process is alive.
+The frontend static image exposes `GET /healthz` with a plain-text `ok` response. Query,
+indexing, and memory-control routes remain documented in their issue-specific API
+sections.
+
 The #18 backend client uses an asynchronous submit/status/result contract.
 `backend.indexing.AIServiceClient` is the provider-neutral client boundary. The fixture
 adapter is immediate but still exposes submit/status/result methods, so a real HTTP
