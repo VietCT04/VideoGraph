@@ -401,7 +401,19 @@ Before extrapolating to hundreds of videos, measure a representative sample firs
 
 ---
 
-## 14. Related Issues
+## 14. Incremental LIVE Memory
+
+Issue #26 adds a fixture-backed rolling state model for simulated LIVE chunks. Each
+chunk preserves both stream-time and wall-clock timestamps, uses a deterministic
+content-local temporary ID, and can be appended or updated idempotently. When a LIVE
+ends, the model maps temporary records to backend-owned persistent Moment IDs before the
+normal graph/vector indexing path takes over.
+
+The implementation is intentionally not a production stream provider, durable queue, or
+direct database writer. Restart recovery, authorization, durable temporary storage, and
+real stream adapters remain deployment concerns.
+
+## 15. Related Issues
 
 - #3 temporal segmentation
 - #4 ASR
