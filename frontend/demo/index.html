@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VideoGraph viewer search demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="intro">
+        <p class="eyebrow">VideoGraph fixture demo</p>
+        <h1>Ask a creator about a real moment.</h1>
+        <p>
+          This dependency-free demo models the viewer flow before the backend query API is
+          implemented. Every result keeps its source content and exact timestamps.
+        </p>
+      </header>
+
+      <section class="panel" aria-labelledby="search-heading">
+        <h2 id="search-heading">Viewer search</h2>
+        <form id="query-form" novalidate>
+          <label for="query-input">Ask an <code>@creator</code> question</label>
+          <div class="query-row">
+            <input
+              id="query-input"
+              name="query"
+              type="text"
+              autocomplete="off"
+              value="@alicebeauty which red lipstick did she recommend for darker skin?"
+              aria-describedby="query-help query-status"
+              aria-controls="creator-suggestions"
+              aria-expanded="false"
+            />
+            <button type="submit">Search</button>
+          </div>
+          <p id="query-help" class="hint">
+            Try <code>@alicebeauty which red lipstick did she recommend for darker skin?</code>
+          </p>
+          <ul id="creator-suggestions" class="suggestions" role="listbox" hidden></ul>
+          <p id="query-status" class="status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="results" class="results" aria-live="polite" aria-busy="false"></section>
+
+      <footer class="footer">
+        <a href="../fixtures/viewer-query-fixtures.json">View the mock response fixture</a>
+      </footer>
+    </main>
+    <script type="module" src="./viewer-search.js"></script>
+  </body>
+</html>

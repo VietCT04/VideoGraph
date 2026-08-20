@@ -57,7 +57,7 @@ video
 → Neo4j + pgvector
 ```
 
-No application implementation should be assumed complete yet.
+The repository includes a small fixture-backed viewer search demo from issue #20. Production frontend and backend services remain separate implementation work.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -96,6 +96,21 @@ Verification:
 - `python -m unittest contracts.test_validation` passed (5 tests).
 - `python -m compileall -q contracts` and `git diff --check` passed.
 - Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #20 viewer search demo
+
+**Issue:** #20
+
+Summary:
+
+- Added a dependency-free viewer search demo with creator mention parsing and autocomplete.
+- Added loading, error, empty, and success states over local query fixtures.
+- Preserved canonical evidence IDs and exact source timestamps with jump-to-moment affordances.
+
+Verification:
+
+- Node syntax check and fixture parsing passed.
+- Browser checks and full frontend/backend suites were not run.
 
 ### 2026-08-20 — Initial project planning
 
