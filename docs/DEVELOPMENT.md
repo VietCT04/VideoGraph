@@ -171,6 +171,14 @@ reducer to demonstrate opt-in, content selection, queued/failed job states, retr
 fact review. It does not imply that the planned creator settings, indexing, or privacy
 endpoints are implemented.
 
+### Controlled demo dataset
+
+Issue #22's metadata-only dataset lives under `datasets/creator-memory-demo/`. It is
+synthetic and contains no media blobs. `manifest.json` is the source of truth for
+content, Moments, entities, and relations; `queries.json` contains grouped benchmark
+queries and expected evidence. Keep any future external or locally recorded media out of
+the repository unless its source and redistribution terms are documented.
+
 ---
 
 ## 7. Provider Abstractions
