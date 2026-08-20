@@ -427,6 +427,23 @@ Measure at least:
 
 The graph should remain in the architecture only if evaluation/demo use cases show value beyond vector-only retrieval.
 
+### Constrained optimization loop (#27)
+
+The benchmark can optionally evaluate a finite candidate set against the same versioned
+fixture baseline. The candidate surface is configuration-only:
+
+- chunk target duration and frames per chunk
+- VLM prompt version identifier
+- graph/vector reranking weights
+- retrieval `top_k`
+
+The evaluator rejects unknown or out-of-range fields before running a candidate. It applies
+quality-regression, minimum-metric, latency, and relative-cost gates, and chooses the best
+passing candidate deterministically by objective, latency, cost, and candidate ID. The
+current fixture adapter uses deterministic relative latency/cost models; it does not claim
+production query performance. Optional patch proposals are report metadata only and cannot
+apply code or deploy changes.
+
 ---
 
 ## 15. Related Issues
@@ -440,3 +457,4 @@ The graph should remain in the architecture only if evaluation/demo use cases sh
 - #17 query API
 - #20 viewer UI
 - #23 evaluation
+- #27 constrained benchmark optimization

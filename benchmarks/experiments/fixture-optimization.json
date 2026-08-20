@@ -1,0 +1,49 @@
+{
+  "experiment_id": "fixture-safe-retrieval-v1",
+  "benchmark_version": "0.2.0",
+  "objective_metric": "metrics.hybrid.recall_at_10",
+  "baseline_config": {
+    "chunk_target_duration_s": 20,
+    "frames_per_chunk": 8,
+    "vlm_prompt_version": "v1",
+    "reranking_weights": {
+      "graph": 1,
+      "vector": 1
+    },
+    "retrieval_top_k": 10
+  },
+  "gates": {
+    "max_latency_ms": 125,
+    "max_cost_units": 2.1,
+    "max_quality_regression": 0,
+    "min_objective_delta": 0,
+    "minimum_metrics": {
+      "metrics.hybrid.recall_at_10": 0.7
+    }
+  },
+  "patch_proposals_enabled": true,
+  "candidates": [
+    {
+      "candidate_id": "lower-cost-fixture",
+      "rationale": "Reduce sampled frames while preserving the fixture retrieval configuration.",
+      "changes": {
+        "frames_per_chunk": 4
+      },
+      "patch_proposal": {
+        "summary": "Promote the lower frame-count configuration for review.",
+        "target_config_fields": ["frames_per_chunk"],
+        "notes": "Human review is required before any runtime configuration change."
+      }
+    },
+    {
+      "candidate_id": "graph-emphasis",
+      "rationale": "Try a controlled fusion-weight adjustment on structured queries.",
+      "changes": {
+        "reranking_weights": {
+          "graph": 1.5,
+          "vector": 0.75
+        }
+      }
+    }
+  ]
+}

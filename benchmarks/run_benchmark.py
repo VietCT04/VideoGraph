@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 
-RUNNER_VERSION = "0.1.0"
+RUNNER_VERSION = "0.2.0"
 MODES = ("graph-only", "vector-only", "hybrid")
 STAGES = ("planner", "graph", "vector", "fusion", "synthesis", "end_to_end")
 TOKEN_RE = re.compile(r"[a-z0-9]+")
@@ -95,14 +95,24 @@ def rank_vector(moments: list[dict[str, Any]], query: dict[str, Any]) -> list[di
     )
 
 
-def rank_hybrid(graph: list[dict[str, Any]], vector: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def rank_hybrid(
+    graph: list[dict[str, Any]],
+    vector: list[dict[str, Any]],
+    weights: dict[str, float] | None = None,
+) -> list[dict[str, Any]]:
+    weights = weights or {"graph": 1.0, "vector": 1.0}
+    graph_weight = float(weights.get("graph", 1.0))
+    vector_weight = float(weights.get("vector", 1.0))
     graph_rank = {moment["moment_id"]: index + 1 for index, moment in enumerate(graph)}
     vector_rank = {moment["moment_id"]: index + 1 for index, moment in enumerate(vector)}
     moments_by_id = {moment["moment_id"]: moment for moment in graph + vector}
     return sorted(
         moments_by_id.values(),
         key=lambda moment: (
-            -(1 / (60 + graph_rank[moment["moment_id"]]) + 1 / (60 + vector_rank[moment["moment_id"]])),
+            -(
+                graph_weight / (60 + graph_rank[moment["moment_id"]])
+                + vector_weight / (60 + vector_rank[moment["moment_id"]])
+            ),
             moment["moment_id"],
         ),
     )
@@ -111,9 +121,11 @@ def rank_hybrid(graph: list[dict[str, Any]], vector: list[dict[str, Any]]) -> li
 def retrieval_metrics(
     ranked: list[dict[str, Any]],
     query: dict[str, Any],
+    retrieval_top_k: int = 10,
 ) -> dict[str, float | int]:
     expected = set(query["expected_moment_ids"])
     expected_entities = set(query.get("expected_entity_ids", []))
+    ranked = ranked[:retrieval_top_k]
     ranked_ids = [moment["moment_id"] for moment in ranked]
     top_five = set(ranked_ids[:5])
     top_ten = set(ranked_ids[:10])
@@ -169,7 +181,23 @@ def sha256_files(paths: list[Path]) -> str:
     return digest.hexdigest()
 
 
-def run_benchmark(manifest: dict[str, Any], queries_file: dict[str, Any]) -> dict[str, Any]:
+def run_benchmark(
+    manifest: dict[str, Any],
+    queries_file: dict[str, Any],
+    config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    config = config or {}
+    retrieval_top_k = int(config.get("retrieval_top_k", 10))
+    reranking_weights = config.get("reranking_weights", {"graph": 1.0, "vector": 1.0})
+    if not isinstance(reranking_weights, dict):
+        raise ValueError("reranking_weights must be an object")
+    effective_config = {
+        "retrieval_top_k": retrieval_top_k,
+        "reranking_weights": {
+            "graph": float(reranking_weights.get("graph", 1.0)),
+            "vector": float(reranking_weights.get("vector", 1.0)),
+        },
+    }
     moments_by_creator: dict[str, list[dict[str, Any]]] = {}
     for moment in manifest["moments"]:
         moments_by_creator.setdefault(moment["creator_id"], []).append(moment)
@@ -201,7 +229,7 @@ def run_benchmark(manifest: dict[str, Any], queries_file: dict[str, Any]) -> dic
         vector_ms = elapsed_ms(vector_start)
 
         fusion_start = time.perf_counter()
-        hybrid_ranked = rank_hybrid(graph_ranked, vector_ranked)
+        hybrid_ranked = rank_hybrid(graph_ranked, vector_ranked, effective_config["reranking_weights"])
         fusion_ms = elapsed_ms(fusion_start)
 
         mode_rankings = {
@@ -220,13 +248,13 @@ def run_benchmark(manifest: dict[str, Any], queries_file: dict[str, Any]) -> dic
                 "synthesis": 0.0,
                 "end_to_end": end_to_end_ms,
             }
-            metrics = retrieval_metrics(mode_rankings[mode], query)
+            metrics = retrieval_metrics(mode_rankings[mode], query, retrieval_top_k)
             mode_metrics[mode].append(metrics)
             mode_timings[mode].append(stage_timings)
             category_metrics[query["category"]][mode].append(metrics)
             query_modes[mode] = {
                 "ranked_moment_ids_at_10": [
-                    moment["moment_id"] for moment in mode_rankings[mode][:10]
+                    moment["moment_id"] for moment in mode_rankings[mode][:retrieval_top_k][:10]
                 ],
                 "metrics": metrics,
                 "timings_ms": stage_timings,
@@ -249,6 +277,7 @@ def run_benchmark(manifest: dict[str, Any], queries_file: dict[str, Any]) -> dic
             "version": RUNNER_VERSION,
             "python": platform.python_version(),
         },
+        "configuration": effective_config,
         "dataset": {
             "dataset_id": manifest["dataset_id"],
             "version": manifest["version"],
@@ -258,9 +287,22 @@ def run_benchmark(manifest: dict[str, Any], queries_file: dict[str, Any]) -> dic
             "query_count": len(queries_file["queries"]),
         },
         "measurement_notes": [
-            "Graph and vector retrieval are deterministic in-memory fixture baselines, not Neo4j or pgvector measurements.",
-            "Stage timings measure this Python harness on the current machine and are not model, GPU, or service latency claims.",
-            "Video indexing wall-clock time and peak VRAM are not measured because this dataset contains metadata only.",
+            (
+                "Graph and vector retrieval are deterministic in-memory fixture baselines, "
+                "not Neo4j or pgvector measurements."
+            ),
+            (
+                "Stage timings measure this Python harness on the current machine and are "
+                "not model, GPU, or service latency claims."
+            ),
+            (
+                "Only retrieval_top_k and reranking_weights alter this metadata-only fixture; "
+                "chunking, frame, and prompt settings remain unmeasured here."
+            ),
+            (
+                "Video indexing wall-clock time and peak VRAM are not measured because this "
+                "dataset contains metadata only."
+            ),
             "No synthesis stage is invoked; synthesis timing is reported as zero.",
         ],
         "metrics": {mode: average_metrics(rows) for mode, rows in mode_metrics.items()},

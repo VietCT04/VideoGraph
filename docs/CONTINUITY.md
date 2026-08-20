@@ -58,7 +58,9 @@ video
 ```
 
 The repository now includes fixture-backed viewer and creator-control demos from issues
-#20 and #21 plus a controlled synthetic creator-memory metadata dataset from issue #22.
+#20 and #21, a controlled synthetic creator-memory metadata dataset from issue #22, and a
+constrained benchmark optimization evaluator from issue #27. The evaluator is configuration
+only and fixture-backed; it does not execute arbitrary candidate code or deploy changes.
 The demos are executable in a browser as static previews, but no production frontend,
 backend query endpoint, indexing API, or privacy API is implemented yet.
 
@@ -114,13 +116,39 @@ Verification:
 - Documentation branch compared against `main`.
 - No executable application code is part of this bootstrap documentation work.
 
+### 2026-08-20 — Constrained benchmark optimization
+
+**Issue:** #27
+**Base:** `codex/issue-23-benchmark-harness`
+
+Summary:
+
+- Added a typed experiment specification and allowlisted candidate configuration model.
+- Added deterministic baseline/candidate comparison with quality, latency, cost, and minimum-metric gates.
+- Added JSON/Markdown report output and review-only patch proposal metadata.
+- Kept arbitrary code execution, repository edits, pushes, and deployment outside the evaluator.
+
+Important files:
+
+- `benchmarks/autonomous_optimization.py`
+- `benchmarks/optimize_benchmark.py`
+- `benchmarks/experiments/fixture-optimization.json`
+- `benchmarks/test_autonomous_optimization.py`
+
+Verification:
+
+- Python compilation for the benchmark/optimization modules.
+- Focused `python -m unittest benchmarks.test_autonomous_optimization`.
+- Sample optimization report: lower-cost fixture candidate accepted; graph-emphasis candidate rejected; patch proposal remained unapplied.
+- `git diff --check` passed before publication.
+
 ---
 
 ## Active Work
 
-Issue #23's benchmark slice is implemented on top of the issue-22 branch. The next
-workstream slice is issue #24's deployment assets; shared contracts and live
-query/indexing/privacy APIs remain separate planned work.
+Issue #27's constrained optimization slice is implemented on top of issue #23 and awaits
+draft PR review. Issue #26 remains blocked in this workspace until the required remote
+branches `codex/issue-8-ai-service-api` and `codex/issue-18-indexing-jobs` exist.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -168,11 +196,8 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20–#23 draft PRs and merge them in order when approved.
-2. Implement issue #24's honest local/deployment configuration and health checks.
-3. Freeze #2 shared extraction and retrieval-plan contracts.
-4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Connect the benchmark to measured models and services before making production claims.
-
-Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+1. Review the stacked issue #20–#24 draft PRs and the issue #27 draft PR in dependency order.
+2. Freeze #2 shared extraction and retrieval-plan contracts.
+3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+4. Connect the benchmark optimizer to measured models and services before making production claims.
+5. Start #26 only after its required AI Service and indexing-job branches are remotely available.
