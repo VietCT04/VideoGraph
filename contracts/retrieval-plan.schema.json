@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/VietCT04/VideoGraph/contracts/retrieval-plan.schema.json",
+  "title": "VideoGraph validated retrieval plan",
+  "description": "Planner intent for controlled graph tools and semantic retrieval; never executable Cypher.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "creator_id", "intent", "graph", "semantic_query", "result_type", "top_k"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "creator_id": {"type": "string", "minLength": 1},
+    "intent": {"type": "string", "minLength": 1},
+    "graph": {"$ref": "#/$defs/graph"},
+    "semantic_query": {"type": "string", "minLength": 1},
+    "time_range": {"anyOf": [{"$ref": "#/$defs/timeRange"}, {"type": "null"}]},
+    "entity_filters": {"$ref": "#/$defs/entityFilters"},
+    "result_type": {"enum": ["Entity", "Moment", "Relation"]},
+    "top_k": {"type": "integer", "minimum": 1, "maximum": 100}
+  },
+  "$defs": {
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "relations": {"type": "array", "items": {"enum": ["ABOUT", "APPEARS_IN", "COMPARES", "CREATED_BY", "DISLIKES", "LOCATED_IN", "LIKES", "MENTIONS", "OWNS", "PART_OF", "PREFERS_OVER", "RECOMMENDS", "SWITCHED_TO", "USES", "VISITS", "WEARS"]}},
+        "entity_types": {"type": "array", "items": {"enum": ["Content", "Event", "Organization", "Person", "Place", "Product", "Technology", "Topic"]}},
+        "filters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "category": {"type": ["string", "number", "boolean"]},
+            "color": {"type": ["string", "number", "boolean"]},
+            "content_id": {"type": ["string", "number", "boolean"]},
+            "entity_name": {"type": ["string", "number", "boolean"]},
+            "relation": {"type": ["string", "number", "boolean"]}
+          }
+        }
+      }
+    },
+    "timeRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_ms", "end_ms"],
+      "properties": {
+        "start_ms": {"type": "integer", "minimum": 0},
+        "end_ms": {"type": "integer", "minimum": 0}
+      }
+    },
+    "entityFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "names": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "types": {"type": "array", "items": {"enum": ["Content", "Event", "Organization", "Person", "Place", "Product", "Technology", "Topic"]}}
+      }
+    }
+  }
+}

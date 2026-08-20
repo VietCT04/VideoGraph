@@ -171,3 +171,18 @@ Before database structure changes:
 - #18 indexing jobs
 - #19 privacy/deletion
 - #24 infrastructure
+
+## Issue #9 implementation slice
+
+`backend/graph/ingestion.py` maps a validated extraction payload into stable
+`Creator`, `Content`, `Moment`, and entity/relation records. Moment IDs use the
+canonical `moment_<content>_<start_ms>_<end_ms>` form, while entity IDs are
+deterministic backend IDs derived from creator, type, and normalized name; AI local
+IDs are retained only as properties. `InMemoryGraphRepository` provides idempotent
+upserts and fixture evidence queries, and `backend/graph/schema.cypher` contains the
+Neo4j constraints and indexes.
+
+Ingestion keeps evidence on entity and relation assertions as exact Moment/content
+timestamp references. The fixture adapter is intentionally dependency-free; a
+Neo4j driver implementation can satisfy the same repository boundary later.
+

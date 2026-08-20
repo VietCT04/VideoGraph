@@ -99,12 +99,14 @@ Do not create hidden cross-component dependencies that defeat this separation.
 
 ## 5. Shared Contracts
 
-Planned contracts:
+Implemented v1 contracts:
 
 ```text
 contracts/
 ├── multimodal-extraction.schema.json
-└── retrieval-plan.schema.json
+├── retrieval-plan.schema.json
+├── ontology.py
+└── validation.py
 ```
 
 Rules:
@@ -114,6 +116,9 @@ Rules:
 - version schemas
 - reject unknown relationship/entity values when the ontology is closed
 - do not maintain divergent backend/AI copies manually
+
+The standard-library validator and fixtures can be run without backend, frontend, or
+model dependencies. See `contracts/test_validation.py`.
 
 See issue #2.
 

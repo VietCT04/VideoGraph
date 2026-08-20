@@ -78,9 +78,20 @@ Initial planning target:
 - split around 12–15 seconds when needed
 - use small visual padding around boundaries where useful
 
+Issue #3 provides this boundary in `ai-service/pipeline/segmentation.py`. Speech spans
+and optional scene boundaries are merged into ordered `TemporalChunk` descriptors. Tiny
+non-strong fragments are merged, long intervals are split at a deterministic target,
+and each result carries three representative timestamps plus a `has_speech` flag.
+
 ### Silent / low-speech content
 
 Speech cannot be the only temporal signal.
+
+When no speech spans are supplied, the same segmenter uses scene boundaries when
+available and falls back to deterministic target-duration chunks. It never fabricates
+transcript evidence. Metadata inspection is an adapter boundary in
+`ai-service/pipeline/metadata.py`; the checked-in fixture inspector avoids requiring
+FFmpeg/OpenCV for unit tests.
 
 Fallback direction:
 
@@ -124,6 +135,12 @@ Conceptual output:
 The ASR component does not own final semantic chunk construction.
 
 A provider abstraction should allow model replacement without changing downstream interfaces.
+
+Issue #4 implements this boundary in `ai-service/pipeline/asr.py`. `ASRProvider` returns
+ordered `ASRSegment` values, language and speech-ratio metadata, an explicit `no_speech`
+flag, and provider/model metadata. `ASRResult.to_speech_spans()` maps directly to the
+temporal segmenter. The checked-in `FixtureASRProvider` filters high no-speech
+probability segments and supports deterministic batching without loading Whisper.
 
 ---
 
@@ -269,6 +286,12 @@ The shared contract belongs under:
 ```text
 contracts/multimodal-extraction.schema.json
 ```
+
+The v1 schema and its dependency-free Python validator are implemented. The closed
+ontology is shared with `retrieval-plan.schema.json`: unknown entity types and relation
+predicates are rejected before any graph or vector operation. The examples under
+`contracts/examples/` cover beauty, technology, and travel content so consumers can
+develop without model dependencies. Local extraction IDs remain content-local.
 
 Conceptual payload:
 
