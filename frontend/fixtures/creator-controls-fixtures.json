@@ -1,0 +1,92 @@
+{
+  "creator": {
+    "creator_id": "creator_alice",
+    "handle": "alicebeauty",
+    "display_name": "Alice Beauty",
+    "memory_enabled": false
+  },
+  "content": [
+    {
+      "content_id": "alice_video_001",
+      "title": "Everyday Base Routine",
+      "kind": "video",
+      "duration_ms": 58000,
+      "included": false,
+      "excluded": false,
+      "status": "ready"
+    },
+    {
+      "content_id": "alice_video_002",
+      "title": "Summer Makeup Guide",
+      "kind": "video",
+      "duration_ms": 74000,
+      "included": false,
+      "excluded": false,
+      "status": "ready"
+    },
+    {
+      "content_id": "alice_live_001",
+      "title": "July LIVE",
+      "kind": "live",
+      "duration_ms": 1800000,
+      "included": false,
+      "excluded": false,
+      "status": "failed",
+      "error": "The fixture simulates an OCR timeout."
+    },
+    {
+      "content_id": "alice_video_005",
+      "title": "Silent GRWM: Packaging Close-up",
+      "kind": "video",
+      "duration_ms": 42000,
+      "included": false,
+      "excluded": false,
+      "status": "queued"
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "job_alice_live_001",
+      "content_id": "alice_live_001",
+      "status": "failed",
+      "progress": 42,
+      "stage": "running_ocr",
+      "error": "The fixture simulates an OCR timeout."
+    },
+    {
+      "job_id": "job_alice_video_005",
+      "content_id": "alice_video_005",
+      "status": "queued",
+      "progress": 0,
+      "stage": "queued"
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "fact_alice_rare_beauty_humble",
+      "subject_label": "Alice Beauty",
+      "relation": "USES",
+      "object_label": "Rare Beauty Humble",
+      "source_content_ids": ["alice_video_001", "alice_video_005"],
+      "source_moment_ids": [
+        "moment_alice_video_001_9000_15000",
+        "moment_alice_video_005_8000_16000"
+      ],
+      "visibility": "visible",
+      "review_status": "pending"
+    },
+    {
+      "fact_id": "fact_alice_dior_recommendation",
+      "subject_label": "Alice Beauty",
+      "relation": "RECOMMENDS",
+      "object_label": "Dior Rouge 999",
+      "source_content_ids": ["alice_video_002", "alice_live_001"],
+      "source_moment_ids": [
+        "moment_alice_video_002_12000_19000",
+        "moment_alice_live_001_842000_856000"
+      ],
+      "visibility": "visible",
+      "review_status": "confirmed"
+    }
+  ]
+}

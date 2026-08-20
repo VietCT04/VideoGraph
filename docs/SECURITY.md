@@ -23,6 +23,13 @@ The intended system supports:
 
 The backend must treat these controls as authoritative retrieval constraints.
 
+The fixture-backed creator UI in issue #21 mirrors these constraints locally for demo
+state only. Its reducer requires explicit opt-in before content can be selected, turns
+included content into excluded content when memory is disabled, and filters disabled,
+excluded, or hidden items out of its viewer-visible projection. These checks improve the
+demo's state transitions but do not replace server-side authorization, database filters,
+or cross-store deletion enforcement.
+
 ## Retrieval Privacy
 
 Privacy filters must be applied to both retrieval branches.
@@ -153,4 +160,3 @@ Tool failures must not cause the system to expose hidden data or bypass normal p
 - #19 privacy/deletion
 - #20–#21 frontend flows
 - #25 action tools
-
