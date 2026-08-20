@@ -175,6 +175,11 @@ or callback, and returns a validated `RetrievalPlan` plus fallback and latency
 metadata. Planner providers return structured data only; raw Cypher is not an accepted
 field or execution path. The fixture provider is the current local adapter.
 
+The internal `HybridRetrievalOrchestrator` accepts the validated plan and returns a
+bundle containing independent graph/vector outcomes, source result objects, branch
+latencies, timeout/error status, and a partial-success flag. It is an orchestration
+boundary, not a final answer or synthesis API.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.

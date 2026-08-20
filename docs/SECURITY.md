@@ -103,6 +103,11 @@ user text to a database query; only the provider-generated vector is used by the
 parameterized vector adapter. Hidden or excluded rows remain unavailable through the
 fixture and PostgreSQL paths.
 
+The #15 orchestrator passes the same already-validated creator-scoped plan to both
+branches and does not broaden visibility when one branch fails. Partial-success
+bundles contain only the successful branch's authorized results; timeout/error text is
+internal metadata and must not be exposed as a database exception to viewers.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

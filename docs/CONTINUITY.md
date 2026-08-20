@@ -70,6 +70,21 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #15 parallel graph-vector retrieval
+
+**Issue:** #15
+
+Summary:
+
+- Added concurrent graph/vector invocation from one validated plan.
+- Added independent timeouts and failure/partial-success metadata.
+- Preserved branch result objects, evidence, source scores, and latency without fusion.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #14 semantic retrieval
 
 **Issue:** #14
@@ -338,13 +353,14 @@ Verification:
 
 ## Active Work
 
-Issues #1–#14 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#15 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
-creator-scoped safe graph tools, and semantic retrieval. Issue #21's creator-control
-slice is implemented on top of the issue-20 branch, and issue #22's dataset slice is
-implemented. The next graph/query dependency is issue #15's parallel retrieval
-orchestration; the next workstream slice is issue #23's benchmark harness. Shared
-contracts and live query/indexing/privacy APIs remain separate planned work.
+creator-scoped safe graph tools, semantic retrieval, and parallel graph/vector
+orchestration. Issue #21's creator-control slice is implemented on top of the issue-20
+branch, and issue #22's dataset slice is implemented. The next graph/query dependency
+is issue #16's fusion/reranking; the next workstream slice is issue #23's benchmark
+harness. Shared contracts and live query/indexing/privacy APIs remain separate planned
+work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -392,11 +408,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement #15 parallel graph/vector retrieval orchestration.
+1. Implement #16 fusion and reranking over graph/vector branch outcomes.
 2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. Continue graph/query issues #16–#19 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+5. Continue graph/query issues #17–#19 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
