@@ -65,6 +65,23 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #10 deterministic entity resolution
+
+**Issue:** #10
+
+Summary:
+
+- Added normalized candidate scoring with exact-ID, alias, compatibility, and optional
+  similarity signals.
+- Added high-confidence merge, reversible ambiguous link, create, alias, and evidence
+  preservation behavior.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #9 Neo4j ingestion foundation
 
 **Issue:** #9

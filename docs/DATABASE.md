@@ -186,3 +186,16 @@ Ingestion keeps evidence on entity and relation assertions as exact Moment/conte
 timestamp references. The fixture adapter is intentionally dependency-free; a
 Neo4j driver implementation can satisfy the same repository boundary later.
 
+## Issue #10 entity resolution
+
+`backend/graph/entity_resolution.py` normalizes candidate names and scores creator/type
+compatible candidates using exact external IDs, normalized names, name similarity,
+brand/category compatibility, optional semantic/visual signals, and creator-history
+context. A score at the configured merge threshold updates one canonical entity and
+retains the source alias/evidence. A score in the ambiguous band creates a reversible
+link decision without merging; lower scores create a new canonical entity.
+
+Resolution decisions are deterministic for the same inputs and configuration. Every
+decision records its aliases and Moment evidence and can be reverted in the fixture
+resolver, preventing an uncertain mention from becoming an irreversible merge.
+

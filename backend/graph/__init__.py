@@ -3,6 +3,13 @@
 from .ingestion import ExtractionGraphIngestor, canonical_entity_id, canonical_moment_id
 from .model import EvidenceRef, GraphEntity, GraphMoment, GraphRelation
 from .repository import InMemoryGraphRepository
+from .entity_resolution import (
+    DeterministicCandidateScorer,
+    EntityCandidate,
+    EntityResolver,
+    ResolutionDecision,
+    normalize_entity_name,
+)
 
 __all__ = [
     "EvidenceRef",
@@ -11,7 +18,12 @@ __all__ = [
     "GraphMoment",
     "GraphRelation",
     "InMemoryGraphRepository",
+    "DeterministicCandidateScorer",
+    "EntityCandidate",
+    "EntityResolver",
+    "ResolutionDecision",
     "canonical_entity_id",
     "canonical_moment_id",
+    "normalize_entity_name",
 ]
 
