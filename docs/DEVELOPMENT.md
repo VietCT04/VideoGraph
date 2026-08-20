@@ -208,6 +208,31 @@ readiness: dependencies are deliberately not checked until the real services exi
 
 ---
 
+### Constrained benchmark optimization (#27)
+
+The optional optimization loop is a dependency-free evaluator over the issue-23 fixture
+harness. Its experiment specification lives under `benchmarks/experiments/` and is loaded
+by `benchmarks/optimize_benchmark.py`:
+
+```text
+python benchmarks/optimize_benchmark.py
+python benchmarks/optimize_benchmark.py --format json --output-dir benchmarks/results
+```
+
+Candidates can change only these validated fields: `chunk_target_duration_s`,
+`frames_per_chunk`, `vlm_prompt_version`, `reranking_weights`, and `retrieval_top_k`.
+The evaluator runs every candidate against one versioned baseline, then applies quality,
+minimum-metric, latency, and relative-cost gates. It accepts candidate configuration data
+through a typed runner interface; it does not execute candidate-provided code, apply patch
+proposals, edit unrestricted production files, push, or deploy. Patch proposals in the
+report are review-only metadata.
+
+The default fixture adapter reports deterministic relative latency and cost units so gate
+behavior can be checked end-to-end. They are not measurements of the AI Service, model,
+GPU, database, hosted service, or provider billing. Connect a separately sandboxed runner
+to real components only after those components and their reproducible benchmark inputs are
+available.
+
 ## 7. Provider Abstractions
 
 Model/provider integrations should use adapters where provider replacement is an explicit requirement.
@@ -290,6 +315,8 @@ Expected test categories as implementation appears:
 - graph-only baseline
 - hybrid baseline
 - latency instrumentation
+- constrained candidate regression/latency/cost gates
+- reproducible optimization report and review-only patch proposals
 
 Do not claim checks that were not run.
 

@@ -447,6 +447,13 @@ At minimum benchmark:
 
 Before extrapolating to hundreds of videos, measure a representative sample first.
 
+The #27 constrained optimization loop can describe AI-related settings such as chunk
+duration, frames per chunk, and a VLM prompt version, but the metadata fixture does not run
+ASR, VLM, OCR, embeddings, GPU inference, or real service calls. Its latency and cost
+values are deterministic relative models used only to exercise regression gates. A future
+AI Service runner must keep candidate execution sandboxed and must validate the same
+versioned extraction inputs before any candidate can be reviewed for promotion.
+
 ---
 
 ## 14. Incremental LIVE Memory
@@ -473,3 +480,4 @@ real stream adapters remain deployment concerns.
 - #23 benchmark harness
 - #24 deployment
 - #26 LIVE stretch
+- #27 constrained benchmark optimization

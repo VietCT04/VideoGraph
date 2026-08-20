@@ -378,3 +378,28 @@ inference service.
 
 Replace the placeholder images with the real service entrypoints as their issues land,
 then make readiness checks validate the dependencies that the service actually needs.
+
+---
+
+## C-015 — Constrained optimization is fixture-only
+
+**Status:** Open
+**Component:** Evaluation / AI Service / Query Flow
+
+### Context
+
+Issue #27 adds a typed candidate evaluator with quality, latency, and relative-cost gates.
+The default runner uses the metadata-only issue-23 fixture and deterministic models for
+latency and cost.
+
+### Risk
+
+A passing candidate could be mistaken for an improvement to real ASR/VLM/OCR, embedding,
+Neo4j, pgvector, or hosted-service behavior even though no production component is run.
+
+### Recommended next action
+
+Connect the evaluator to a versioned, separately sandboxed benchmark runner only after the
+AI Service and retrieval components expose reproducible inputs and measurements. Keep the
+fixture report explicitly labeled and require human review before any configuration or code
+promotion.

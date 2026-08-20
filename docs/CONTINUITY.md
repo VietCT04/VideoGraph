@@ -69,6 +69,23 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #27 constrained benchmark optimization
+
+**Issue:** #27
+
+Summary:
+
+- Added a typed experiment specification and allowlisted candidate configuration model.
+- Added deterministic baseline/candidate comparison with quality, latency, cost, and minimum-metric gates.
+- Added JSON/Markdown report output and review-only patch proposal metadata.
+- Kept arbitrary code execution, repository edits, pushes, and deployment outside the evaluator.
+
+Verification:
+
+- Python compilation and focused optimization tests passed on the PR branch.
+- Sample optimization report accepted a lower-cost fixture candidate and rejected a graph-emphasis candidate; the patch proposal remained unapplied.
+- `git diff --check` passed before publication.
+
 ### 2026-08-20 — Issue #23 evaluation benchmark harness
 
 **Issue:** #23
@@ -447,14 +464,16 @@ Verification:
 
 ## Active Work
 
-Issues #1–#19, #23–#25 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#19, #23–#27 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
 creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
 orchestration, result fusion, the grounded viewer query API, and durable creator
 indexing jobs, privacy/deletion controls, and permissioned grounded actions. Issue #21's
 creator-control slice is implemented on top of the issue-20 branch, and issue #22's
 dataset slice is implemented. The requested implementation workstream is complete;
-shared contracts and live query/indexing/privacy APIs remain separate planned work.
+shared contracts and live query/indexing/privacy APIs remain separate planned work. The
+optimization evaluator is configuration-only and fixture-backed; it does not execute
+arbitrary candidate code or deploy changes.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -524,6 +543,6 @@ Highest-priority unresolved concerns currently include:
 4. Connect the benchmark to measured models and services before making production claims.
 5. Keep media licensing and audiovisual validity explicit if clips are added later.
 
-Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+Do not treat fixture-backed benchmark or optimization results as production measurements.
 
 
