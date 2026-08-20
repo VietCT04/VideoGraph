@@ -166,6 +166,14 @@ OCR output must preserve:
 
 OCR is evidence, not automatically a canonical entity.
 
+Issue #5 implements `FrameCandidate`, `RepresentativeFrame`, and
+`DeterministicFrameSampler` in `ai-service/pipeline/frames.py`. The sampler considers
+chunk start/middle/end anchors and scene-change candidates, removes near duplicates by
+a cheap fingerprint similarity check, and returns at most the configured frame count.
+`ai-service/pipeline/ocr.py` provides timestamped `OCRFrameResult` and `OCRItem` models,
+including optional bounding boxes, plus a fixture provider. No OpenCV, FFmpeg, or OCR
+model is required by the focused tests.
+
 ---
 
 ## 6. Multimodal Fusion

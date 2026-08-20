@@ -12,9 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#4 add dependency-free contract, temporal
-segmentation, and timestamped ASR boundaries; later AI stages and application services
-remain fixture-backed.
+infrastructure directories. Issues #2–#5 add dependency-free contract, temporal
+segmentation, timestamped ASR, and visual evidence boundaries; later AI stages and
+application services remain fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #5 representative frames and OCR
+
+**Issue:** #5
+
+Summary:
+
+- Added representative frame candidate/sampling models with anchor selection and near-duplicate reduction.
+- Added timestamped OCR item/frame result models with optional bounding boxes.
+- Added deterministic frame/OCR fixtures and focused tests without OpenCV/Tesseract dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (11 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
 
 ### 2026-08-20 — Issue #4 timestamped ASR
 
@@ -164,8 +180,8 @@ Verification:
 
 ## Active Work
 
-Issue #1 is implemented on the issue branch for its PR. Issues #2–#4 are implemented
-on stacked branches for review; the next dependency is representative frames/OCR in issue #5.
+Issue #1 is implemented on the issue branch for its PR. Issues #2–#5 are implemented
+on stacked branches for review; the next dependency is multimodal fusion in issue #6.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -213,10 +229,10 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the issue #4 draft PR and merge the stacked foundation when ready.
-2. Implement #5 representative frames and OCR on top of the segmenter.
+1. Review the issue #5 draft PR and merge the stacked foundation when ready.
+2. Implement #6 multimodal fusion on top of the shared evidence models.
 3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-4. Continue AI issues #6–#8 in the requested dependency order.
+4. Continue AI issues #7–#8 in the requested dependency order.
 5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
