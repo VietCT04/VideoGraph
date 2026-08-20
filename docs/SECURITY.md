@@ -23,6 +23,13 @@ The intended system supports:
 
 The backend must treat these controls as authoritative retrieval constraints.
 
+The fixture-backed creator UI in issue #21 mirrors these constraints locally for demo
+state only. Its reducer requires explicit opt-in before content can be selected, turns
+included content into excluded content when memory is disabled, and filters disabled,
+excluded, or hidden items out of its viewer-visible projection. These checks improve the
+demo's state transitions but do not replace server-side authorization, database filters,
+or cross-store deletion enforcement.
+
 ## Retrieval Privacy
 
 Privacy filters must be applied to both retrieval branches.
@@ -66,6 +73,12 @@ Requirements:
 - Avoid unbounded traversals.
 - Enforce creator scope and visibility in the repository/service layer.
 - Never expose database connection details to clients.
+
+The #9 graph slice accepts only payloads passing the shared extraction validator and
+maps controlled predicates to canonical IDs. It does not accept Cypher in extraction
+payloads, stores no embedding vectors in Neo4j, and preserves visibility on every
+content, Moment, entity, and relation record. Hidden or excluded records are filtered
+by the repository boundary before a retrieval tool can return them.
 
 ## AI Service Safety
 
@@ -141,3 +154,5 @@ Tool failures must not cause the system to expose hidden data or bypass normal p
 - #19 privacy/deletion
 - #20–#21 frontend flows
 - #25 action tools
+
+

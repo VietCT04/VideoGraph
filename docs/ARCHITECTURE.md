@@ -73,6 +73,17 @@ Owns:
 
 The frontend calls the main backend only.
 
+Issue #20 adds a framework-free fixture-backed viewer demo. It owns input parsing,
+creator autocomplete presentation, loading/error/empty/success rendering, and
+timestamp navigation affordances. It does not own retrieval, ranking, authorization,
+or privacy filtering; those remain backend responsibilities.
+
+Issue #21 adds a matching fixture-backed creator-control preview. Its local reducer
+demonstrates opt-in, explicit content selection, indexing-job status, and memory
+correction/visibility actions while keeping the viewer-visible projection empty for
+disabled or excluded content. It is a UI/state slice, not a replacement for backend
+authorization or persistent job/privacy services.
+
 ### Main Backend
 
 Owns:
