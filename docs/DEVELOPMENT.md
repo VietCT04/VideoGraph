@@ -2,7 +2,9 @@
 
 ## 1. Current State
 
-VideoGraph is currently documentation- and issue-driven. The implementation directories described below are the intended structure and will be created as issues land.
+VideoGraph is currently documentation- and issue-driven. The top-level implementation
+directories now exist as an ownership skeleton; executable services will be added by
+their focused issues.
 
 Do not assume a component exists until it is present in the repository.
 
@@ -131,7 +133,16 @@ Remote or local GPU host
 └── AI Service
 ```
 
-Expected development ports should be documented once frameworks are selected. Do not hardcode assumptions into docs before the implementation chooses them.
+The initial local port convention is recorded in the root `.env.example`:
+
+| Component | Default port | Environment variable |
+| --- | ---: | --- |
+| Frontend | `3000` | `FRONTEND_PORT` |
+| Backend | `8000` | `BACKEND_PORT` |
+| AI Service | `8001` | `AI_SERVICE_PORT` |
+
+These are development defaults, not a deployment guarantee. Framework-specific
+configuration belongs to the owning implementation issue.
 
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
 

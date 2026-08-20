@@ -187,7 +187,7 @@ These are implementation targets, not benchmark guarantees.
 
 ---
 
-## Planned Repository Structure
+## Repository Structure
 
 ```text
 VideoGraph/
@@ -212,6 +212,11 @@ VideoGraph/
 ```
 
 This is a monorepo, but the runtime components remain independently deployable.
+
+The service directories now contain boundary-level READMEs and are intentionally light
+until their focused implementation issues land. The backend owns persistent state and
+canonical IDs; the AI Service remains content-local; and the frontend talks only to the
+backend. Shared cross-service schemas belong under `contracts/`.
 
 ---
 

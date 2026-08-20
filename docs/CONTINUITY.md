@@ -10,7 +10,9 @@ Do not use it as a full changelog.
 
 **Date:** 2026-08-20
 
-VideoGraph is at architecture/backlog bootstrap stage.
+VideoGraph is at the first implementation stage. The repository skeleton now exists,
+with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
+infrastructure directories. Executable application code is still pending.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -112,9 +114,11 @@ Verification:
 
 ## Active Work
 
-Draft PR #28 is the active documentation/bootstrap PR.
+Issue #1 is implemented on the issue branch for its PR. The next dependency is the
+shared extraction and retrieval contracts in issue #2.
 
-No implementation issue should be marked complete solely because these planning documents exist.
+Do not mark later implementation issues complete solely because their directories or
+documentation exist.
 
 Future implementation work must follow the proposal/approval workflow in `AGENTS.md` before coding unless the user explicitly waives that step.
 
@@ -159,7 +163,7 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Complete #1 repository/service skeleton after an approved issue proposal.
+1. Review the issue #1 PR and merge it before the stacked implementation PRs.
 2. Freeze #2 shared extraction and retrieval-plan contracts.
 3. Create fixture payloads so graph/search/frontend work can proceed without the AI Service.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
