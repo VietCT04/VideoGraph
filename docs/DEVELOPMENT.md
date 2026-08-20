@@ -3,8 +3,9 @@
 ## 1. Current State
 
 VideoGraph is currently documentation- and issue-driven. The top-level implementation
-directories now exist as an ownership skeleton; executable services will be added by
-their focused issues.
+directories now contain ownership READMEs plus a dependency-free, fixture-backed viewer
+demo from issue #20. Production frontend/backend services will be added by their focused
+issues.
 
 Do not assume a component exists until it is present in the repository.
 
@@ -150,6 +151,33 @@ These are development defaults, not a deployment guarantee. Framework-specific
 configuration belongs to the owning implementation issue.
 
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
+
+### Fixture-backed viewer demo
+
+The viewer interaction can be previewed without installing a frontend framework:
+
+```text
+python -m http.server 8080
+open http://localhost:8080/frontend/demo/
+```
+
+The demo covers `@creator` parsing/autocomplete, loading/error/empty/success states,
+grounded result cards, and exact timestamp jump affordances. It uses local fixtures and
+does not imply that the conceptual `POST /query` endpoint is implemented.
+
+The creator controls preview is available at
+`http://localhost:8080/frontend/demo/creator-controls.html`. It uses a local fixture and
+reducer to demonstrate opt-in, content selection, queued/failed job states, retry, and
+fact review. It does not imply that the planned creator settings, indexing, or privacy
+endpoints are implemented.
+
+### Controlled demo dataset
+
+Issue #22's metadata-only dataset lives under `datasets/creator-memory-demo/`. It is
+synthetic and contains no media blobs. `manifest.json` is the source of truth for
+content, Moments, entities, and relations; `queries.json` contains grouped benchmark
+queries and expected evidence. Keep any future external or locally recorded media out of
+the repository unless its source and redistribution terms are documented.
 
 ---
 
