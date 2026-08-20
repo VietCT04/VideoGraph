@@ -266,6 +266,26 @@ Implement the PostgreSQL job repository and migration before production indexing
 the processing-key uniqueness and explicit state transitions identical to the fixture
 contract.
 
+## C-013 — Product action catalog is a fixture boundary
+
+**Status:** Open
+**Component:** Action Tools / Commerce
+
+### Context
+
+Issue #25 uses a deterministic local catalog so canonical Product-to-action behavior can
+be demonstrated without an external commerce provider.
+
+### Risk
+
+Fixture prices, URLs, similarity behavior, and availability are not live commerce data
+and must not be presented as current market information.
+
+### Recommended next action
+
+Add an approved commerce adapter with provider-specific freshness, failure, and privacy
+policies before exposing product actions beyond the demo.
+
 ---
 
 ## C-011 — GPU/provider choice remains open

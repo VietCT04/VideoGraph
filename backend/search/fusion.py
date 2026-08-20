@@ -23,6 +23,7 @@ class _Accumulator:
     result_id: str
     label: str
     entity_id: str | None = None
+    entity_type: str | None = None
     graph_score: float = 0.0
     vector_score: float = 0.0
     relations: set[str] = field(default_factory=set)
@@ -34,6 +35,7 @@ class FusedResult:
     result_id: str
     label: str
     entity_id: str | None
+    entity_type: str | None
     score: float
     graph_score: float
     vector_score: float
@@ -65,6 +67,7 @@ class ResultFusionService:
                     result_id=key,
                     label=str(getattr(graph_hit, "label", key)),
                     entity_id=getattr(graph_hit, "entity_id", None),
+                    entity_type=getattr(graph_hit, "entity_type", None),
                 ),
             )
             accumulator.graph_score = max(accumulator.graph_score, _bounded_score(getattr(graph_hit, "confidence", 0.0)))
@@ -136,6 +139,7 @@ def _to_result(accumulator: _Accumulator, bundle: RetrievalBundle) -> FusedResul
         result_id=accumulator.result_id,
         label=accumulator.label,
         entity_id=accumulator.entity_id,
+        entity_type=accumulator.entity_type,
         score=round(score, 6),
         graph_score=round(graph_signal, 6),
         vector_score=round(vector_signal, 6),

@@ -70,6 +70,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #25 permissioned grounded action tools
+
+**Issue:** #25
+
+Summary:
+
+- Added typed `jump_to_timestamp`, `find_product`, and `find_similar_products` tools.
+- Derived jump targets only from exact evidence on canonical fused retrieval results.
+- Added a canonical-ID keyed fixture product catalog and deterministic similarity adapter.
+- Enforced privacy before every action and isolated catalog failures from grounded evidence.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #19 privacy and deletion controls
 
 **Issue:** #19
@@ -416,14 +432,15 @@ Verification:
 
 ## Active Work
 
-Issues #1–#19 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#19 and #25 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
 creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
 orchestration, result fusion, the grounded viewer query API, and durable creator
-indexing jobs and privacy/deletion controls. Issue #21's creator-control slice is
-implemented on top of the issue-20 branch, and issue #22's dataset slice is implemented.
-The next workstream slice is issue #23's benchmark harness; shared contracts and live
-query/indexing/privacy APIs remain separate planned work.
+indexing jobs, privacy/deletion controls, and permissioned grounded actions. Issue #21's
+creator-control slice is implemented on top of the issue-20 branch, and issue #22's
+dataset slice is implemented. The next workstream slice is issue #23's benchmark
+harness; shared contracts and live query/indexing/privacy APIs remain separate planned
+work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.

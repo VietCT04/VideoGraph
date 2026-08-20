@@ -431,6 +431,28 @@ provider is configured or it fails, the API preserves the grounded results and r
 vector, fusion, synthesis, and total latency separately; these values are instrumentation
 only until measured by the evaluation harness.
 
+## 10.1 Grounded action tools (#25)
+
+Actions branch from a resolved fused result, not from raw user text:
+
+```text
+grounded FusedResult
+       ↓
+privacy evidence check
+       ↓
+typed action tool
+   ┌───┼──────────────┐
+   ↓   ↓              ↓
+jump product      similar products
+```
+
+`jump_to_timestamp` selects an exact evidence item and returns its canonical
+`content_id`, `moment_id`, and timestamps. Product lookup and similarity use the
+canonical Product entity ID from the fused result and a deterministic local catalog in
+the fixture path. Tool results are separate from query evidence, so lookup failures do
+not discard the creator's grounded source. Hidden or excluded evidence is rejected
+before any action adapter runs.
+
 ---
 
 ## 12. Simple-Query Fast Path
