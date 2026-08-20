@@ -58,7 +58,7 @@ video
 → Neo4j + pgvector
 ```
 
-No application implementation should be assumed complete yet.
+The repository now includes small fixture-backed viewer and creator-control demos from issues #20 and #21. They are executable in a browser as static previews, but no production frontend, backend query endpoint, indexing API, or privacy API is implemented yet.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -98,6 +98,20 @@ Verification:
 - `python -m compileall -q ai-service` and `git diff --check` passed.
 - Backend/frontend suites are not in scope.
 
+### 2026-08-20 — Issue #9 Neo4j ingestion foundation
+
+**Issue:** #9
+
+Summary:
+
+- Added canonical graph models, stable ID mapping, evidence-preserving ingestion, and an idempotent in-memory repository.
+- Added Neo4j constraints and indexes without embedding storage.
+
+Verification:
+
+- Python compilation and git diff check were completed for the stacked slice.
+- Neo4j runtime and backend/frontend suites were not run.
+
 ### 2026-08-20 — Issue #3 temporal segmentation
 
 **Issue:** #3
@@ -129,6 +143,21 @@ Verification:
 - `python -m unittest contracts.test_validation` passed (5 tests).
 - `python -m compileall -q contracts` and `git diff --check` passed.
 - Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #20 viewer search demo
+
+**Issue:** #20
+
+Summary:
+
+- Added a dependency-free viewer search demo with creator mention parsing and autocomplete.
+- Added loading, error, empty, and success states over local query fixtures.
+- Preserved canonical evidence IDs and exact source timestamps with jump-to-moment affordances.
+
+Verification:
+
+- Node syntax check and fixture parsing passed.
+- Browser checks and full frontend/backend suites were not run.
 
 ### 2026-08-20 — Initial project planning
 
@@ -180,8 +209,12 @@ Verification:
 
 ## Active Work
 
-Issue #1 is implemented on the issue branch for its PR. Issues #2–#5 are implemented
-on stacked branches for review; the next dependency is multimodal fusion in issue #6.
+Issue #21's creator-control slice is implemented on top of the issue-20 branch. The next
+Issues #1–#5 are implemented, including the representative-frame and OCR evidence
+boundaries from issue #5. Issue #21's creator-control slice is also implemented on top
+of the issue-20 branch. The next AI dependency is issue #6's multimodal fusion, while
+issue #22 is the next controlled-dataset workstream slice; shared contracts and live
+query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -229,10 +262,12 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the issue #5 draft PR and merge the stacked foundation when ready.
-2. Implement #6 multimodal fusion on top of the shared evidence models.
-3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-4. Continue AI issues #7–#8 in the requested dependency order.
-5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
+1. Implement #6 multimodal fusion on top of the shared evidence models.
+2. Implement issue #22's controlled synthetic creator-memory dataset.
+3. Freeze #2 shared extraction and retrieval-plan contracts.
+4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+5. Continue AI issues #7–#8 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+
+
