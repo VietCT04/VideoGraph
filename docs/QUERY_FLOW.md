@@ -189,6 +189,19 @@ RETURN p
 
 The actual tool layer should own this query, not the planner.
 
+## Issue #13 safe graph tool slice
+
+`backend/graph/tools.py` validates the complete plan again at the graph boundary and
+maps only the shared v1 relation/entity values to fixed Cypher templates. Creator ID,
+visibility, content, entity, and time filters are parameters; there is no API field for
+raw Cypher. The fixture path uses the same validated plan and repository filters, while
+the Neo4j path accepts a parameterized executor callback and normalizes evidence into
+the same `GraphHit` shape.
+
+Unsupported or malformed plans fail closed with `GraphToolError`. Graph templates use
+bounded `LIMIT` values and return canonical entity labels plus Moment/content evidence
+timestamps for downstream fusion.
+
 ---
 
 ## 7. Semantic Retrieval

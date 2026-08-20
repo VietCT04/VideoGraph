@@ -10,6 +10,7 @@ from .entity_resolution import (
     ResolutionDecision,
     normalize_entity_name,
 )
+from .tools import GraphHit, ParameterizedCypher, SafeGraphQueryService
 
 __all__ = [
     "EvidenceRef",
@@ -25,5 +26,8 @@ __all__ = [
     "canonical_entity_id",
     "canonical_moment_id",
     "normalize_entity_name",
+    "GraphHit",
+    "ParameterizedCypher",
+    "SafeGraphQueryService",
 ]
 

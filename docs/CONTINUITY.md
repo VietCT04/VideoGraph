@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #13 safe graph query tools
+
+**Issue:** #13
+
+Summary:
+
+- Added validated graph-tool planning and fixed relation/entity Cypher templates.
+- Added creator/visibility/time/content filtering, bounded results, fixture execution,
+  and evidence-preserving `GraphHit` normalization.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Neo4j runtime and backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #12 validated @creator planner
 
 **Issue:** #12
