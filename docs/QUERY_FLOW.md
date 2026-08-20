@@ -237,6 +237,19 @@ start_ms
 end_ms
 ```
 
+## Issue #14 semantic retrieval slice
+
+`backend/search/semantic_retrieval.py` embeds only the validated planner
+`semantic_query`, builds creator/content/time/visibility filters, and returns a
+normalized `SemanticHit` containing the canonical Moment ID, similarity, semantic
+text, content ID, and exact timestamps. `EmbeddingProvider` keeps model-specific code
+behind an adapter; `FixtureHashEmbeddingProvider` and `InMemoryVectorRepository`
+provide deterministic local plumbing without external dependencies.
+
+Fixture indexing uses `canonical_moment_id` from graph ingestion, so a vector result
+resolves to the same Moment evidence as a graph result. The fixture embedding is a
+repeatable hashing baseline, not a measured production semantic-quality claim.
+
 ---
 
 ## 8. Parallel Execution

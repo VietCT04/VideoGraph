@@ -97,6 +97,12 @@ and attribute values as query parameters, applies a bounded top-k, and returns o
 creator-scoped evidence. An executor callback cannot be supplied with a plan-generated
 query string.
 
+The #14 semantic retriever applies creator and visibility scope before returning vector
+hits and carries time/content filters into the repository call. It does not send raw
+user text to a database query; only the provider-generated vector is used by the
+parameterized vector adapter. Hidden or excluded rows remain unavailable through the
+fixture and PostgreSQL paths.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

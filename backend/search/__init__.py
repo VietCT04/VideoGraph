@@ -6,11 +6,19 @@ from .vector_repository import (
     PostgresVectorRepository,
     VectorSearchFilters,
 )
+from .embeddings import EmbeddingProvider, FixtureHashEmbeddingProvider
+from .semantic_retrieval import SemanticHit, SemanticMomentRetriever, SemanticSearchResult, index_extraction_fixture
 
 __all__ = [
     "InMemoryVectorRepository",
     "MomentEmbeddingRow",
     "PostgresVectorRepository",
     "VectorSearchFilters",
+    "EmbeddingProvider",
+    "FixtureHashEmbeddingProvider",
+    "SemanticHit",
+    "SemanticMomentRetriever",
+    "SemanticSearchResult",
+    "index_extraction_fixture",
 ]
 
