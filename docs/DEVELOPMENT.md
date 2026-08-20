@@ -99,12 +99,14 @@ Do not create hidden cross-component dependencies that defeat this separation.
 
 ## 5. Shared Contracts
 
-Planned contracts:
+Implemented v1 contracts:
 
 ```text
 contracts/
 ├── multimodal-extraction.schema.json
-└── retrieval-plan.schema.json
+├── retrieval-plan.schema.json
+├── ontology.py
+└── validation.py
 ```
 
 Rules:
@@ -114,6 +116,9 @@ Rules:
 - version schemas
 - reject unknown relationship/entity values when the ontology is closed
 - do not maintain divergent backend/AI copies manually
+
+The standard-library validator and fixtures can be run without backend, frontend, or
+model dependencies. See `contracts/test_validation.py`.
 
 See issue #2.
 
@@ -145,6 +150,11 @@ The initial local port convention is recorded in the root `.env.example`:
 These are development defaults, not a deployment guarantee. Framework-specific
 configuration belongs to the owning implementation issue.
 
+The dependency-free AI Service fallback can be started from the repository root with
+`PYTHONPATH=ai-service python -m app` (PowerShell users can set `$env:PYTHONPATH` for
+the process). It serves the documented AI job routes on port 8001. FastAPI/ASGI
+deployment remains optional and is not required for the fixture-backed checks.
+
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
 
 ### Fixture-backed viewer demo
@@ -174,6 +184,30 @@ content, Moments, entities, and relations; `queries.json` contains grouped bench
 queries and expected evidence. Keep any future external or locally recorded media out of
 the repository unless its source and redistribution terms are documented.
 
+### Fixture benchmark harness
+
+Run `python benchmarks/run_benchmark.py` for the Markdown report or add `--format json`
+for machine-readable output. The harness reports graph-only, vector-only, and hybrid
+retrieval metrics over the controlled fixture and local stage timings. It does not start
+services, run model inference, or claim video indexing/VRAM measurements.
+
+### Deployment scaffold
+
+Issue #24 provides the local topology in `infra/compose.yaml`. Copy `.env.example` to
+`.env`, then run:
+
+```text
+docker compose --env-file .env -f infra/compose.yaml up --build
+```
+
+The default path starts frontend, backend placeholder, PostgreSQL/pgvector, and Neo4j.
+Use `--profile gpu` only when a Docker host with the NVIDIA runtime is available. Set
+`AI_SERVICE_URL` in the untracked `.env` file to a remote GPU service for the intended
+two-environment setup. Do not treat placeholder health responses as application
+readiness: dependencies are deliberately not checked until the real services exist.
+
+---
+
 ### Constrained benchmark optimization (#27)
 
 The optional optimization loop is a dependency-free evaluator over the issue-23 fixture
@@ -198,8 +232,6 @@ behavior can be checked end-to-end. They are not measurements of the AI Service,
 GPU, database, hosted service, or provider billing. Connect a separately sandboxed runner
 to real components only after those components and their reproducible benchmark inputs are
 available.
-
----
 
 ## 7. Provider Abstractions
 

@@ -78,9 +78,20 @@ Initial planning target:
 - split around 12–15 seconds when needed
 - use small visual padding around boundaries where useful
 
+Issue #3 provides this boundary in `ai-service/pipeline/segmentation.py`. Speech spans
+and optional scene boundaries are merged into ordered `TemporalChunk` descriptors. Tiny
+non-strong fragments are merged, long intervals are split at a deterministic target,
+and each result carries three representative timestamps plus a `has_speech` flag.
+
 ### Silent / low-speech content
 
 Speech cannot be the only temporal signal.
+
+When no speech spans are supplied, the same segmenter uses scene boundaries when
+available and falls back to deterministic target-duration chunks. It never fabricates
+transcript evidence. Metadata inspection is an adapter boundary in
+`ai-service/pipeline/metadata.py`; the checked-in fixture inspector avoids requiring
+FFmpeg/OpenCV for unit tests.
 
 Fallback direction:
 
@@ -125,6 +136,12 @@ The ASR component does not own final semantic chunk construction.
 
 A provider abstraction should allow model replacement without changing downstream interfaces.
 
+Issue #4 implements this boundary in `ai-service/pipeline/asr.py`. `ASRProvider` returns
+ordered `ASRSegment` values, language and speech-ratio metadata, an explicit `no_speech`
+flag, and provider/model metadata. `ASRResult.to_speech_spans()` maps directly to the
+temporal segmenter. The checked-in `FixtureASRProvider` filters high no-speech
+probability segments and supports deterministic batching without loading Whisper.
+
 ---
 
 ## 5. Representative Frames and OCR
@@ -148,6 +165,14 @@ OCR output must preserve:
 - bounding box when available
 
 OCR is evidence, not automatically a canonical entity.
+
+Issue #5 implements `FrameCandidate`, `RepresentativeFrame`, and
+`DeterministicFrameSampler` in `ai-service/pipeline/frames.py`. The sampler considers
+chunk start/middle/end anchors and scene-change candidates, removes near duplicates by
+a cheap fingerprint similarity check, and returns at most the configured frame count.
+`ai-service/pipeline/ocr.py` provides timestamped `OCRFrameResult` and `OCRItem` models,
+including optional bounding boxes, plus a fixture provider. No OpenCV, FFmpeg, or OCR
+model is required by the focused tests.
 
 ---
 
@@ -233,6 +258,13 @@ This is the preferred embedding input for semantic Moment search.
 
 The text does not need to be stylistically polished. It needs to encode supported multimodal meaning compactly and consistently.
 
+Issue #6 implements `MultimodalBundle`, `FusionOutput`, and the `VLMProvider` boundary
+in `ai-service/pipeline/fusion.py`. The fixture provider loads beauty, technology, and
+travel payloads, validates candidate entities and relations through the shared v1
+ontology, and requires every relation to carry evidence references. The provider emits
+content-local IDs only; persistent cross-video resolution remains a backend concern.
+`build_extraction_payload` revalidates the assembled Moments before returning them.
+
 ---
 
 ## 8. Embeddings
@@ -260,6 +292,14 @@ Requirements:
 
 The backend stores the final vector row under the canonical `moment_id`.
 
+Issue #7 implements the replaceable `EmbeddingProvider` boundary and
+`embed_extraction` integration in `ai-service/pipeline/embeddings.py`. The
+`HashingEmbeddingProvider` is a deterministic local fixture: it batches inputs,
+canonicalizes a small set of fixture synonyms, emits normalized vectors, and records
+model/version/dimension metadata. It embeds fused `semantic_text`, never raw
+transcript by default. The fixture baseline is dimension 32; production model and
+pgvector dimension selection remain open in `docs/CONCERNS.md`.
+
 ---
 
 ## 9. Extraction Contract
@@ -269,6 +309,12 @@ The shared contract belongs under:
 ```text
 contracts/multimodal-extraction.schema.json
 ```
+
+The v1 schema and its dependency-free Python validator are implemented. The closed
+ontology is shared with `retrieval-plan.schema.json`: unknown entity types and relation
+predicates are rejected before any graph or vector operation. The examples under
+`contracts/examples/` cover beauty, technology, and travel content so consumers can
+develop without model dependencies. Local extraction IDs remain content-local.
 
 Conceptual payload:
 
@@ -325,6 +371,14 @@ failed
 ```
 
 The main backend owns durable application/job state. The AI Service may maintain its own lightweight execution queue for GPU scheduling.
+
+Issue #8 implements the route/service boundary in `ai-service/app/`. `JobService`
+submits work to a small in-process worker pool, exposes observable stage transitions,
+validates the final extraction payload, and retains only temporary in-memory results.
+`FixtureVideoPipeline` exercises the metadata, ASR, segmentation, frame/OCR, fusion,
+and embedding boundaries without claiming to download or decode a real video. The
+optional FastAPI adapter and standard-library `http.server` fallback share the same
+service methods and response states.
 
 ---
 
@@ -402,7 +456,19 @@ versioned extraction inputs before any candidate can be reviewed for promotion.
 
 ---
 
-## 14. Related Issues
+## 14. Incremental LIVE Memory
+
+Issue #26 adds a fixture-backed rolling state model for simulated LIVE chunks. Each
+chunk preserves both stream-time and wall-clock timestamps, uses a deterministic
+content-local temporary ID, and can be appended or updated idempotently. When a LIVE
+ends, the model maps temporary records to backend-owned persistent Moment IDs before the
+normal graph/vector indexing path takes over.
+
+The implementation is intentionally not a production stream provider, durable queue, or
+direct database writer. Restart recovery, authorization, durable temporary storage, and
+real stream adapters remain deployment concerns.
+
+## 15. Related Issues
 
 - #3 temporal segmentation
 - #4 ASR
