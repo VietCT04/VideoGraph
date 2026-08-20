@@ -3,8 +3,9 @@
 ## 1. Current State
 
 VideoGraph is currently documentation- and issue-driven. The top-level implementation
-directories now exist as an ownership skeleton; executable services will be added by
-their focused issues.
+directories now contain ownership READMEs plus a dependency-free, fixture-backed viewer
+demo from issue #20. Production frontend/backend services will be added by their focused
+issues.
 
 Do not assume a component exists until it is present in the repository.
 
@@ -150,6 +151,19 @@ These are development defaults, not a deployment guarantee. Framework-specific
 configuration belongs to the owning implementation issue.
 
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
+
+### Fixture-backed viewer demo
+
+The viewer interaction can be previewed without installing a frontend framework:
+
+```text
+python -m http.server 8080
+open http://localhost:8080/frontend/demo/
+```
+
+The demo covers `@creator` parsing/autocomplete, loading/error/empty/success states,
+grounded result cards, and exact timestamp jump affordances. It uses local fixtures and
+does not imply that the conceptual `POST /query` endpoint is implemented.
 
 ---
 

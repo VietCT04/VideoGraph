@@ -87,6 +87,18 @@ Conceptual response should preserve grounded evidence:
 
 The exact schema is not frozen yet. Once implemented, replace conceptual examples with canonical request/response contracts.
 
+### Fixture-backed viewer slice (#20)
+
+The initial viewer implementation is a dependency-free demo under `frontend/demo/`.
+It uses `frontend/fixtures/viewer-query-fixtures.json` through a local fixture client;
+the fixture client is not a network endpoint and does not define a new backend route.
+
+The fixture mirrors the conceptual response above and adds display-only fields for the
+demo, including an optional `answer`, a result `summary`, evidence `title`, and
+`source_kind`. Every evidence item still carries the canonical `content_id`,
+`moment_id`, `start_ms`, and `end_ms` values. A future backend adapter must map its
+authorized response into this shape without moving privacy checks into the frontend.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.
