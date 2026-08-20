@@ -55,6 +55,11 @@ The architecture intentionally separates:
 
 ## 3. Service Ownership
 
+The repository skeleton reflects these ownership boundaries in separate top-level
+directories. A directory-level README records the contract for `frontend/`, `backend/`,
+`ai-service/`, `contracts/`, and `infra/`; implementation issues may add code within
+those boundaries without changing the ownership model.
+
 ### Frontend
 
 Owns:
