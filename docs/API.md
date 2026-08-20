@@ -166,6 +166,15 @@ adapter enforces the important transition rules: indexing requires explicit opt-
 selection; disabling memory removes all content from the viewer-visible projection; and
 re-enabling memory does not silently restore previously excluded content.
 
+## Implemented internal planner contract (#12)
+
+Before a viewer query endpoint is added, the dependency-free
+`backend.planner.RetrievalPlanner` provides the internal request boundary. It accepts a
+string beginning with `@creator`, resolves the handle through a backend-owned mapping
+or callback, and returns a validated `RetrievalPlan` plus fallback and latency
+metadata. Planner providers return structured data only; raw Cypher is not an accepted
+field or execution path. The fixture provider is the current local adapter.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.
