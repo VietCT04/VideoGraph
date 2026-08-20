@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "content_id": "tech-video-001",
+  "creator_id": "creator-42",
+  "content_metadata": {"title": "Container setup walkthrough", "source_type": "video", "duration_ms": 9000, "language": "en"},
+  "pipeline": {"version": "fixture-v1"},
+  "moments": [
+    {
+      "local_id": "moment_1",
+      "start_ms": 1000,
+      "end_ms": 8000,
+      "transcript": "I use Docker Compose to start the local services.",
+      "semantic_text": "Creator explains using Docker Compose to start local development services.",
+      "entities": [
+        {"local_id": "entity_1", "type": "Technology", "name": "Docker Compose", "confidence": 0.97, "evidence_refs": ["asr_1", "ocr_1"], "explicit": true}
+      ],
+      "relations": [
+        {"subject": "creator", "predicate": "USES", "object": "entity_1", "confidence": 0.96, "evidence_refs": ["asr_1", "ocr_1"], "explicit": true}
+      ],
+      "evidence": {"asr_segment_ids": ["asr_1"], "frame_timestamps_ms": [1500, 5000], "frame_ids": ["frame_1"], "ocr_text": ["docker compose"], "ocr_item_ids": ["ocr_1"]}
+    }
+  ]
+}
