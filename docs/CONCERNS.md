@@ -21,19 +21,21 @@ The project could become a more complex version of video RAG without showing why
 
 ### Recommended next action
 
-Issue #23 must compare:
+Issue #23 now compares deterministic fixture baselines:
 
 - vector-only
 - graph-only
 - hybrid
 
-The demo should include at least one cross-video structured/temporal query where graph structure clearly improves correctness, completeness, or interpretability.
+The demo should still include at least one cross-video structured/temporal query where
+graph structure clearly improves correctness, completeness, or interpretability on real
+authorized retrieval inputs. The fixture harness alone does not settle that question.
 
 ---
 
 ## C-002 — Controlled graph ontology is not frozen
 
-**Status:** Open  
+**Status:** Partially mitigated
 **Component:** Contracts / AI Service / Neo4j / Planner
 
 ### Context
@@ -140,7 +142,9 @@ The team could make unsupported performance claims in the demo/presentation.
 
 ### Recommended next action
 
-Use #23 to measure representative videos and queries. Report measured values and clearly label any extrapolation.
+Use #23's harness for reproducible fixture comparisons, then connect it to representative
+videos and live graph/vector services before reporting production measurements. Clearly
+label local fixture timings and any extrapolation.
 
 ---
 

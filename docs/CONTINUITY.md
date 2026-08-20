@@ -10,9 +10,10 @@ Do not use it as a full changelog.
 
 **Date:** 2026-08-20
 
-VideoGraph is at the first implementation stage. The repository skeleton now exists,
-with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Executable application code is still pending.
+VideoGraph is at the first fixture-backed implementation stage. The repository contains
+ownership READMEs, viewer and creator-control demos, a synthetic creator-memory dataset,
+and a dependency-free benchmark harness. Production application code and model-backed
+retrieval are still pending.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -117,8 +118,8 @@ Verification:
 
 ## Active Work
 
-Issue #22's dataset slice is implemented on top of the issue-21 branch. The next
-workstream slice is issue #23's benchmark harness; shared contracts and live
+Issue #23's benchmark slice is implemented on top of the issue-22 branch. The next
+workstream slice is issue #24's deployment assets; shared contracts and live
 query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
@@ -167,11 +168,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20–#22 draft PRs and merge them in order when approved.
-2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
+1. Review the stacked issue #20–#23 draft PRs and merge them in order when approved.
+2. Implement issue #24's honest local/deployment configuration and health checks.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
 5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Keep media licensing and audiovisual validity explicit if clips are added later.
+6. Connect the benchmark to measured models and services before making production claims.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
