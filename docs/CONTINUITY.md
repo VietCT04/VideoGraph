@@ -65,6 +65,23 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #9 Neo4j ingestion foundation
+
+**Issue:** #9
+
+Summary:
+
+- Added canonical graph models, stable ID mapping, evidence-preserving ingestion, and
+  an idempotent in-memory repository.
+- Added Neo4j constraints/indexes in `backend/graph/schema.cypher` without embedding
+  storage.
+
+Verification:
+
+- Static Python compilation and `git diff --check` are pending until the stacked slice
+  is published.
+- Backend/frontend test suites are not being run by direction.
+
 ### 2026-08-20 — Issue #2 shared contracts
 
 **Issue:** #2
@@ -187,3 +204,4 @@ Highest-priority unresolved concerns currently include:
 5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+
