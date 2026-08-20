@@ -90,42 +90,50 @@ owns durable application state and persistence.
 Returns a small service health object and identifies whether the FastAPI or
 standard-library adapter is serving the routes.
 
-## Query API Direction
+## Query API (#17)
 
-Planned viewer request:
-
-```text
-POST /query
-```
-
-Conceptual request:
+The framework-neutral `backend.api.query.QueryHttpAdapter` is the current HTTP
+boundary for the viewer query path. It accepts the following `POST /query`-shaped
+JSON body and delegates application behavior to
+`backend.query.QueryApplicationService`:
 
 ```json
 {
-  "query": "@alice which red lipstick did she recommend for darker skin?"
+  "query": "@alice which red lipstick did she recommend for darker skin?",
+  "debug": true
 }
 ```
 
-Conceptual backend flow:
+`query` must start with one `@creator` handle and a non-empty question. `debug` is
+optional and defaults to `false`. Unsupported request fields, malformed JSON-shaped
+bodies, invalid handles, and unknown creators return a stable `400 invalid_query`
+error without exposing provider or database exceptions.
+
+The application flow is:
 
 ```text
-resolve creator
-→ small LLM planner
-→ validated RetrievalPlan
-→ Neo4j + pgvector
-→ fusion/rerank
-→ direct result or optional synthesis
+@creator query
+→ creator resolution + validated planner
+→ concurrent graph/vector retrieval
+→ deterministic fusion/rerank
+→ structured direct result or optional synthesis over evidence
 ```
 
-Conceptual response should preserve grounded evidence:
+The response preserves canonical result identity and exact source evidence:
 
 ```json
 {
   "creator_id": "creator_42",
+  "answer_type": "structured",
+  "answer": null,
   "results": [
     {
-      "entity_id": "product_99",
+      "result_id": "entity_creator_42_product_...",
+      "entity": {"id": "entity_creator_42_product_...", "name": "Example Lipstick"},
       "label": "Example Lipstick",
+      "score": 0.91,
+      "relations": ["RECOMMENDS"],
+      "direct_answer_eligible": true,
       "evidence": [
         {
           "content_id": "video_123",
@@ -135,11 +143,21 @@ Conceptual response should preserve grounded evidence:
         }
       ]
     }
-  ]
+  ],
+  "warnings": []
 }
 ```
 
-The exact schema is not frozen yet. Once implemented, replace conceptual examples with canonical request/response contracts.
+`answer_type` is `structured` for a direct high-confidence response, `synthesized`
+when an optional provider returns prose from the normalized evidence bundle, `grounded`
+when results exist but the synthesis path is unavailable, and `empty` when no result
+was retrieved. `answer` is populated only for `synthesized` responses. Every result
+evidence item contains `moment_id`, `content_id`, `start_ms`, and `end_ms`; semantic
+text is carried as supporting context when available.
+
+When `debug` is true, the response additionally contains `timing_ms` entries for
+`planner`, `graph`, `vector`, `fusion`, `synthesis`, and `total`, plus non-sensitive
+branch status metadata. Timing is omitted by default.
 
 ### Fixture-backed viewer slice (#20)
 
@@ -183,7 +201,10 @@ boundary, not a final answer or synthesis API.
 The internal `ResultFusionService` consumes a `RetrievalBundle` and returns ranked
 results with graph/vector source scores, relation matches, canonical Moment evidence,
 and a direct-answer eligibility signal. The result set is suitable for a later query
-API but does not perform free-form synthesis.
+API but does not perform free-form synthesis. The #17 query application service now
+owns the response boundary: direct structured results bypass synthesis, while complex
+questions may call an injected synthesis provider with only normalized authorized
+evidence.
 
 ## API Rules
 

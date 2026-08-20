@@ -235,6 +235,10 @@ The demo may overstate retrieval correctness and lose the evidence-backed produc
 
 Keep direct structured results as the default for simple queries. Evaluate retrieval/evidence correctness separately from synthesis quality. Always expose exact source Moments.
 
+Issue #17 keeps this boundary explicit: direct structured results do not call a synthesis
+provider, and the optional provider receives only a normalized grounded evidence bundle.
+The risk remains open until synthesis grounding and answer quality are measured by #23.
+
 ---
 
 ## C-011 — GPU/provider choice remains open
