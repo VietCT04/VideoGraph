@@ -372,6 +372,14 @@ failed
 
 The main backend owns durable application/job state. The AI Service may maintain its own lightweight execution queue for GPU scheduling.
 
+Issue #8 implements the route/service boundary in `ai-service/app/`. `JobService`
+submits work to a small in-process worker pool, exposes observable stage transitions,
+validates the final extraction payload, and retains only temporary in-memory results.
+`FixtureVideoPipeline` exercises the metadata, ASR, segmentation, frame/OCR, fusion,
+and embedding boundaries without claiming to download or decode a real video. The
+optional FastAPI adapter and standard-library `http.server` fallback share the same
+service methods and response states.
+
 ---
 
 ## 11. GPU / CPU Split

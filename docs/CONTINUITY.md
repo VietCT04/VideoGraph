@@ -12,9 +12,10 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#7 add dependency-free contract, temporal
-segmentation, timestamped ASR, visual evidence, structured fusion, and embedding
-boundaries; later AI stages and application services remain fixture-backed.
+infrastructure directories. Issues #2–#8 add dependency-free contract, temporal
+segmentation, timestamped ASR, visual evidence, structured fusion, embeddings, and an
+async service boundary; production providers and durable application services remain
+open.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -65,6 +66,24 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #8 AI Service async API
+
+**Issue:** #8
+
+Summary:
+
+- Added testable in-process job orchestration with stable stage states and failure codes.
+- Added contract-aware completion validation and temporary result retention.
+- Added FastAPI-compatible routes with a standard-library HTTP fallback and health endpoint.
+- Added an end-to-end fixture pipeline exercising issues #3–#7.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (20 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- Optional FastAPI app instantiated successfully and exposed all four documented routes.
+- Backend/frontend suites and real media/provider integration were not run.
 
 ### 2026-08-20 — Issue #7 semantic embeddings
 
@@ -212,8 +231,9 @@ Verification:
 
 ## Active Work
 
-Issue #1 is implemented on the issue branch for its PR. Issues #2–#7 are implemented
-on stacked branches for review; the next dependency is the async AI Service API in issue #8.
+Issue #1 is implemented on the issue branch for its PR. Issues #2–#8 are implemented
+on stacked branches for review. The AI Service is fixture-backed and does not yet own
+durable queue state or production model providers.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -261,10 +281,10 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the issue #7 draft PR and merge the stacked foundation when ready.
-2. Implement #8 asynchronous AI Service API on top of the pipeline boundaries.
-3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-4. Benchmark a production embedding provider and dimension under #23/#24.
+1. Review the issue #8 draft PR and merge the stacked AI Service foundation when ready.
+2. Implement #9 Neo4j schema/ingestion against validated extraction fixtures.
+3. Define durable indexing handoff, retries, and privacy propagation under #18/#19.
+4. Benchmark production ASR/VLM/embedding providers and dimensions under #23/#24.
 5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.

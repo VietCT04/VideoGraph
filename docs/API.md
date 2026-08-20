@@ -34,7 +34,61 @@ GET  /jobs/{job_id}/result
 GET  /health
 ```
 
-The AI Service does not expose Neo4j or pgvector operations.
+The AI Service does not expose Neo4j or pgvector operations. Issue #8 implements these
+routes with a FastAPI adapter when the optional dependency is installed and a matching
+standard-library fallback otherwise.
+
+#### `POST /jobs/process-video`
+
+Request:
+
+```json
+{
+  "content_id": "video_123",
+  "creator_id": "creator_42",
+  "upload_ref": "selected-upload-ref"
+}
+```
+
+Exactly one of `video_url` or `upload_ref` is required. The response returns immediately:
+
+```json
+{
+  "job_id": "opaque-job-id",
+  "status": "queued"
+}
+```
+
+#### `GET /jobs/{job_id}`
+
+Returns the job identity and one of the stable states:
+
+```text
+queued
+preprocessing
+transcribing
+segmenting
+extracting_visuals
+fusing
+embedding
+completed
+failed
+```
+
+Failures include a machine-readable `error.code` and an actionable message. No partial
+result is published for a failed job.
+
+#### `GET /jobs/{job_id}/result`
+
+Returns the validated `multimodal-extraction.schema.json` payload when the job is
+`completed`, `202` while it is still running, and `409` with the normalized failure
+object when it is `failed`. Results are temporary service-local data; the main backend
+owns durable application state and persistence.
+
+#### `GET /health`
+
+Returns a small service health object and identifies whether the FastAPI or
+standard-library adapter is serving the routes.
 
 ## Query API Direction
 
@@ -97,6 +151,8 @@ The exact schema is not frozen yet. Once implemented, replace conceptual example
 - Preserve stable machine-readable error/status values where practical.
 - Update every frontend/backend consumer when response shapes change.
 - Prefer shared/generated contracts under `contracts/` when available.
+- Keep AI Service results content-local and contract-validated; never persist directly
+  to Neo4j or pgvector from this service.
 
 ## Planned Indexing Job States
 
