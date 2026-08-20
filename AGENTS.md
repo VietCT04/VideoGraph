@@ -1,223 +1,412 @@
 # AGENTS.md
 
-This file is the operating manual for coding agents working in this repository.
+## Project Overview
 
-The rules below are mandatory unless a more specific nested `AGENTS.md` overrides them for a subdirectory.
-
----
-
-## 1. Repository Goal
-
-VideoGraph builds an opt-in multimodal creator memory from selected videos and LIVE recordings.
+VideoGraph is an opt-in multimodal creator-memory system that turns selected videos and LIVE recordings into a persistent, evidence-backed creator memory.
 
 The system combines:
 
-- a standalone GPU-backed **AI Service** for video understanding
-- a **main backend** for application state, indexing jobs, privacy, query planning, retrieval, and actions
-- **Neo4j** for canonical structured creator memory
-- **PostgreSQL + pgvector** for semantic Moment retrieval
-- a **frontend** for creator controls and grounded viewer search
+- a standalone GPU-backed AI Service for video understanding
+- a main backend for application state, indexing jobs, privacy, query planning, retrieval, and actions
+- Neo4j for canonical structured creator memory
+- PostgreSQL + pgvector for application state and semantic Moment retrieval
+- a frontend for creator controls and grounded `@creator` search
 
-The important architectural boundary is:
+The system must preserve creator control, provenance, exact source timestamps, safe graph querying, and privacy across all retrieval paths.
 
-```text
-AI Service
-raw content → content-local candidate facts
+This repository is a monorepo.
 
-Backend
-candidate facts → canonical creator memory
+## Repository Structure
+
+Planned structure:
+
+- `frontend`: frontend application
+- `backend`: backend API, graph/search/planner/action services
+- `ai-service`: GPU-backed video processing service
+- `contracts`: shared JSON schemas, DTO/contract definitions, controlled ontology, and constants
+- `docs`: product, architecture, API, database, security, AI Service, query flow, user stories, concerns, and continuity docs
+- `infra`: local/deployment infrastructure
+
+## Mandatory Working Rule
+
+Before making changes, read the relevant docs.
+
+After making changes, update the relevant docs.
+
+Code and docs must stay synchronized.
+
+If a change affects behavior, API, database, security/privacy, AI extraction, graph ontology, embeddings, query planning, retrieval, indexing, or creator visibility/deletion logic, documentation must be updated in the same change.
+
+## Minimal Change Rule
+
+Make the smallest correct change possible.
+
+Do not refactor unrelated code.
+
+Do not rename files, move folders, rewrite modules, or introduce new patterns unless the GitHub Issue explicitly requires it.
+
+Prefer surgical fixes over broad redesigns.
+
+When modifying existing code:
+
+1. Understand the current pattern.
+2. Follow the existing style.
+3. Change only what is necessary.
+4. Avoid touching unrelated files.
+5. Avoid dependency additions unless clearly justified.
+
+If requested implementation conflicts with documented architecture, do not silently redesign the system. Record the concern in `docs/CONCERNS.md` and surface it in the proposal/PR.
+
+## Code Formatting Rules
+
+Code must be readable and match the surrounding repository conventions. Do not compress implementation code to reduce line count.
+
+- Use one field, statement, annotation, method declaration, and constructor assignment per logical line.
+- Use explicit imports instead of wildcard imports unless the surrounding module already establishes a different convention.
+- Wrap long function signatures, method calls, object construction, and boolean conditions across sensible lines with consistent indentation.
+- Extract compound validation, state checks, response construction, orchestration, and lifecycle transitions into clearly named helpers when a single line would become difficult to scan.
+- Keep braces, whitespace, accessors, and control flow consistent with nearby files in the same package/module.
+- Do not place multiple declarations, assignments, methods, or control-flow branches on one line.
+- Preserve normal formatting even when an issue defers automated formatting or verification commands; deferred verification is not permission to write compressed code.
+
+## Documentation Update Rules
+
+Update these docs when relevant:
+
+| Change Type | Required Docs |
+|---|---|
+| API endpoint/request/response | `docs/API.md` |
+| Database schema/model/index/ID linkage | `docs/DATABASE.md` |
+| Security/auth/privacy/permissions | `docs/SECURITY.md` |
+| System/service boundary | `docs/ARCHITECTURE.md` |
+| AI pipeline/model/segmentation behavior | `docs/AI_SERVICE.md` |
+| Planner/Neo4j/vector/reranking behavior | `docs/QUERY_FLOW.md` |
+| Local setup/build/deployment workflow | `docs/DEVELOPMENT.md` |
+| User story/product requirement | `docs/user-stories/*.md` |
+| Unresolved risk/uncertainty | `docs/CONCERNS.md` |
+| Work handoff/progress | `docs/CONTINUITY.md` |
+| Shared schema/contract/ontology | file under `contracts/` + referencing docs |
+
+If no documentation update is needed, explicitly mention why in the final response.
+
+## GitHub Issues Workflow
+
+All implementation work should be linked to a GitHub Issue in the project repository.
+
+Open GitHub Issues represent unresolved work. Closed GitHub Issues represent completed work.
+
+Do not create local ticket files under `docs/tickets/`. Use GitHub Issues instead.
+
+User stories may describe broad product behavior, but GitHub Issues should be small implementation slices.
+
+Prefer several focused issues over one large issue when work spans multiple areas such as AI preprocessing, VLM/fusion, embeddings, Neo4j, pgvector, planner, retrieval, frontend, privacy, indexing, evaluation, or infrastructure.
+
+Each implementation issue should usually have one primary outcome, one main affected area, and acceptance criteria that can be verified independently.
+
+Split an issue when it includes multiple deployable steps, multiple sensitive business rules, or changes across unrelated layers.
+
+### Proposal and Approval Rule
+
+Before resolving or implementing a GitHub Issue, write a proposal as a GitHub Issue comment and wait for user approval.
+
+Use the GitHub Issue comment thread as the approval and revision loop.
+
+If the user comments on that proposal in GitHub, respond with a revised proposal as another GitHub Issue comment, and repeat until the user approves the scope.
+
+If GitHub is unavailable, write the proposal in the conversation and later mirror the approved proposal back to the GitHub Issue when access is restored.
+
+The proposal should summarize:
+
+- intended scope
+- files/modules expected to change
+- contract/schema/ontology decisions
+- open questions or concerns
+- verification approach
+- what will be documented back to GitHub
+
+Do not start implementation before the proposal is approved unless the user explicitly instructs you to proceed without that approval step.
+
+After approval:
+
+1. Implement the smallest correct change.
+2. Update all affected docs.
+3. Add concerns to `docs/CONCERNS.md` if any remain.
+4. Update `docs/CONTINUITY.md`.
+5. Add implementation/completion notes in the GitHub Issue or linked pull request.
+6. Close the GitHub Issue only when the work is complete and verified.
+
+### Avoid Duplicate Proposal Comments
+
+Before commenting on GitHub after approval, read the issue comments and check whether the approved proposal is already present.
+
+If the approved proposal is already present in the GitHub Issue comments, do not post it again. Add implementation or completion notes in the linked pull request instead, or add a short issue comment only when there is new information not already captured by the approved proposal or PR.
+
+When commenting on GitHub after approval and the approved proposal is not already present, use the approved proposal as the source of truth. Do not replace it with a separately invented completion summary.
+
+The GitHub comment should preserve the approved scope, decisions, open questions, and next steps. It may add a short factual note listing files changed, verification run, and any implementation result that differs from the proposal.
+
+If a previous GitHub Issue comment does not match the approved proposal, add a corrective follow-up comment with the approved proposal and note that it supersedes the earlier comment.
+
+## Issue Creation Rule
+
+If a new task comes from a user story, create one or more focused GitHub Issues from that user story.
+
+User stories live in:
+
+```txt
+docs/user-stories/
 ```
 
-The AI Service must not write directly to Neo4j or pgvector.
+Each GitHub Issue should include:
 
----
+```md
+# Short Title
 
-## 2. Mandatory Working Rule
+## Source
 
-**Make the smallest correct change possible.**
-
-Before editing code:
-
-1. Read all applicable `AGENTS.md` files.
-2. Read the GitHub Issue you are implementing.
-3. Read `docs/CONTINUITY.md`.
-4. Read the relevant architecture/domain docs.
-5. Inspect the existing implementation, tests, dependencies, and git status.
-6. Identify the smallest set of files required for the ticket.
-
-Do not refactor unrelated code. Do not add dependencies unless the issue genuinely requires them. Do not rename or reorganize modules merely because a different structure looks cleaner.
-
-If the requested implementation conflicts with documented architecture, stop implementation of that conflicting part and record the concern in `docs/CONCERNS.md` rather than silently changing the architecture.
-
----
-
-## 3. Ticket-Driven Workflow
-
-Implementation work must be tied to a GitHub Issue.
-
-Preferred unit of work:
-
-```text
-one issue
-→ one focused branch/session
-→ one focused implementation
-→ one PR
-```
-
-An issue should be narrow enough for one agent to complete and review independently.
-
-Before coding, extract from the issue:
-
-- goal
-- in-scope behavior
-- out-of-scope behavior
-- dependencies
-- acceptance criteria
-- required tests/validation
-
-If the ticket is too broad, split it instead of implementing unrelated concerns in one PR.
-
-When creating new issues, use this structure when practical:
-
-```text
-## Goal
+User Story: `docs/user-stories/US-0001-example.md`
 
 ## Context
 
+Explain why this task exists.
+
+## Goal
+
+Explain the desired outcome.
+
 ## Scope
+
+Describe the narrow implementation slice this issue covers.
 
 ## Out of Scope
 
+List related work that should be handled by separate issues.
+
 ## Deliverables
+
+List concrete outputs when useful.
 
 ## Acceptance Criteria
 
+List independently verifiable criteria.
+
 ## Dependencies
+
 **Depends on:**
 **Blocks:**
 **Can run in parallel with:**
 
 ## Concerns
+
+List known risks, uncertainties, or decisions that need human review.
 ```
 
----
+For tasks that do not originate from a user story, omit the `Source` section or link the relevant architecture/issue context instead.
 
-## 4. Documentation Discipline
+## User Story Workflow
 
-Read relevant docs before changing a subsystem and update them when behavior, contracts, architecture, risks, or operating procedures change.
+User stories describe product behavior from a user's perspective and are the source for implementation issues.
 
-Documentation ownership matrix:
+Use user stories for product-facing behavior involving:
 
-| Change | Update |
-| --- | --- |
-| system/service boundary | `docs/ARCHITECTURE.md` |
-| AI pipeline/model/segmentation behavior | `docs/AI_SERVICE.md` |
-| query planner/retrieval/reranking behavior | `docs/QUERY_FLOW.md` |
-| local setup/build/test/deployment workflow | `docs/DEVELOPMENT.md` |
-| unresolved architectural or implementation risk | `docs/CONCERNS.md` |
-| completed work / handoff / next steps | `docs/CONTINUITY.md` |
-| user-visible requirement or flow | relevant file under `docs/user-stories/` |
-| shared schema/contract | contract file + referencing docs |
+- creator opt-in and content selection
+- creator indexing/progress/correction/deletion
+- viewer `@creator` search
+- evidence and timestamp navigation
+- product/search/jump-to-moment actions
+- privacy and authorization behavior
+- LIVE memory behavior
+- trust/grounding behavior
 
-Do not leave documentation describing behavior that no longer exists.
+User story folder:
 
----
+```txt
+docs/user-stories/
+```
 
-## 5. CONTINUITY.md
+User story filename format:
 
-`docs/CONTINUITY.md` is the handoff file between sessions/agents.
+```txt
+US-0001-short-title.md
+```
 
-Keep these sections current:
+User story template:
 
-- Current Project State
-- Latest Completed Work
-- Active Work
-- Important User Stories
-- Known Concerns
-- Next Recommended Steps
+```md
+# US-0001: Short Title
 
-When finishing meaningful work, add a concise entry containing:
+## User Story
 
-- date
-- issue number
-- summary
-- important files changed
-- verification performed
-- follow-up work if any
+As a [user type], I want [goal], so that [benefit].
 
-Do not turn `CONTINUITY.md` into a full changelog. Record only information a future agent needs to continue safely.
+## Context
 
----
+Explain why this behavior matters.
 
-## 6. CONCERNS.md
+## Acceptance Criteria
 
-Use `docs/CONCERNS.md` for unresolved risks, ambiguity, debt, or architecture questions that should survive the current session.
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Sensitive behavior is enforced server-side where relevant
+- [ ] Relevant docs are updated
 
-Each concern should include:
+## Risks
 
-- title
-- status
-- affected component
-- context
-- risk
-- recommended next action
+## Follow-up Issues
 
-Do not hide known uncertainty in code comments alone.
+- GitHub Issue: `#123`
+```
 
----
+When a user story is ready for implementation, create follow-up GitHub Issues if work is required.
 
-## 7. Architecture Boundaries
+## CONCERNS.md Rule
 
-### Frontend
+Use `docs/CONCERNS.md` for unresolved risks, assumptions, or questions.
 
-May call the main backend only.
+Add to `docs/CONCERNS.md` when:
 
-Do not call Neo4j, pgvector, model providers, or the AI Service directly from the browser.
+- A requirement is ambiguous.
+- A privacy/security risk exists.
+- A graph ontology or entity-resolution decision is unclear.
+- A database migration/index change may be risky.
+- A planner/retrieval behavior has unresolved product risk.
+- A model/provider/embedding choice may need review.
+- A temporary workaround was used.
+- A test could not be added.
+- A benchmark/performance claim is not yet measured.
+- A dependency or design choice may need review.
 
-### Main Backend
+Do not hide uncertainty in code comments only. Put important concerns in `docs/CONCERNS.md`.
 
-Owns:
+## CONTINUITY.md Rule
 
-- creator/content/application state
-- indexing jobs
-- privacy and visibility
-- AI Service orchestration
-- canonical IDs
-- Neo4j access
-- pgvector access
-- query planning
-- hybrid retrieval
-- reranking
-- optional synthesis
-- tool/action orchestration
+Use `docs/CONTINUITY.md` as the handoff file for future AI agents and developers.
 
-### AI Service
+Update it after every meaningful change.
 
-Owns:
+It should contain:
 
-- video/audio preprocessing
-- ASR
-- temporal segmentation support
-- representative frame extraction
-- OCR
-- VLM/fusion
-- candidate entities and relations
-- `semantic_text`
-- embedding generation
+```md
+# Continuity
 
-It returns content-local extraction payloads only.
+## Current Project State
 
-### Shared Contracts
+Brief summary of what currently works.
 
-Cross-service interfaces live under `contracts/`.
+## Latest Completed Work
 
-Do not maintain separate hand-written incompatible schemas in backend and AI Service code. Prefer generated/validated models from the same contract when practical.
+- Date
+- GitHub Issue
+- Summary
+- Files changed
+- Verification performed
 
----
+## Active Work
 
-## 8. Query Planner Rules
+- Current GitHub Issue
+- Current goal
+- Current blocker if any
 
-The small LLM planner translates a natural-language `@creator` request into a validated structured retrieval plan.
+## Important User Stories
+
+- User story links
+- Summary of active or recently completed product stories
+
+## Known Concerns
+
+- Link to `docs/CONCERNS.md`
+
+## Next Recommended Steps
+
+1. Step one
+2. Step two
+3. Step three
+```
+
+Do not turn `CONTINUITY.md` into a full changelog. Keep information needed for a safe handoff.
+
+## Database Rules
+
+Before changing database structure:
+
+1. Read `docs/DATABASE.md`.
+2. Check existing PostgreSQL models/migrations, Neo4j constraints/indexes, pgvector schema/indexes, IDs, and relationships.
+3. Make the smallest schema change possible.
+4. Add or update migrations/setup scripts.
+5. Update `docs/DATABASE.md`.
+6. Update shared contracts/types under `contracts/` if needed.
+7. Update API docs if database changes affect API behavior.
+8. Update privacy/deletion docs if the change affects what data can surface.
+
+Never change canonical ID or visibility semantics without checking:
+
+- creator/content identity
+- `moment_id` linkage between Neo4j and pgvector
+- re-index/idempotency behavior
+- deletion/suppression propagation
+- entity-resolution behavior
+- query filters
+
+Do not store large embedding vectors as ordinary Neo4j properties unless an explicitly approved architecture change requires it.
+
+## API Rules
+
+Before changing API behavior:
+
+1. Read `docs/API.md`.
+2. Check existing request/response types and shared contracts.
+3. Update shared DTOs/schemas under `contracts/` when applicable.
+4. Validate backend input.
+5. Update frontend API usage.
+6. Update `docs/API.md`.
+
+Do not invent new endpoints if an existing endpoint can be extended safely.
+
+Do not change API response shapes without updating all consumers.
+
+Long-running video inference must use asynchronous job APIs rather than keeping one HTTP request open for the full processing duration.
+
+## Frontend Rules
+
+- Use shared contract/types from `contracts/` or generated client types when available.
+- Do not duplicate backend DTOs manually when a shared/generated source exists.
+- Handle loading, empty, partial-success, success, and error states.
+- Preserve exact evidence/timestamps in viewer results.
+- Do not expose hidden/excluded creator content.
+- Do not rely on frontend-only checks for privacy-sensitive actions.
+- Keep components focused and readable.
+- Frontend must not call Neo4j, pgvector, model providers, or AI Service directly.
+
+## Backend Rules
+
+- Validate all user/model/external input.
+- Check authorization and creator visibility server-side.
+- Keep business/orchestration logic outside thin route/controller layers where possible.
+- Use explicit indexing job states and transitions.
+- Make processing and persistence idempotent.
+- Never trust client-provided creator ownership, visibility, processing status, graph predicate, or canonical ID without validation.
+- Keep planner output untrusted until schema/ontology validation succeeds.
+- Never execute raw model-generated Cypher.
+- Use parameterized Cypher and creator-scoped graph tools.
+- Filter hidden/private content before reranking, synthesis, or action tools.
+- Log important processing/retrieval failures with enough context to diagnose them without leaking sensitive content/secrets.
+
+## AI Service Rules
+
+- AI Service owns content-local inference only.
+- AI Service must not write directly to Neo4j or pgvector.
+- Preserve timestamps and source evidence through every stage.
+- Use a controlled entity/relation ontology.
+- Reject unknown structured predicates.
+- Treat model output as candidate facts, not automatically trusted canonical truth.
+- Do not create persistent cross-video IDs in the AI Service.
+- Do not process every video frame unless an approved issue explicitly requires dense processing.
+- Support silent/low-speech fallback segmentation.
+- Keep model/provider-specific implementations behind adapters when replacement is an explicit requirement.
+
+## Query Planner Rules
+
+The planner translates a natural-language `@creator` request into a validated structured RetrievalPlan.
 
 The planner must not generate executable raw Cypher.
 
@@ -225,7 +414,7 @@ Preferred flow:
 
 ```text
 user query
-→ planner
+→ small LLM planner
 → schema-validated RetrievalPlan
 → controlled graph tools + semantic search
 ```
@@ -239,29 +428,20 @@ The plan should keep graph and semantic intent separate:
 
 Unknown predicates or entity types must fail validation rather than pass through to Neo4j.
 
----
-
-## 9. Neo4j Rules
+## Neo4j Rules
 
 Neo4j stores canonical structured creator memory.
 
-Requirements:
+- Use parameterized Cypher.
+- Scope viewer queries to the intended creator.
+- Preserve provenance to exact `Moment`/`Content` evidence.
+- Enforce visibility before graph results leave the repository/service layer.
+- Use stable backend IDs rather than AI-local IDs.
+- Make ingestion idempotent.
+- Avoid unbounded graph traversals.
+- Never execute model-generated Cypher directly.
 
-- use parameterized Cypher
-- scope viewer queries to the intended creator
-- preserve provenance to exact `Moment` / `Content`
-- enforce visibility before results leave the repository/service layer
-- use stable backend IDs rather than AI-local IDs
-- make ingestion idempotent
-- avoid unbounded graph traversals
-
-Do not execute model-generated Cypher directly.
-
-Do not store large embedding vectors as normal Neo4j properties.
-
----
-
-## 10. Vector Search Rules
+## Vector Search Rules
 
 pgvector is a semantic retrieval index, not the canonical source of structured truth.
 
@@ -277,150 +457,51 @@ Every searchable row should preserve enough metadata to resolve back to the same
 
 Semantic search must be creator-scoped and privacy-filtered.
 
-The query embedding model must be compatible with the stored embedding model/dimension.
+The query embedding model/dimension must be compatible with stored embeddings.
 
----
+## Shared Contract Rules
 
-## 11. AI / ML Grounding Rules
+Use `contracts/` for:
 
-Model output is evidence-derived candidate data, not automatically trusted truth.
+- extraction DTOs/schemas
+- RetrievalPlan schema
+- controlled entity/relation ontology
+- shared enums/constants
+- API contract types that must match across services
 
-Requirements:
+Do not duplicate these independently across frontend, backend, and AI Service.
 
-- preserve source timestamps
-- preserve transcript/OCR/frame evidence
-- retain confidence where available
-- distinguish explicit evidence from inference when relevant
-- use a controlled relationship vocabulary
-- reject unknown structured relation names
-- do not create persistent canonical IDs in the AI Service
-- do not infer a fact merely because no contradictory evidence exists
+When shared contracts change, check every producer and consumer.
 
-Example:
+## Security Rules
 
-```text
-last observed using Product A in March
-```
+- Never commit secrets.
+- Never expose database URLs, API keys, model-provider keys, JWT/auth secrets, signed storage URLs, or private credentials.
+- Do not trust client-provided ownership or visibility state.
+- Creator memory is opt-in.
+- Hidden/excluded/private content must not reach viewer results, synthesis models, or action tools.
+- Admin/creator-management endpoints must require appropriate authorization when implemented.
+- File/video uploads must be validated by type, size, and ownership/source rules when applicable.
+- Sensitive actions and deletion/re-index operations should be auditable where practical.
+- Privacy must be enforced before LLM generation, not by prompt instruction after retrieval.
 
-must not silently become:
+## Testing Rules
 
-```text
-stopped using Product A in March
-```
+Add or update tests when practical, especially for privacy/security, authorization, contract validation, graph ingestion/querying, semantic retrieval, entity resolution, indexing idempotency, deletion propagation, planner validation, and API behavior.
 
-unless source evidence explicitly supports the latter.
+**For now, do not run backend or frontend test suites after coding unless the user explicitly asks for them.**
 
----
+Agents may still write or update backend unit tests, frontend tests, AI pipeline tests, or other test code when practical, but running those test suites is not required by default.
 
-## 12. Video Processing Rules
+Run non-test verification commands, such as lint, build, typecheck, formatting checks, schema validation, or lightweight static checks, when they are relevant and the environment supports them.
 
-Do not process every frame unless a ticket explicitly requires a dense pass.
+If the user explicitly approves review at the pull-request or CI level, or explicitly says local testing is not needed, do not keep attempting local test runs. Clearly state in the final response and pull request that local tests were not run by user direction.
 
-Current intended direction:
-
-- ASR timestamps are the primary semantic boundary for speech-heavy content
-- silent/low-speech content falls back to scene/visual segmentation
-- merge tiny speech fragments
-- split very long Moments
-- sample representative frames
-- retain important shot/scene changes
-- batch expensive VLM work when practical
-
-Keep intermediate outputs timestamped so later stages can always reconstruct provenance.
-
----
-
-## 13. Backend / API Rules
-
-- Validate all external input at the service boundary.
-- Keep API DTOs separate from persistence objects when this prevents coupling.
-- Make asynchronous job state transitions explicit.
-- Make reprocessing/idempotency behavior explicit.
-- Return stable machine-readable error codes where practical.
-- Do not expose internal provider/model/database exceptions directly to clients.
-- Keep optional debug/latency information out of normal production responses unless explicitly enabled.
-
-For long-running video inference, use asynchronous job APIs rather than keeping one request open.
-
----
-
-## 14. Privacy and Security
-
-Creator memory is opt-in.
-
-Never rely on an LLM prompt to enforce access control.
-
-Privacy/visibility must be applied before data reaches:
-
-- hybrid retrieval output
-- optional synthesis models
-- agent/action tools
-- frontend responses
-
-Do not trust client-provided ownership or visibility state without server-side validation.
-
-Do not commit secrets, API keys, model tokens, database credentials, signed URLs, or private datasets.
-
-Use environment variables and documented `.env.example` files.
-
----
-
-## 15. Database Changes
-
-For schema changes:
-
-- use migrations where the selected stack supports them
-- preserve backwards compatibility when practical
-- document destructive migrations explicitly
-- make uniqueness/idempotency constraints explicit
-- keep Neo4j and pgvector canonical ID linkage consistent
-
-If deleting content, ensure deletion/suppression propagates to every representation that can surface it.
-
----
-
-## 16. Code Style
-
-Follow the conventions already present in the relevant component.
-
-General rules:
-
-- prefer clear domain-specific names
-- prefer explicit imports
-- keep functions/modules focused
-- avoid hidden global state
-- do not add abstractions before there is a concrete second use case
-- keep provider-specific logic behind adapters when model/vendor replacement is an explicit project requirement
-- preserve readable formatting over clever compression
-
-Do not perform formatting-only changes in unrelated files.
-
----
-
-## 17. Testing and Verification
-
-Add or update targeted tests when practical for the issue being implemented.
-
-Prefer focused checks over running every expensive suite by default.
-
-Relevant checks may include:
-
-- unit tests
-- contract validation
-- integration tests against local Neo4j/PostgreSQL fixtures
-- lint
-- type checking
-- formatting checks
-- frontend build/typecheck
-- benchmark smoke tests
+If local tests cannot run because of environment limitations, dependency access, GPU/model availability, toolchain mismatch, or another blocker, document the reason in the final response and add/update `docs/CONCERNS.md` when the risk is meaningful.
 
 Never claim a test, benchmark, build, lint, deployment, or manual verification was performed unless it actually was.
 
-If tests were not run, state that clearly in the PR/final report.
-
----
-
-## 18. Evaluation Discipline
+## Evaluation Rules
 
 Do not claim the hybrid system is better without measurement.
 
@@ -448,34 +529,32 @@ Relevant metrics may include:
 
 Keep benchmark datasets/configuration versioned enough that results are reproducible.
 
----
+Do not present planning latency/backfill estimates as measured results.
 
-## 19. Git Discipline
+## Git and Pull Request Rules
 
 Before changing files, inspect repository status and understand existing work.
 
-Rules:
-
-- do not overwrite unrelated local/user changes
-- do not combine unrelated tickets in one PR
-- keep commit/PR scope focused
-- reference the GitHub Issue in the PR
-- do not close an issue until acceptance criteria are implemented and verified
-- do not merge a PR unless explicitly authorized
+- Do not overwrite unrelated local/user changes.
+- Do not combine unrelated tickets in one PR.
+- Keep commit/PR scope focused.
+- Reference the GitHub Issue in the PR.
+- Do not close an issue until acceptance criteria are implemented and verified.
+- Do not merge a PR unless explicitly authorized.
+- Do not silently rewrite an approved scope while implementing.
 
 When documentation/planning changes are the only changes, state that application tests were not run because no executable behavior changed.
 
----
-
-## 20. Final Agent Report
+## Final Agent Report
 
 When finishing a task, report:
 
-1. what changed
-2. issue/PR reference
-3. important files changed
-4. tests/checks actually run
-5. known limitations or remaining concerns
-6. recommended next issue only when it follows directly from the completed work
+1. What changed.
+2. GitHub Issue/PR reference.
+3. Important files changed.
+4. Tests/checks actually run.
+5. Documentation updated, or why no documentation update was needed.
+6. Known limitations or remaining concerns.
+7. Recommended next issue only when it follows directly from the completed work.
 
 Keep the report factual. Do not claim completion beyond the actual diff and verification.
