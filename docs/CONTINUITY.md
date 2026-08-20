@@ -57,15 +57,35 @@ video
 → Neo4j + pgvector
 ```
 
-The backend query application and indexing-job slices are implemented as
-framework-neutral, fixture-backed paths on top of issues #12, #15, and #16. Privacy
-controls and action tools remain to be added in the current Workstream D stack.
+The backend query, indexing-job, and privacy-control slices are implemented as
+framework-neutral, fixture-backed paths on top of issues #12, #15, and #16. Action tools
+remain to be added in the current Workstream D stack.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #19 privacy controls
+
+**Issue:** #19
+
+Summary:
+
+- Added creator AI Memory opt-in and creator-authorized content selection controls.
+- Added content hide/exclude/correction/rejection/deletion state and a privacy status
+  adapter.
+- Synchronized graph and vector visibility/deletion before query results reach fusion or
+  synthesis.
+- Added fail-closed query authorization for disabled creators and content with no public
+  included memory.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
 
 ### 2026-08-20 — Issue #18 indexing jobs
 
@@ -305,9 +325,8 @@ Verification:
 
 ## Active Work
 
-Issue #18 is implemented on `codex/issue-18-indexing-jobs` and is ready for its draft
-PR. The next stacked slice is issue #19 privacy controls; after that continue with #25
-action tools.
+Issue #19 is implemented on `codex/issue-19-privacy-controls` and is ready for its draft
+PR. The next stacked slice is issue #25 action tools.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.

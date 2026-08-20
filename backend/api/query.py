@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from backend.planner.parser import CreatorQueryParseError
+from backend.privacy.service import PrivacyDenied
 from backend.query.service import QueryApplicationService
 
 
@@ -39,6 +40,8 @@ class QueryHttpAdapter:
             response = self.service.execute(query, debug=debug)
         except CreatorQueryParseError as error:
             return _bad_request(str(error))
+        except PrivacyDenied:
+            return HttpResponse(403, {"error": {"code": "privacy_denied"}})
         except ValueError:
             return _bad_request("query could not be resolved")
         return HttpResponse(status_code=200, body=response)

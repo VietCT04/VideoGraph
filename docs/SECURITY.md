@@ -122,6 +122,13 @@ Retries use the backend-owned processing key and completed-store flags, so a fai
 vector stage resumes only the missing stage and does not silently restore excluded
 content or duplicate canonical Moments.
 
+The #19 privacy service treats creator opt-in and content policy as backend authority.
+Creator management operations require the requester permission boundary; viewer queries
+fail closed when memory is disabled or no included public content remains. Hide, exclude,
+reject, and delete operations synchronously suppress both graph and vector representations
+before any result can reach fusion, synthesis, or an action tool. Correction metadata is
+stored with the content policy and does not grant visibility to deleted content.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

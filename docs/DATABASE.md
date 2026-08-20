@@ -37,6 +37,23 @@ The uniqueness key is `(creator_id, content_id, pipeline_version)`. It prevents 
 duplicate submission from creating a second logical processing job while allowing an
 explicit retry to resume a failed persistence stage.
 
+Issue #19's application policy is expected to persist:
+
+```text
+creator_id
+ai_memory_enabled
+content_id
+included_in_memory
+visibility
+review_status
+correction_note
+deleted
+```
+
+Content policy is creator-scoped and must be joined to the same `content_id` represented
+in Neo4j and pgvector. A creator disable, exclusion, rejection, or deletion is a
+cross-store lifecycle operation, not a frontend-only flag.
+
 ### Neo4j
 
 Owns canonical structured creator memory:
@@ -196,6 +213,14 @@ Before database structure changes:
 - #18 indexing jobs
 - #19 privacy/deletion
 - #24 infrastructure
+
+## Issue #19 privacy implementation
+
+`backend/privacy/service.py` owns the fixture policy boundary for creator opt-in,
+content selection, visibility, correction, rejection, and deletion. It synchronously
+calls graph and vector visibility/delete operations, so both representations stop being
+searchable before the query service reaches fusion or synthesis. The production policy
+repository and authorization adapter must preserve this ordering.
 
 ## Issue #18 indexing implementation
 

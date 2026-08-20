@@ -27,6 +27,8 @@ parse creator handle
         ↓
 resolve creator_id
         ↓
+privacy authorization + content visibility
+        ↓
 small LLM planner
         ↓
 validated RetrievalPlan
@@ -51,6 +53,15 @@ direct response   optional synthesis
 ```
 
 The planner is not the retrieval engine. It produces instructions for retrieval components.
+
+## 2.1 Privacy gate (#19)
+
+The query application service performs the backend-owned creator privacy check after
+creator resolution and before hybrid retrieval. The policy requires AI Memory opt-in and
+at least one included public content item. Content hide/exclude/reject/delete operations
+also synchronize graph and vector visibility or deletion, so the retrieval branches do
+not receive stale public rows. The planner cannot override this gate, and an unauthorized
+request returns `privacy_denied` before fusion or optional synthesis.
 
 ---
 

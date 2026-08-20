@@ -50,6 +50,9 @@ class VectorRepository(Protocol):
     def search(self, query_embedding: Sequence[float], filters: VectorSearchFilters, top_k: int = 10) -> list[tuple[MomentEmbeddingRow, float]]:
         ...
 
+    def set_visibility(self, content_id: str, visibility: str) -> int:
+        ...
+
     def delete_by_content(self, content_id: str) -> int:
         ...
 

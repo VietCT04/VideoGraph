@@ -26,6 +26,9 @@ class GraphRepository:
     def snapshot(self) -> GraphSnapshot:
         raise NotImplementedError
 
+    def set_visibility(self, content_id: str, visibility: str) -> None:
+        raise NotImplementedError
+
     def delete_content(self, content_id: str) -> None:
         raise NotImplementedError
 

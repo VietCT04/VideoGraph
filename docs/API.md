@@ -137,6 +137,25 @@ possible, so a vector failure does not rerun GPU extraction or duplicate graph r
 Invalid request bodies return `400 invalid_indexing_request`, unknown jobs return
 `404 job_not_found`, and non-retryable jobs return `409 job_not_retryable`.
 
+## Privacy Controls (#19)
+
+The framework-neutral `backend.api.privacy.PrivacyHttpAdapter` models creator-only
+management operations. Management requests include both `creator_id` and an authenticated
+`requester_id`; the service checks the owner permission boundary before changing state.
+The adapter exposes:
+
+```text
+POST /creators/{creator_id}/memory
+POST /creators/{creator_id}/content/{content_id}
+GET  /creators/{creator_id}/privacy
+```
+
+Content actions are `select`, `hide`, `exclude`, `correct`, `reject`, and `delete`.
+Exclude/hide/reject operations synchronously update application policy plus graph and
+vector visibility before a later query can return results. Delete removes the content's
+graph records and vector rows. Viewer query authorization fails closed with
+`403 privacy_denied` when memory is disabled or no included public content remains.
+
 ## Implemented internal planner contract (#12)
 
 Before a viewer query endpoint is added, the dependency-free
