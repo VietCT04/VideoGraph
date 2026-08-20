@@ -1,0 +1,42 @@
+{
+  "local_id": "moment_1",
+  "start_ms": 5000,
+  "end_ms": 11000,
+  "transcript": "This one is my favorite for everyday use.",
+  "semantic_text": "Creator uses and likes Rare Beauty Humble lipstick for everyday use.",
+  "entities": [
+    {
+      "local_id": "entity_1",
+      "type": "Product",
+      "name": "Rare Beauty Humble lipstick",
+      "confidence": 0.95,
+      "evidence_refs": ["frame_8", "ocr_1"],
+      "explicit": true
+    }
+  ],
+  "relations": [
+    {
+      "subject": "creator",
+      "predicate": "USES",
+      "object": "entity_1",
+      "confidence": 0.94,
+      "evidence_refs": ["asr_1", "frame_8"],
+      "explicit": true
+    },
+    {
+      "subject": "creator",
+      "predicate": "LIKES",
+      "object": "entity_1",
+      "confidence": 0.89,
+      "evidence_refs": ["asr_1", "ocr_1"],
+      "explicit": true
+    }
+  ],
+  "evidence": {
+    "asr_segment_ids": ["asr_1"],
+    "frame_timestamps_ms": [5500, 8000],
+    "frame_ids": ["frame_8"],
+    "ocr_text": ["RARE BEAUTY", "HUMBLE"],
+    "ocr_item_ids": ["ocr_1"]
+  }
+}
