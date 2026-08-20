@@ -91,6 +91,12 @@ provider output against the closed shared schema. Invalid or unknown fields caus
 deterministic fallback; provider output cannot inject Cypher, change authorization
 scope, or introduce an unknown ontology value.
 
+The #13 graph service performs a second validation at the retrieval boundary and
+selects templates from fixed allowlists. It binds creator, visibility, time, content,
+and attribute values as query parameters, applies a bounded top-k, and returns only
+creator-scoped evidence. An executor callback cannot be supplied with a plan-generated
+query string.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.
