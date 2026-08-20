@@ -8,7 +8,7 @@ Remove or mark a concern resolved only when the relevant decision/implementation
 
 ## C-001 — Graph value must be demonstrated
 
-**Status:** Open  
+**Status:** Partially mitigated
 **Component:** Retrieval / Evaluation
 
 ### Context
@@ -62,12 +62,12 @@ Reject unknown predicates at validation boundaries and version any incompatible 
 
 ## C-003 — Embedding model and dimension are not selected
 
-**Status:** Open  
+**Status:** Open; deterministic fixture baseline recorded, production choice pending
 **Component:** AI Service / pgvector / Search
 
 ### Context
 
-The architecture assumes one fused `semantic_text` embedding per searchable Moment, but no final model/dimension has been chosen.
+The architecture assumes one fused `semantic_text` embedding per searchable Moment. Issue #7 records a deterministic `hashing-fixture` v1 baseline at dimension 32 for offline tests, but no production model or final dimension has been chosen.
 
 ### Risk
 
@@ -75,7 +75,7 @@ AI Service and backend pgvector schema could become incompatible, and switching 
 
 ### Recommended next action
 
-Choose a baseline embedding model before #7/#11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable.
+Choose and benchmark a production embedding model before #11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable. Do not treat the dimension-32 fixture as a production benchmark.
 
 ---
 
@@ -153,7 +153,7 @@ Use #23 to measure representative videos and queries. Report measured values and
 
 ### Context
 
-Public video datasets usually optimize for action recognition, recommendation, captioning, or grounding rather than repeated creator entities, opinions, temporal preference changes, and exact cross-video memory queries.
+Public video datasets usually optimize for action recognition, recommendation, captioning, or grounding rather than repeated creator entities, opinions, temporal preference changes, and exact cross-video memory queries. Issue #22 now provides a controlled synthetic metadata fixture for these cases.
 
 ### Risk
 
@@ -161,7 +161,7 @@ Evaluation data may fail to exercise the core innovation.
 
 ### Recommended next action
 
-Build #22 controlled creator-memory dataset with:
+The synthetic fixture now covers:
 
 - repeated entities
 - recommendations/dislikes
@@ -172,7 +172,9 @@ Build #22 controlled creator-memory dataset with:
 - OCR-visible products
 - graph-only, vector-only, and hybrid questions
 
-Document license/source terms for external media.
+The remaining concern is audiovisual validity: no copyrighted or external media is
+included, so media-level model quality and licensing remain unverified until separately
+licensed or locally generated clips are added.
 
 ---
 
@@ -302,3 +304,50 @@ Model memory requirements, availability, and cost can block integration late in 
 ### Recommended next action
 
 During #24, benchmark the selected VLM/ASR stack on the intended development GPU and keep deployment/provider assumptions out of shared backend contracts.
+
+---
+
+## C-012 — Production multimodal fusion provider is not selected
+
+**Status:** Open
+**Component:** AI Service / VLM Fusion
+
+### Context
+
+Issue #6 provides a structured `VLMProvider` boundary and deterministic beauty,
+technology, and travel fixtures, but no production multimodal model or prompt/runtime
+has been selected.
+
+### Risk
+
+Provider-specific structured-output limits, latency, and evidence grounding behavior
+may differ from the fixture contract and require adapter changes.
+
+### Recommended next action
+
+Select and benchmark a production structured-output provider under #23/#24. Keep the
+fixture provider and shared contract as the offline fallback until that decision is
+measured.
+
+---
+
+## C-013 — AI Service worker and result retention are process-local
+
+**Status:** Open
+**Component:** AI Service / Deployment
+
+### Context
+
+Issue #8 uses an in-process thread pool and memory-only result store so the API can be
+tested without Redis, a broker, or a database. The main backend remains the owner of
+durable indexing state.
+
+### Risk
+
+Process restart, multiple replicas, or worker failure can lose queued jobs and temporary
+results. This is not a production reliability guarantee.
+
+### Recommended next action
+
+Define the production queue, retry, idempotency, and result handoff under the deployment
+and indexing issues before connecting this service to durable backend jobs.
