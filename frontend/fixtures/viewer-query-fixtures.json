@@ -1,0 +1,68 @@
+{
+  "creators": [
+    {
+      "creator_id": "creator_alice",
+      "handle": "alicebeauty",
+      "display_name": "Alice Beauty"
+    },
+    {
+      "creator_id": "creator_bob",
+      "handle": "bobbuilds",
+      "display_name": "Bob Builds"
+    }
+  ],
+  "responses": {
+    "alicebeauty": {
+      "creator_id": "creator_alice",
+      "creator_handle": "alicebeauty",
+      "answer": "Alice recommended Dior Rouge 999 for deeper skin tones.",
+      "results": [
+        {
+          "entity_id": "product_dior_rouge_999",
+          "label": "Dior Rouge 999",
+          "summary": "Alice recommended this red lipstick for deeper skin tones.",
+          "evidence": [
+            {
+              "content_id": "alice_video_002",
+              "moment_id": "moment_alice_video_002_12000_19000",
+              "title": "Summer Makeup Guide",
+              "source_kind": "video",
+              "start_ms": 12000,
+              "end_ms": 19000
+            },
+            {
+              "content_id": "alice_live_001",
+              "moment_id": "moment_alice_live_001_842000_856000",
+              "title": "July LIVE",
+              "source_kind": "live",
+              "start_ms": 842000,
+              "end_ms": 856000
+            }
+          ]
+        }
+      ]
+    },
+    "bobbuilds": {
+      "creator_id": "creator_bob",
+      "creator_handle": "bobbuilds",
+      "answer": "Bob used the compact blue drill for the shelf project.",
+      "results": [
+        {
+          "entity_id": "product_blue_drill",
+          "label": "Compact Blue Drill",
+          "summary": "Bob used this drill while building the floating shelf.",
+          "evidence": [
+            {
+              "content_id": "bob_video_001",
+              "moment_id": "moment_bob_video_001_18000_26000",
+              "title": "Floating Shelf Build",
+              "source_kind": "video",
+              "start_ms": 18000,
+              "end_ms": 26000
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

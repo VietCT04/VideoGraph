@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VideoGraph creator controls demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./creator-controls.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="intro">
+        <p class="eyebrow">VideoGraph creator demo</p>
+        <h1>Keep control of what becomes memory.</h1>
+        <p>
+          This fixture-backed flow makes opt-in, content selection, job progress, and
+          correction state visible without connecting to a backend.
+        </p>
+        <p class="demo-nav"><a href="./">Viewer search</a></p>
+      </header>
+
+      <section class="panel" aria-labelledby="memory-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Creator settings</p>
+            <h2 id="memory-heading">AI Memory</h2>
+          </div>
+          <button id="memory-toggle" type="button"></button>
+        </div>
+        <p id="memory-status" class="status" role="status" aria-live="polite"></p>
+        <p id="visibility-status" class="privacy-note"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="content-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Selection</p>
+            <h2 id="content-heading">Choose videos and LIVE recordings</h2>
+          </div>
+          <button id="build-memory" type="button">Build memory</button>
+        </div>
+        <p id="selection-status" class="hint"></p>
+        <div id="content-list" class="content-list"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="jobs-heading">
+        <p class="eyebrow">Async processing</p>
+        <h2 id="jobs-heading">Indexing jobs</h2>
+        <div id="job-list" class="job-list"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="facts-heading">
+        <p class="eyebrow">Review</p>
+        <h2 id="facts-heading">Extracted memory</h2>
+        <p class="hint">Hidden facts remain unavailable to viewer search in this state model.</p>
+        <div id="fact-list" class="fact-list"></div>
+      </section>
+
+      <p id="action-status" class="status" role="status" aria-live="polite"></p>
+      <footer class="footer">
+        <a href="../fixtures/creator-controls-fixtures.json">View the mock creator fixture</a>
+      </footer>
+    </main>
+    <script type="module" src="./creator-controls.js"></script>
+  </body>
+</html>

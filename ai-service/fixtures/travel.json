@@ -1,0 +1,50 @@
+{
+  "local_id": "moment_1",
+  "start_ms": 2000,
+  "end_ms": 9000,
+  "transcript": "We visit Kyoto in the afternoon and walk through Gion.",
+  "semantic_text": "Creator visits Kyoto and walks through the Gion district in the afternoon.",
+  "entities": [
+    {
+      "local_id": "entity_1",
+      "type": "Place",
+      "name": "Kyoto",
+      "confidence": 0.98,
+      "evidence_refs": ["asr_1", "frame_2"],
+      "explicit": true
+    },
+    {
+      "local_id": "entity_2",
+      "type": "Place",
+      "name": "Gion",
+      "confidence": 0.9,
+      "evidence_refs": ["asr_1", "ocr_2"],
+      "explicit": true
+    }
+  ],
+  "relations": [
+    {
+      "subject": "creator",
+      "predicate": "VISITS",
+      "object": "entity_1",
+      "confidence": 0.98,
+      "evidence_refs": ["asr_1", "frame_2"],
+      "explicit": true
+    },
+    {
+      "subject": "entity_2",
+      "predicate": "LOCATED_IN",
+      "object": "entity_1",
+      "confidence": 0.86,
+      "evidence_refs": ["asr_1", "ocr_2"],
+      "explicit": true
+    }
+  ],
+  "evidence": {
+    "asr_segment_ids": ["asr_1"],
+    "frame_timestamps_ms": [2500, 6000],
+    "frame_ids": ["frame_2"],
+    "ocr_text": ["GION"],
+    "ocr_item_ids": ["ocr_2"]
+  }
+}
