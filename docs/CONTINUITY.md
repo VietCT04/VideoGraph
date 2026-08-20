@@ -56,10 +56,10 @@ video
 → Neo4j + pgvector
 ```
 
-The repository now includes small fixture-backed viewer and creator-control demos from
-issues #20 and #21. They are executable in a browser as static previews, but no
-production frontend, backend query endpoint, indexing API, or privacy API is implemented
-yet.
+The repository now includes fixture-backed viewer and creator-control demos from issues
+#20 and #21 plus a controlled synthetic creator-memory metadata dataset from issue #22.
+The demos are executable in a browser as static previews, but no production frontend,
+backend query endpoint, indexing API, or privacy API is implemented yet.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -117,8 +117,8 @@ Verification:
 
 ## Active Work
 
-Issue #21's creator-control slice is implemented on top of the issue-20 branch. The next
-workstream slice is issue #22's controlled synthetic dataset; shared contracts and live
+Issue #22's dataset slice is implemented on top of the issue-21 branch. The next
+workstream slice is issue #23's benchmark harness; shared contracts and live
 query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
@@ -167,11 +167,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20 and #21 draft PRs and merge them in order when approved.
-2. Implement issue #22's controlled synthetic creator-memory dataset.
+1. Review the stacked issue #20–#22 draft PRs and merge them in order when approved.
+2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
 5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.

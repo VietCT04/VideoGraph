@@ -8,7 +8,7 @@ Remove or mark a concern resolved only when the relevant decision/implementation
 
 ## C-001 — Graph value must be demonstrated
 
-**Status:** Open  
+**Status:** Partially mitigated
 **Component:** Retrieval / Evaluation
 
 ### Context
@@ -151,7 +151,7 @@ Use #23 to measure representative videos and queries. Report measured values and
 
 ### Context
 
-Public video datasets usually optimize for action recognition, recommendation, captioning, or grounding rather than repeated creator entities, opinions, temporal preference changes, and exact cross-video memory queries.
+Public video datasets usually optimize for action recognition, recommendation, captioning, or grounding rather than repeated creator entities, opinions, temporal preference changes, and exact cross-video memory queries. Issue #22 now provides a controlled synthetic metadata fixture for these cases.
 
 ### Risk
 
@@ -159,7 +159,7 @@ Evaluation data may fail to exercise the core innovation.
 
 ### Recommended next action
 
-Build #22 controlled creator-memory dataset with:
+The synthetic fixture now covers:
 
 - repeated entities
 - recommendations/dislikes
@@ -170,7 +170,9 @@ Build #22 controlled creator-memory dataset with:
 - OCR-visible products
 - graph-only, vector-only, and hybrid questions
 
-Document license/source terms for external media.
+The remaining concern is audiovisual validity: no copyrighted or external media is
+included, so media-level model quality and licensing remain unverified until separately
+licensed or locally generated clips are added.
 
 ---
 
