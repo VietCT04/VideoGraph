@@ -78,9 +78,20 @@ Initial planning target:
 - split around 12–15 seconds when needed
 - use small visual padding around boundaries where useful
 
+Issue #3 provides this boundary in `ai-service/pipeline/segmentation.py`. Speech spans
+and optional scene boundaries are merged into ordered `TemporalChunk` descriptors. Tiny
+non-strong fragments are merged, long intervals are split at a deterministic target,
+and each result carries three representative timestamps plus a `has_speech` flag.
+
 ### Silent / low-speech content
 
 Speech cannot be the only temporal signal.
+
+When no speech spans are supplied, the same segmenter uses scene boundaries when
+available and falls back to deterministic target-duration chunks. It never fabricates
+transcript evidence. Metadata inspection is an adapter boundary in
+`ai-service/pipeline/metadata.py`; the checked-in fixture inspector avoids requiring
+FFmpeg/OpenCV for unit tests.
 
 Fallback direction:
 
