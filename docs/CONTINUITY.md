@@ -12,7 +12,8 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Executable application code is still pending.
+infrastructure directories. Issues #2 and #3 add dependency-free contract and temporal
+segmentation boundaries; later AI stages and application services remain fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -56,15 +57,60 @@ video
 → Neo4j + pgvector
 ```
 
-The repository now includes a small fixture-backed viewer search demo from issue #20.
-It is executable in a browser as a static preview, but no production frontend or
-backend query endpoint is implemented yet.
+The repository includes a small fixture-backed viewer search demo from issue #20. Production frontend and backend services remain separate implementation work.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #3 temporal segmentation
+
+**Issue:** #3
+
+Summary:
+
+- Added metadata inspection and temporal segmentation interfaces under `ai-service/pipeline/`.
+- Added deterministic speech-boundary merging, strong scene-boundary preservation, long-chunk splitting, and representative timestamps.
+- Added silent fallback and focused unit tests without FFmpeg/OpenCV dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (5 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #2 shared contracts
+
+**Issue:** #2
+
+Summary:
+
+- Added versioned extraction and retrieval-plan JSON Schemas.
+- Added a closed v1 ontology and standard-library boundary validator.
+- Added beauty, technology, and travel extraction fixtures plus targeted tests.
+
+Verification:
+
+- `python -m unittest contracts.test_validation` passed (5 tests).
+- `python -m compileall -q contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #20 viewer search demo
+
+**Issue:** #20
+
+Summary:
+
+- Added a dependency-free viewer search demo with creator mention parsing and autocomplete.
+- Added loading, error, empty, and success states over local query fixtures.
+- Preserved canonical evidence IDs and exact source timestamps with jump-to-moment affordances.
+
+Verification:
+
+- Node syntax check and fixture parsing passed.
+- Browser checks and full frontend/backend suites were not run.
 
 ### 2026-08-20 — Initial project planning
 
@@ -116,9 +162,8 @@ Verification:
 
 ## Active Work
 
-Issue #20's viewer slice is implemented on its stacked branch. The next workstream
-slice is issue #21's creator control UI; shared contracts and live query/indexing APIs
-remain separate planned work.
+Issue #1 is implemented on the issue branch for its PR. Issues #2 and #3 are implemented
+on stacked branches for review; the next dependency is timestamped ASR in issue #4.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -166,11 +211,10 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20 viewer PR and merge it when approved.
-2. Implement issue #21 creator controls against mocked indexing/privacy responses.
-3. Freeze #2 shared extraction and retrieval-plan contracts.
-4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
+1. Review the issue #3 draft PR and merge the stacked foundation when ready.
+2. Implement #4 timestamped ASR on top of the segmenter.
+3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+4. Continue AI issues #5–#8 in the requested dependency order.
+5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
