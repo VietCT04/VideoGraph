@@ -24,3 +24,9 @@ http://localhost:8080/frontend/demo/
 The demo uses only the conceptual query shape in `docs/API.md`. It does not call a live
 backend or implement ranking logic. The eventual frontend adapter must preserve the
 backend's authorized evidence and exact timestamps.
+
+The creator-control preview is available at `frontend/demo/creator-controls.html`.
+It uses `frontend/fixtures/creator-controls-fixtures.json` to demonstrate explicit opt-in,
+per-content selection, queued/failed jobs, retry, and correction/visibility actions. Its
+local reducer prevents disabled or excluded content from entering the viewer-visible
+projection; real authorization remains a backend responsibility.
