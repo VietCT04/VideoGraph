@@ -6,7 +6,7 @@ video understanding.
 ## Planned areas
 
 - `app/` — HTTP job/status API
-- `pipeline/` — preprocessing, segmentation, OCR, fusion, and orchestration
+- `pipeline/` — metadata, preprocessing, segmentation, OCR, fusion, and orchestration
 - `models/` — replaceable ASR, VLM, and embedding adapters
 - `workers/` — asynchronous execution and temporary result handling
 
@@ -15,3 +15,9 @@ video understanding.
 The service receives one selected content item and returns a versioned extraction
 payload. It may return content-local IDs, but it must not assign persistent cross-video
 IDs or write directly to Neo4j, PostgreSQL, or pgvector.
+
+The current `pipeline/metadata.py`, `pipeline/segmentation.py`, `pipeline/asr.py`,
+`pipeline/frames.py`, and `pipeline/ocr.py` modules provide dependency-free
+implementations of issues #3–#5. Real media probing, scene detection,
+Whisper-compatible transcription, frame decoding, and OCR can be supplied behind the
+same boundaries later; fixture inputs make local behavior deterministic.

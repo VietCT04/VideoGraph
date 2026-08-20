@@ -12,7 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Executable application code is still pending.
+infrastructure directories. Issues #2–#5 add dependency-free contract, temporal
+segmentation, timestamped ASR, and visual evidence boundaries; later AI stages and
+application services remain fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -67,6 +69,99 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #5 representative frames and OCR
+
+**Issue:** #5
+
+Summary:
+
+- Added representative frame candidate/sampling models with anchor selection and near-duplicate reduction.
+- Added timestamped OCR item/frame result models with optional bounding boxes.
+- Added deterministic frame/OCR fixtures and focused tests without OpenCV/Tesseract dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (11 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #4 timestamped ASR
+
+**Issue:** #4
+
+Summary:
+
+- Added replaceable ASR input, segment, result, and configuration models.
+- Added a deterministic fixture provider with no-speech filtering and batching.
+- Added direct conversion from ASR output to temporal segmenter speech spans.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (8 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #9 Neo4j ingestion foundation
+
+**Issue:** #9
+
+Summary:
+
+- Added canonical graph models, stable ID mapping, evidence-preserving ingestion, and an idempotent in-memory repository.
+- Added Neo4j constraints and indexes without embedding storage.
+
+Verification:
+
+- Python compilation and git diff check were completed for the stacked slice.
+- Neo4j runtime and backend/frontend suites were not run.
+
+### 2026-08-20 — Issue #3 temporal segmentation
+
+**Issue:** #3
+
+Summary:
+
+- Added metadata inspection and temporal segmentation interfaces under `ai-service/pipeline/`.
+- Added deterministic speech-boundary merging, strong scene-boundary preservation, long-chunk splitting, and representative timestamps.
+- Added silent fallback and focused unit tests without FFmpeg/OpenCV dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (5 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #2 shared contracts
+
+**Issue:** #2
+
+Summary:
+
+- Added versioned extraction and retrieval-plan JSON Schemas.
+- Added a closed v1 ontology and standard-library boundary validator.
+- Added beauty, technology, and travel extraction fixtures plus targeted tests.
+
+Verification:
+
+- `python -m unittest contracts.test_validation` passed (5 tests).
+- `python -m compileall -q contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #20 viewer search demo
+
+**Issue:** #20
+
+Summary:
+
+- Added a dependency-free viewer search demo with creator mention parsing and autocomplete.
+- Added loading, error, empty, and success states over local query fixtures.
+- Preserved canonical evidence IDs and exact source timestamps with jump-to-moment affordances.
+
+Verification:
+
+- Node syntax check and fixture parsing passed.
+- Browser checks and full frontend/backend suites were not run.
+
 ### 2026-08-20 — Initial project planning
 
 **Issues:** #1–#27
@@ -117,9 +212,12 @@ Verification:
 
 ## Active Work
 
-Issue #22's dataset slice is implemented on top of the issue-21 branch. The next
-workstream slice is issue #23's benchmark harness; shared contracts and live
-query/indexing/privacy APIs remain separate planned work.
+Issues #1–#5 are implemented, including the representative-frame and OCR evidence
+boundaries from issue #5. Issue #21's creator-control slice is implemented on top of the
+issue-20 branch, and issue #22's dataset slice is now implemented. The next AI
+dependency is issue #6's multimodal fusion; the next workstream slice is issue #23's
+benchmark harness. Shared contracts and live query/indexing/privacy APIs remain
+separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -167,11 +265,13 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20–#22 draft PRs and merge them in order when approved.
+1. Implement #6 multimodal fusion on top of the shared evidence models.
 2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
+5. Continue AI issues #7–#8 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+
+
