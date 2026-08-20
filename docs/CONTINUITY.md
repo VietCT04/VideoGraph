@@ -82,6 +82,20 @@ Verification:
 - `python -m compileall -q ai-service` and `git diff --check` passed.
 - Backend/frontend suites are not in scope.
 
+### 2026-08-20 — Issue #9 Neo4j ingestion foundation
+
+**Issue:** #9
+
+Summary:
+
+- Added canonical graph models, stable ID mapping, evidence-preserving ingestion, and an idempotent in-memory repository.
+- Added Neo4j constraints and indexes without embedding storage.
+
+Verification:
+
+- Python compilation and git diff check were completed for the stacked slice.
+- Neo4j runtime and backend/frontend suites were not run.
+
 ### 2026-08-20 — Issue #3 temporal segmentation
 
 **Issue:** #3
@@ -235,3 +249,4 @@ Highest-priority unresolved concerns currently include:
 5. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+

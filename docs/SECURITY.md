@@ -67,6 +67,12 @@ Requirements:
 - Enforce creator scope and visibility in the repository/service layer.
 - Never expose database connection details to clients.
 
+The #9 graph slice accepts only payloads passing the shared extraction validator and
+maps controlled predicates to canonical IDs. It does not accept Cypher in extraction
+payloads, stores no embedding vectors in Neo4j, and preserves visibility on every
+content, Moment, entity, and relation record. Hidden or excluded records are filtered
+by the repository boundary before a retrieval tool can return them.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.
@@ -141,3 +147,4 @@ Tool failures must not cause the system to expose hidden data or bypass normal p
 - #19 privacy/deletion
 - #20–#21 frontend flows
 - #25 action tools
+
