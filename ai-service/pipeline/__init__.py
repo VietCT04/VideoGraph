@@ -12,6 +12,14 @@ from .fusion import (
     build_extraction_payload,
     validate_fusion_output,
 )
+from .embeddings import (
+    EmbeddingBatch,
+    EmbeddingMetadata,
+    EmbeddingProvider,
+    HashingEmbeddingProvider,
+    cosine_similarity,
+    embed_extraction,
+)
 from .metadata import FixtureMetadataInspector, MetadataInspector, VideoMetadata
 from .ocr import FixtureOCRProvider, OCRFrameResult, OCRItem, OCRProvider
 from .segmentation import (
@@ -32,6 +40,12 @@ __all__ = [
     "FixtureASRProvider",
     "FixtureOCRProvider",
     "FixtureFusionProvider",
+    "EmbeddingBatch",
+    "EmbeddingMetadata",
+    "EmbeddingProvider",
+    "HashingEmbeddingProvider",
+    "cosine_similarity",
+    "embed_extraction",
     "FrameCandidate",
     "FrameSampler",
     "DeterministicFrameSampler",

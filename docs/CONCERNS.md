@@ -62,12 +62,12 @@ Reject unknown predicates at validation boundaries and version any incompatible 
 
 ## C-003 — Embedding model and dimension are not selected
 
-**Status:** Open  
+**Status:** Open; deterministic fixture baseline recorded, production choice pending
 **Component:** AI Service / pgvector / Search
 
 ### Context
 
-The architecture assumes one fused `semantic_text` embedding per searchable Moment, but no final model/dimension has been chosen.
+The architecture assumes one fused `semantic_text` embedding per searchable Moment. Issue #7 records a deterministic `hashing-fixture` v1 baseline at dimension 32 for offline tests, but no production model or final dimension has been chosen.
 
 ### Risk
 
@@ -75,7 +75,7 @@ AI Service and backend pgvector schema could become incompatible, and switching 
 
 ### Recommended next action
 
-Choose a baseline embedding model before #7/#11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable.
+Choose and benchmark a production embedding model before #11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable. Do not treat the dimension-32 fixture as a production benchmark.
 
 ---
 
