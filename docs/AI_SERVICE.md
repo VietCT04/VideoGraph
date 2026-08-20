@@ -292,6 +292,14 @@ Requirements:
 
 The backend stores the final vector row under the canonical `moment_id`.
 
+Issue #7 implements the replaceable `EmbeddingProvider` boundary and
+`embed_extraction` integration in `ai-service/pipeline/embeddings.py`. The
+`HashingEmbeddingProvider` is a deterministic local fixture: it batches inputs,
+canonicalizes a small set of fixture synonyms, emits normalized vectors, and records
+model/version/dimension metadata. It embeds fused `semantic_text`, never raw
+transcript by default. The fixture baseline is dimension 32; production model and
+pgvector dimension selection remain open in `docs/CONCERNS.md`.
+
 ---
 
 ## 9. Extraction Contract
