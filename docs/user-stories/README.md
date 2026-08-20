@@ -1,38 +1,47 @@
 # User Stories
 
-User stories document product behavior that should remain stable across implementation details.
+User stories describe product behavior from a user's perspective and are the source for implementation issues.
 
-They are not substitutes for GitHub Issues. A story describes the user-facing requirement; issues split that requirement into implementable technical slices.
+They are not substitutes for GitHub Issues. A user story captures broad product behavior; implementation work should be split into focused GitHub Issues.
 
-## Format
-
-Use this structure when adding a story:
+## Filename Format
 
 ```text
-# <Story title>
-
-## Actor
-
-## Goal
-
-## Preconditions
-
-## Primary Flow
-
-## Alternative / Failure Flows
-
-## Privacy / Safety Requirements
-
-## Acceptance Examples
-
-## Related Issues
-
-## Open Questions
+US-0001-short-title.md
 ```
 
-Keep stories implementation-light. Link to architecture docs/issues for technical design.
+Use monotonically increasing story numbers.
+
+## Template
+
+```md
+# US-0001: Short Title
+
+## User Story
+
+As a [user type], I want [goal], so that [benefit].
+
+## Context
+
+Explain why this behavior matters.
+
+## Acceptance Criteria
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Sensitive behavior is enforced server-side where relevant
+- [ ] Relevant docs are updated
+
+## Risks
+
+## Follow-up Issues
+
+- GitHub Issue: `#123`
+```
+
+Keep user stories implementation-light. Put technical design in architecture docs and focused GitHub Issues.
 
 ## Initial Stories
 
-- [`creator-indexing.md`](creator-indexing.md) — creator opt-in, content selection, indexing, progress, correction, deletion
-- [`viewer-search.md`](viewer-search.md) — `@creator` query, grounded retrieval, exact evidence, optional actions
+- [`US-0001-creator-indexing.md`](US-0001-creator-indexing.md) — creator opt-in, content selection, indexing, progress, correction, deletion
+- [`US-0002-viewer-search.md`](US-0002-viewer-search.md) — `@creator` query, grounded retrieval, exact evidence, optional actions
