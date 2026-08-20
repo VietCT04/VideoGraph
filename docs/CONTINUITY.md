@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #16 deterministic result fusion
+
+**Issue:** #16
+
+Summary:
+
+- Added canonical graph/vector deduplication, evidence aggregation, deterministic
+  baseline scoring, stable ranking, and direct-answer eligibility.
+- Preserved exact Moment/content IDs and timestamps without final LLM synthesis.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #15 parallel retrieval orchestration
 
 **Issue:** #15

@@ -101,6 +101,11 @@ bundle containing independent graph/vector outcomes, source result objects, bran
 latencies, timeout/error status, and a partial-success flag. It is an orchestration
 boundary, not a final answer or synthesis API.
 
+The internal `ResultFusionService` consumes a `RetrievalBundle` and returns ranked
+results with graph/vector source scores, relation matches, canonical Moment evidence,
+and a direct-answer eligibility signal. The result set is suitable for a later query
+API but does not perform free-form synthesis.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.

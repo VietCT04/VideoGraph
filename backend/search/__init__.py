@@ -9,6 +9,7 @@ from .vector_repository import (
 from .embeddings import EmbeddingProvider, FixtureHashEmbeddingProvider
 from .semantic_retrieval import SemanticHit, SemanticMomentRetriever, SemanticSearchResult, index_extraction_fixture
 from .orchestrator import BranchOutcome, HybridRetrievalOrchestrator, RetrievalBundle
+from .fusion import FusedResult, FusionEvidence, FusionResultSet, ResultFusionService
 
 __all__ = [
     "InMemoryVectorRepository",
@@ -24,5 +25,9 @@ __all__ = [
     "BranchOutcome",
     "HybridRetrievalOrchestrator",
     "RetrievalBundle",
+    "FusedResult",
+    "FusionEvidence",
+    "FusionResultSet",
+    "ResultFusionService",
 ]
 
