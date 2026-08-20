@@ -80,6 +80,12 @@ payloads, stores no embedding vectors in Neo4j, and preserves visibility on ever
 content, Moment, entity, and relation record. Hidden or excluded records are filtered
 by the repository boundary before a retrieval tool can return them.
 
+The #11 vector repository applies creator and visibility filters in the repository
+contract and provides content-level suppression/deletion operations. SQL values are
+bound parameters, including user-provided identifiers and visibility lists. The
+database migration keeps the vector index and searchable metadata together so a
+filtered result cannot be reconstructed from an unscoped vector-only query.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.
@@ -154,5 +160,3 @@ Tool failures must not cause the system to expose hidden data or bypass normal p
 - #19 privacy/deletion
 - #20–#21 frontend flows
 - #25 action tools
-
-

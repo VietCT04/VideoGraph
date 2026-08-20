@@ -70,6 +70,20 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #11 pgvector repository
+
+**Issue:** #11
+
+Summary:
+
+- Added a Moment embedding row contract and dependency-free in-memory cosine-search fallback with creator/content/time/visibility filters.
+- Added parameterized DB-API PostgreSQL/pgvector upsert/search/delete operations and the pgvector schema/index migration.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- PostgreSQL/pgvector runtime and backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #8 AI Service serving boundary
 
 **Issue:** #8
@@ -278,13 +292,12 @@ Verification:
 
 ## Active Work
 
-Issues #1–#8 are implemented, including representative-frame/OCR evidence,
-timestamp-preserving multimodal fusion, semantic embeddings, and the asynchronous
-AI-service serving boundary. Issue #21's creator-control slice is implemented on top of
-the issue-20 branch, and issue #22's dataset slice is implemented. The next graph/query
-dependency is issue #11's planner; the next workstream slice is issue #23's benchmark
-harness. Shared contracts and live query/indexing/privacy APIs remain separate planned
-work.
+Issues #1–#11 are implemented, including the AI-service pipeline, canonical graph
+ingestion, entity resolution, and the pgvector repository. Issue #21's creator-control
+slice is implemented on top of the issue-20 branch, and issue #22's dataset slice is
+implemented. The next graph/query dependency is issue #12's validated planner; the next
+workstream slice is issue #23's benchmark harness. Shared contracts and live
+query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -332,11 +345,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement #11 the validated query planner over the graph and semantic contracts.
+1. Implement #12 the validated query planner over the graph and semantic contracts.
 2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. Continue graph/query issues #12–#19 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+5. Continue graph/query issues #13–#19 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
