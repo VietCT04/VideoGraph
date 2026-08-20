@@ -13,5 +13,6 @@ coverage/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+benchmarks/results/
 .idea/
 .vscode/

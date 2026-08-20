@@ -70,6 +70,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #23 evaluation benchmark harness
+
+**Issue:** #23
+
+Summary:
+
+- Added a dependency-free harness loading the controlled dataset and query fixtures.
+- Computed graph-only, vector-only, and hybrid Recall@5/10, MRR, evidence, and structured-answer metrics.
+- Emitted reproducible JSON/Markdown reports with input hashes and per-stage local timings.
+- Reported video indexing and peak VRAM as not measured because the fixture has no media.
+
+Verification:
+
+- `python benchmarks/run_benchmark.py --format json` passed and the report parsed successfully.
+- `git diff --check` passed; backend/frontend test suites and service/model benchmarks were not run.
+
 ### 2026-08-20 — Issue #25 permissioned grounded action tools
 
 **Issue:** #25
@@ -432,15 +448,14 @@ Verification:
 
 ## Active Work
 
-Issues #1–#19 and #25 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#19, #23, and #25 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
 creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
 orchestration, result fusion, the grounded viewer query API, and durable creator
 indexing jobs, privacy/deletion controls, and permissioned grounded actions. Issue #21's
 creator-control slice is implemented on top of the issue-20 branch, and issue #22's
-dataset slice is implemented. The next workstream slice is issue #23's benchmark
-harness; shared contracts and live query/indexing/privacy APIs remain separate planned
-work.
+dataset slice is implemented. The next workstream slice is issue #24's deployment assets;
+shared contracts and live query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -504,11 +519,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
-3. Freeze #2 shared extraction and retrieval-plan contracts.
-4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. Use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
-6. Keep media licensing and audiovisual validity explicit if clips are added later.
+1. Implement issue #24's honest local/deployment configuration and health checks.
+2. Freeze #2 shared extraction and retrieval-plan contracts.
+3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+4. Connect the benchmark to measured models and services before making production claims.
+5. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
 

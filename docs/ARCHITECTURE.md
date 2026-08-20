@@ -349,6 +349,12 @@ Production scaling can use:
 
 Do not present planning estimates as measured performance. Use the benchmark harness before making performance claims.
 
+The fixture benchmark in `benchmarks/run_benchmark.py` is an evaluation aid, not a
+replacement for the production graph/vector services. It keeps graph intent matching,
+semantic matching, and hybrid fusion as separate baselines and reports their evidence
+metrics independently. It must not be used to claim model, database, GPU, or audiovisual
+performance until those components are connected to measured inputs.
+
 ---
 
 ## 11. Related Issues
