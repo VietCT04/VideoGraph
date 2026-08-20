@@ -300,12 +300,15 @@ Every issue should remain narrow enough for one agent/session to implement and r
 
 - [`docs/README.md`](docs/README.md) — documentation index
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — system boundaries and persistent data model
+- [`docs/API.md`](docs/API.md) — API boundaries, query endpoints, and indexing job contracts
+- [`docs/DATABASE.md`](docs/DATABASE.md) — PostgreSQL, Neo4j, pgvector, canonical IDs, and lifecycle rules
+- [`docs/SECURITY.md`](docs/SECURITY.md) — creator privacy, authorization, retrieval safety, and secrets
 - [`docs/AI_SERVICE.md`](docs/AI_SERVICE.md) — video-processing service and pipeline
 - [`docs/QUERY_FLOW.md`](docs/QUERY_FLOW.md) — planner, Neo4j, semantic search, fusion, and latency path
 - [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) — repository and development workflow
 - [`docs/CONTINUITY.md`](docs/CONTINUITY.md) — handoff/current-state record
 - [`docs/CONCERNS.md`](docs/CONCERNS.md) — unresolved risks and architecture concerns
-- [`docs/user-stories/README.md`](docs/user-stories/README.md) — user-story convention
+- [`docs/user-stories/README.md`](docs/user-stories/README.md) — `US-0001-*` user-story convention
 - [`AGENTS.md`](AGENTS.md) — mandatory operating rules for coding agents
 
 ---
