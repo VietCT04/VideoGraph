@@ -136,6 +136,12 @@ The ASR component does not own final semantic chunk construction.
 
 A provider abstraction should allow model replacement without changing downstream interfaces.
 
+Issue #4 implements this boundary in `ai-service/pipeline/asr.py`. `ASRProvider` returns
+ordered `ASRSegment` values, language and speech-ratio metadata, an explicit `no_speech`
+flag, and provider/model metadata. `ASRResult.to_speech_spans()` maps directly to the
+temporal segmenter. The checked-in `FixtureASRProvider` filters high no-speech
+probability segments and supports deterministic batching without loading Whisper.
+
 ---
 
 ## 5. Representative Frames and OCR
