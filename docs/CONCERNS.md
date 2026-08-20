@@ -255,3 +255,30 @@ Model memory requirements, availability, and cost can block integration late in 
 ### Recommended next action
 
 During #24, benchmark the selected VLM/ASR stack on the intended development GPU and keep deployment/provider assumptions out of shared backend contracts.
+
+The issue-24 CUDA image is only a deployment scaffold and does not select or benchmark a
+model/provider. This concern remains open until the real AI Service stack is measured on
+the target GPU.
+
+---
+
+## C-012 — Deployment images still contain placeholder services
+
+**Status:** Open
+**Component:** Infrastructure / Runtime
+
+### Context
+
+The initial Dockerfiles and Compose file establish build context, volumes, environment
+names, and process-level health checks while the repository is still mostly fixture and
+documentation driven.
+
+### Risk
+
+A green container health check could be mistaken for a ready query, indexing, or AI
+inference service.
+
+### Recommended next action
+
+Replace the placeholder images with the real service entrypoints as their issues land,
+then make readiness checks validate the dependencies that the service actually needs.

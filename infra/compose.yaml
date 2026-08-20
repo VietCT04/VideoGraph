@@ -1,0 +1,82 @@
+name: ${COMPOSE_PROJECT_NAME:-videograph}
+
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: "8000"
+      SERVICE_NAME: backend-placeholder
+      AI_SERVICE_URL: ${AI_SERVICE_URL:-http://host.docker.internal:8001}
+      POSTGRES_URL: ${POSTGRES_URL:-postgresql://videograph:change-me@postgres:5432/videograph}
+      NEO4J_URI: ${NEO4J_URI:-bolt://neo4j:7687}
+      NEO4J_USER: ${NEO4J_USER:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-change-me}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-videograph}
+      POSTGRES_USER: ${POSTGRES_USER:-videograph}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5.26-community
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-change-me}
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --spider http://127.0.0.1:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  ai-service:
+    profiles: ["gpu"]
+    build:
+      context: ..
+      dockerfile: ai-service/Dockerfile
+    environment:
+      PORT: "8001"
+      SERVICE_NAME: ai-service-placeholder
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-}
+    ports:
+      - "${AI_SERVICE_PORT:-8001}:8001"
+    gpus: all
+
+volumes:
+  postgres-data:
+  neo4j-data:
+  neo4j-logs:

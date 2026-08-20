@@ -30,6 +30,12 @@ excluded, or hidden items out of its viewer-visible projection. These checks imp
 demo's state transitions but do not replace server-side authorization, database filters,
 or cross-store deletion enforcement.
 
+The deployment scaffold follows this rule: Compose reads runtime values from an
+untracked `.env` file, while `.env.example` contains only placeholders. Do not replace
+the placeholders with real database passwords, AI Service tokens, provider keys, cloud
+credentials, or signed URLs. The placeholder service reports process health only and
+does not log environment values.
+
 ## Retrieval Privacy
 
 Privacy filters must be applied to both retrieval branches.

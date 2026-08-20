@@ -36,6 +36,22 @@ GET  /health
 
 The AI Service does not expose Neo4j or pgvector operations.
 
+### Deployment health signals (#24)
+
+The deployment scaffold exposes process-level health signals without claiming that the
+application APIs are implemented:
+
+```text
+GET /health
+GET /healthz
+GET /readyz
+```
+
+The backend and AI Service placeholder images return JSON with `placeholder: true` and
+`dependencies_checked: false`; their health status only means that the process is alive.
+The frontend static image exposes `GET /healthz` with a plain-text `ok` response. Query,
+indexing, and memory-control routes remain planned in the issue-specific API sections.
+
 ## Query API Direction
 
 Planned viewer request:

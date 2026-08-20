@@ -12,8 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first fixture-backed implementation stage. The repository contains
 ownership READMEs, viewer and creator-control demos, a synthetic creator-memory dataset,
-and a dependency-free benchmark harness. Production application code and model-backed
-retrieval are still pending.
+a dependency-free benchmark harness, and a root-context deployment scaffold. Production
+application code and model-backed retrieval are still pending; backend and AI Service
+containers are explicitly placeholders.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -58,9 +59,10 @@ video
 ```
 
 The repository now includes fixture-backed viewer and creator-control demos from issues
-#20 and #21 plus a controlled synthetic creator-memory metadata dataset from issue #22.
-The demos are executable in a browser as static previews, but no production frontend,
-backend query endpoint, indexing API, or privacy API is implemented yet.
+#20 and #21, a controlled synthetic creator-memory metadata dataset from issue #22, and
+a dependency-free graph/vector/hybrid fixture benchmark from issue #23. The demos are
+executable in a browser as static previews, but no production frontend, backend query
+endpoint, indexing API, privacy API, or model-backed benchmark is implemented yet.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -118,9 +120,9 @@ Verification:
 
 ## Active Work
 
-Issue #23's benchmark slice is implemented on top of the issue-22 branch. The next
-workstream slice is issue #24's deployment assets; shared contracts and live
-query/indexing/privacy APIs remain separate planned work.
+Issue #24's deployment slice is implemented on top of the issue-23 branch. The requested
+stacked workstream is complete; shared contracts and live query/indexing/privacy APIs
+remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -168,11 +170,10 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20–#23 draft PRs and merge them in order when approved.
-2. Implement issue #24's honest local/deployment configuration and health checks.
-3. Freeze #2 shared extraction and retrieval-plan contracts.
-4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Connect the benchmark to measured models and services before making production claims.
+1. Review the stacked issue #20–#24 draft PRs and merge them in order when approved.
+2. Freeze #2 shared extraction and retrieval-plan contracts.
+3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+4. Replace placeholder containers as backend and AI Service implementation issues land.
+5. Connect the benchmark to measured models and services before making production claims.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
