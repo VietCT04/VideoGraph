@@ -80,6 +80,68 @@ Requirements:
 - Enforce creator scope and visibility in the repository/service layer.
 - Never expose database connection details to clients.
 
+The #9 graph slice accepts only payloads passing the shared extraction validator and
+maps controlled predicates to canonical IDs. It does not accept Cypher in extraction
+payloads, stores no embedding vectors in Neo4j, and preserves visibility on every
+content, Moment, entity, and relation record. Hidden or excluded records are filtered
+by the repository boundary before a retrieval tool can return them.
+
+The #11 vector repository applies creator and visibility filters in the repository
+contract and provides content-level suppression/deletion operations. SQL values are
+bound parameters, including user-provided identifiers and visibility lists. The
+database migration keeps the vector index and searchable metadata together so a
+filtered result cannot be reconstructed from an unscoped vector-only query.
+
+The #12 planner resolves creator scope before invoking a provider and validates all
+provider output against the closed shared schema. Invalid or unknown fields cause a
+deterministic fallback; provider output cannot inject Cypher, change authorization
+scope, or introduce an unknown ontology value.
+
+The #13 graph service performs a second validation at the retrieval boundary and
+selects templates from fixed allowlists. It binds creator, visibility, time, content,
+and attribute values as query parameters, applies a bounded top-k, and returns only
+creator-scoped evidence. An executor callback cannot be supplied with a plan-generated
+query string.
+
+The #14 semantic retriever applies creator and visibility scope before returning vector
+hits and carries time/content filters into the repository call. It does not send raw
+user text to a database query; only the provider-generated vector is used by the
+parameterized vector adapter. Hidden or excluded rows remain unavailable through the
+fixture and PostgreSQL paths.
+
+The #15 orchestrator passes the same already-validated creator-scoped plan to both
+branches and does not broaden visibility when one branch fails. Partial-success
+bundles contain only the successful branch's authorized results; timeout/error text is
+internal metadata and must not be exposed as a database exception to viewers.
+
+The #16 fusion layer only combines results already filtered by both retrieval
+boundaries. It deduplicates by canonical entity/Moment IDs and carries exact evidence
+timestamps forward; it cannot restore hidden content or replace missing authorization
+with a ranking score. Direct-answer eligibility is limited to complete, high-confidence
+structured results with relation and Moment evidence.
+
+The #17 query application service keeps the same creator and visibility scope from
+planner through graph/vector retrieval and fusion. Its optional synthesis boundary
+accepts only a normalized `GroundedEvidenceBundle` containing authorized result labels,
+relations, scores, and exact Moment/content timestamps. The synthesis provider has no
+repository handle and cannot widen retrieval scope. Synthesis failures preserve the
+already-grounded results and return a non-sensitive warning rather than a provider or
+database exception.
+
+The #18 indexing service validates the complete AI extraction contract before calling
+the graph or vector persistence boundaries. The AI Service client returns candidate
+facts only; it has no database access and cannot choose canonical IDs or visibility.
+Retries use the backend-owned processing key and completed-store flags, so a failed
+vector stage resumes only the missing stage and does not silently restore excluded
+content or duplicate canonical Moments.
+
+The #19 privacy service treats creator opt-in and content policy as backend authority.
+Creator management operations require the requester permission boundary; viewer queries
+fail closed when memory is disabled or no included public content remains. Hide, exclude,
+reject, and delete operations synchronously suppress both graph and vector representations
+before any result can reach fusion, synthesis, or an action tool. Correction metadata is
+stored with the content policy and does not grant visibility to deleted content.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.
@@ -144,6 +206,13 @@ A synthesis response must not replace the underlying evidence path for creator-s
 Action tools such as product search or jump-to-moment must consume authorized canonical retrieval results.
 
 Tool failures must not cause the system to expose hidden data or bypass normal permission checks.
+
+Issue #25 implements this boundary with typed action requests. `jump_to_timestamp`
+derives `content_id`, `moment_id`, and timestamps only from a resolved `FusedResult`
+evidence item. Product tools use the result's backend-owned canonical Product ID rather
+than re-identifying a product from raw user text. Privacy is checked before every tool;
+catalog failures return separately from the evidence so a failed enrichment cannot erase
+or replace the grounded creator source.
 
 ## Related Issues
 

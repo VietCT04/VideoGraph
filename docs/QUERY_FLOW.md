@@ -27,6 +27,8 @@ parse creator handle
         ↓
 resolve creator_id
         ↓
+privacy authorization + content visibility
+        ↓
 small LLM planner
         ↓
 validated RetrievalPlan
@@ -51,6 +53,15 @@ direct response   optional synthesis
 ```
 
 The planner is not the retrieval engine. It produces instructions for retrieval components.
+
+## 2.1 Privacy gate (#19)
+
+The query application service performs the backend-owned creator privacy check after
+creator resolution and before hybrid retrieval. The policy requires AI Memory opt-in and
+at least one included public content item. Content hide/exclude/reject/delete operations
+also synchronize graph and vector visibility or deletion, so the retrieval branches do
+not receive stale public rows. The planner cannot override this gate, and an unauthorized
+request returns `privacy_denied` before fusion or optional synthesis.
 
 ---
 
@@ -86,6 +97,16 @@ contracts/retrieval-plan.schema.json
 ```
 
 Unknown relations/entity types must be rejected by validation.
+
+The #12 planner slice implements this boundary in `backend/planner/`. The parser
+requires an `@creator` prefix, resolves the handle to a backend `creator_id`, and
+passes only the remaining question to a provider interface. The fixture provider is
+model-free and deterministic; a real provider must return structured JSON that is
+validated by `contracts.validation.validate_retrieval_plan` before retrieval.
+
+Planner results include `used_fallback`, provider error text suitable for internal
+metrics, and `latency_ms`. Invalid provider output falls back to a validated plan with
+separate graph intent and semantic text. Creator scope never comes from model output.
 
 ---
 
@@ -179,6 +200,19 @@ RETURN p
 
 The actual tool layer should own this query, not the planner.
 
+## Issue #13 safe graph tool slice
+
+`backend/graph/tools.py` validates the complete plan again at the graph boundary and
+maps only the shared v1 relation/entity values to fixed Cypher templates. Creator ID,
+visibility, content, entity, and time filters are parameters; there is no API field for
+raw Cypher. The fixture path uses the same validated plan and repository filters, while
+the Neo4j path accepts a parameterized executor callback and normalizes evidence into
+the same `GraphHit` shape.
+
+Unsupported or malformed plans fail closed with `GraphToolError`. Graph templates use
+bounded `LIMIT` values and return canonical entity labels plus Moment/content evidence
+timestamps for downstream fusion.
+
 ---
 
 ## 7. Semantic Retrieval
@@ -214,6 +248,19 @@ start_ms
 end_ms
 ```
 
+## Issue #14 semantic retrieval slice
+
+`backend/search/semantic_retrieval.py` embeds only the validated planner
+`semantic_query`, builds creator/content/time/visibility filters, and returns a
+normalized `SemanticHit` containing the canonical Moment ID, similarity, semantic
+text, content ID, and exact timestamps. `EmbeddingProvider` keeps model-specific code
+behind an adapter; `FixtureHashEmbeddingProvider` and `InMemoryVectorRepository`
+provide deterministic local plumbing without external dependencies.
+
+Fixture indexing uses `canonical_moment_id` from graph ingestion, so a vector result
+resolves to the same Moment evidence as a graph result. The fixture embedding is a
+repeatable hashing baseline, not a measured production semantic-quality claim.
+
 ---
 
 ## 8. Parallel Execution
@@ -243,6 +290,14 @@ Do:
 If one branch fails or times out, the other branch may still produce a valid partial result.
 
 The retrieval orchestrator should preserve per-branch latency and failure metadata for debugging/evaluation.
+
+## Issue #15 orchestration slice
+
+`backend/search/orchestrator.py` submits graph and vector callables to two worker
+threads from one validated plan. Each branch has an independent timeout and produces
+`success`, `failed`, or `timeout` status with latency/error metadata. A valid branch's
+results are retained when the other branch fails, and the `RetrievalBundle` exposes a
+`partial_success` signal without performing ranking or response wording.
 
 ---
 
@@ -340,6 +395,63 @@ Because graph/vector search run in parallel, total retrieval time is closer to t
 A useful target for planner + retrieval + fusion without final synthesis is roughly sub-second to low-single-second behavior under demo-scale warm conditions, but only benchmark data should be used for final claims.
 
 The optional synthesis call can add substantial latency and should not be mandatory for simple queries.
+
+## Issue #16 fusion slice
+
+`backend/search/fusion.py` groups graph hits by canonical entity ID and joins vector
+hits through their canonical Moment IDs. It aggregates exact content/timestamp
+evidence, retains graph relation and vector similarity signals, and applies a fixed
+deterministic score with stable ID tie-breaking. Each result carries a
+`direct_answer_eligible` signal; fusion does not invoke a second LLM or write final
+response prose.
+
+## Issue #17 query application slice
+
+`backend/query/service.py` composes the existing planner, hybrid retrieval, and fusion
+boundaries. `QueryApplicationService.execute()` resolves the `@creator` query through
+the planner, sends the validated plan to both retrieval branches, and serializes fused
+results with exact canonical Moment/content evidence. The framework-neutral
+`backend/api/query.py` adapter exposes the same behavior as a `POST /query`-shaped
+request without choosing FastAPI, Flask, or another web framework before one is part of
+the repository.
+
+The direct/synthesis decision remains explicit:
+
+```text
+fused results
+   ├─ high-confidence structured query → structured response
+   └─ complex or non-eligible query → optional provider over GroundedEvidenceBundle
+```
+
+The synthesis provider receives only creator ID, the remaining question, normalized
+result labels/relations/scores, exact evidence timestamps, and a partial-success flag.
+It cannot access graph/vector repositories or raw planner/database exceptions. If no
+provider is configured or it fails, the API preserves the grounded results and returns
+`grounded` with a machine-readable warning. Debug responses report planner, graph,
+vector, fusion, synthesis, and total latency separately; these values are instrumentation
+only until measured by the evaluation harness.
+
+## 10.1 Grounded action tools (#25)
+
+Actions branch from a resolved fused result, not from raw user text:
+
+```text
+grounded FusedResult
+       ↓
+privacy evidence check
+       ↓
+typed action tool
+   ┌───┼──────────────┐
+   ↓   ↓              ↓
+jump product      similar products
+```
+
+`jump_to_timestamp` selects an exact evidence item and returns its canonical
+`content_id`, `moment_id`, and timestamps. Product lookup and similarity use the
+canonical Product entity ID from the fused result and a deterministic local catalog in
+the fixture path. Tool results are separate from query evidence, so lookup failures do
+not discard the creator's grounded source. Hidden or excluded evidence is rejected
+before any action adapter runs.
 
 ---
 
@@ -440,3 +552,4 @@ The graph should remain in the architecture only if evaluation/demo use cases sh
 - #17 query API
 - #20 viewer UI
 - #23 evaluation
+

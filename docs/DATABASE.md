@@ -16,6 +16,44 @@ Owns normal application state, including planned data such as:
 - indexing jobs and status
 - processing/provider metadata where appropriate
 
+Issue #18's job model is expected to persist at least:
+
+```text
+job_id
+creator_id
+content_id
+pipeline_version
+state
+progress
+attempts
+ai_job_id
+graph_complete
+vector_complete
+failed_stage
+error_code
+```
+
+The uniqueness key is `(creator_id, content_id, pipeline_version)`. It prevents a
+duplicate submission from creating a second logical processing job while allowing an
+explicit retry to resume a failed persistence stage.
+
+Issue #19's application policy is expected to persist:
+
+```text
+creator_id
+ai_memory_enabled
+content_id
+included_in_memory
+visibility
+review_status
+correction_note
+deleted
+```
+
+Content policy is creator-scoped and must be joined to the same `content_id` represented
+in Neo4j and pgvector. A creator disable, exclusion, rejection, or deletion is a
+cross-store lifecycle operation, not a frontend-only flag.
+
 ### Neo4j
 
 Owns canonical structured creator memory:
@@ -125,6 +163,10 @@ Re-ingesting the same logical content must not create duplicate canonical Moment
 
 Indexing/retry behavior should use stable identifiers and explicit upsert semantics.
 
+The #18 fixture repository implements this contract in memory for local development.
+A production PostgreSQL repository must preserve the same processing-key uniqueness,
+state transitions, progress, retry metadata, and completed-store flags.
+
 ## Deletion / Visibility
 
 The same content can appear in multiple stores, so deletion/exclusion must propagate consistently.
@@ -171,3 +213,61 @@ Before database structure changes:
 - #18 indexing jobs
 - #19 privacy/deletion
 - #24 infrastructure
+
+## Issue #19 privacy implementation
+
+`backend/privacy/service.py` owns the fixture policy boundary for creator opt-in,
+content selection, visibility, correction, rejection, and deletion. It synchronously
+calls graph and vector visibility/delete operations, so both representations stop being
+searchable before the query service reaches fusion or synthesis. The production policy
+repository and authorization adapter must preserve this ordering.
+
+## Issue #18 indexing implementation
+
+`backend/indexing/jobs.py` owns the backend job state machine. It validates the complete
+AI extraction payload before mutating either persistent representation, uses the graph
+ingestor and vector upsert boundary with the same canonical Moment IDs, and records
+which store completed. `InMemoryIndexingJobRepository` is a fixture-backed durable
+boundary for one process; it is intentionally replaceable by PostgreSQL.
+
+## Issue #9 implementation slice
+
+`backend/graph/ingestion.py` maps a validated extraction payload into stable
+`Creator`, `Content`, `Moment`, and entity/relation records. Moment IDs use the
+canonical `moment_<content>_<start_ms>_<end_ms>` form, while entity IDs are
+deterministic backend IDs derived from creator, type, and normalized name; AI local
+IDs are retained only as properties. `InMemoryGraphRepository` provides idempotent
+upserts and fixture evidence queries, and `backend/graph/schema.cypher` contains the
+Neo4j constraints and indexes.
+
+Ingestion keeps evidence on entity and relation assertions as exact Moment/content
+timestamp references. The fixture adapter is intentionally dependency-free; a
+Neo4j driver implementation can satisfy the same repository boundary later.
+
+## Issue #10 entity resolution
+
+`backend/graph/entity_resolution.py` normalizes candidate names and scores creator/type
+compatible candidates using exact external IDs, normalized names, name similarity,
+brand/category compatibility, optional semantic/visual signals, and creator-history
+context. A score at the configured merge threshold updates one canonical entity and
+retains the source alias/evidence. A score in the ambiguous band creates a reversible
+link decision without merging; lower scores create a new canonical entity.
+
+Resolution decisions are deterministic for the same inputs and configuration. Every
+decision records its aliases and Moment evidence and can be reverted in the fixture
+resolver, preventing an uncertain mention from becoming an irreversible merge.
+
+## Issue #11 pgvector storage
+
+`backend/search/vector_repository.py` defines the `MomentEmbeddingRow` and
+`VectorRepository` boundary. `InMemoryVectorRepository` supports deterministic cosine
+search for fixtures, creator/content/time/visibility filters, idempotent `moment_id`
+upserts, visibility changes, and content deletion. `PostgresVectorRepository` uses
+DB-API parameter binding for all values and filter inputs; it never interpolates a
+creator ID, content ID, or visibility into SQL.
+
+`backend/search/migrations/001_moment_embeddings.sql` creates the pgvector-backed
+metadata table and creator/content indexes. Embedding dimensions remain deployment
+configuration, and `embedding_model` plus `embedding_version` are stored with every
+row so incompatible models can be rejected or reindexed deliberately.
+
