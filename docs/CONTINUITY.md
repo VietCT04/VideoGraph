@@ -12,9 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#4 add dependency-free contract, temporal
-segmentation, and timestamped ASR boundaries; later AI stages and application services
-remain fixture-backed.
+infrastructure directories. Issues #2–#5 add dependency-free contract, temporal
+segmentation, timestamped ASR, and visual evidence boundaries; later AI stages and
+application services remain fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #5 representative frames and OCR
+
+**Issue:** #5
+
+Summary:
+
+- Added representative frame candidate/sampling models with anchor selection and near-duplicate reduction.
+- Added timestamped OCR item/frame result models with optional bounding boxes.
+- Added deterministic frame/OCR fixtures and focused tests without OpenCV/Tesseract dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (11 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
 
 ### 2026-08-20 — Issue #4 timestamped ASR
 
@@ -194,7 +210,10 @@ Verification:
 ## Active Work
 
 Issue #21's creator-control slice is implemented on top of the issue-20 branch. The next
-workstream slice is issue #22's controlled synthetic dataset; shared contracts and live
+Issues #1–#5 are implemented, including the representative-frame and OCR evidence
+boundaries from issue #5. Issue #21's creator-control slice is also implemented on top
+of the issue-20 branch. The next AI dependency is issue #6's multimodal fusion, while
+issue #22 is the next controlled-dataset workstream slice; shared contracts and live
 query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
@@ -243,12 +262,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20 and #21 draft PRs and merge them in order when approved.
+1. Implement #6 multimodal fusion on top of the shared evidence models.
 2. Implement issue #22's controlled synthetic creator-memory dataset.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+5. Continue AI issues #7–#8 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
 
