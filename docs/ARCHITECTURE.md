@@ -73,6 +73,11 @@ Owns:
 
 The frontend calls the main backend only.
 
+Issue #20 adds a framework-free fixture-backed viewer demo. It owns input parsing,
+creator autocomplete presentation, loading/error/empty/success rendering, and
+timestamp navigation affordances. It does not own retrieval, ranking, authorization,
+or privacy filtering; those remain backend responsibilities.
+
 ### Main Backend
 
 Owns:

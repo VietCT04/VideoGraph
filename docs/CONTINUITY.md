@@ -56,7 +56,9 @@ video
 → Neo4j + pgvector
 ```
 
-No application implementation should be assumed complete yet.
+The repository now includes a small fixture-backed viewer search demo from issue #20.
+It is executable in a browser as a static preview, but no production frontend or
+backend query endpoint is implemented yet.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -114,8 +116,9 @@ Verification:
 
 ## Active Work
 
-Issue #1 is implemented on the issue branch for its PR. The next dependency is the
-shared extraction and retrieval contracts in issue #2.
+Issue #20's viewer slice is implemented on its stacked branch. The next workstream
+slice is issue #21's creator control UI; shared contracts and live query/indexing APIs
+remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -163,9 +166,9 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the issue #1 PR and merge it before the stacked implementation PRs.
-2. Freeze #2 shared extraction and retrieval-plan contracts.
-3. Create fixture payloads so graph/search/frontend work can proceed without the AI Service.
+1. Review the stacked issue #20 viewer PR and merge it when approved.
+2. Implement issue #21 creator controls against mocked indexing/privacy responses.
+3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
 5. In parallel, implement AI issues #3–#8 after their proposals are approved.
 6. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
