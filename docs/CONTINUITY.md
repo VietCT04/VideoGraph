@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #14 semantic Moment retrieval
+
+**Issue:** #14
+
+Summary:
+
+- Added embedding-provider and normalized semantic-hit interfaces.
+- Added creator/time/content/visibility-filtered retrieval over the vector repository
+  with latency instrumentation and a deterministic fixture embedding fallback.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Vector-database runtime and backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #13 safe graph query tools
 
 **Issue:** #13
