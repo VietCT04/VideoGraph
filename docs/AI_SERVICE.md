@@ -258,6 +258,13 @@ This is the preferred embedding input for semantic Moment search.
 
 The text does not need to be stylistically polished. It needs to encode supported multimodal meaning compactly and consistently.
 
+Issue #6 implements `MultimodalBundle`, `FusionOutput`, and the `VLMProvider` boundary
+in `ai-service/pipeline/fusion.py`. The fixture provider loads beauty, technology, and
+travel payloads, validates candidate entities and relations through the shared v1
+ontology, and requires every relation to carry evidence references. The provider emits
+content-local IDs only; persistent cross-video resolution remains a backend concern.
+`build_extraction_payload` revalidates the assembled Moments before returning them.
+
 ---
 
 ## 8. Embeddings

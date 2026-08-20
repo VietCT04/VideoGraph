@@ -2,6 +2,16 @@
 
 from .asr import ASRConfig, ASRProvider, ASRResult, ASRSegment, AudioInput, FixtureASRProvider
 from .frames import DeterministicFrameSampler, FrameCandidate, FrameSampler, RepresentativeFrame
+from .fusion import (
+    FixtureFusionProvider,
+    FusionEntity,
+    FusionOutput,
+    FusionRelation,
+    MultimodalBundle,
+    VLMProvider,
+    build_extraction_payload,
+    validate_fusion_output,
+)
 from .metadata import FixtureMetadataInspector, MetadataInspector, VideoMetadata
 from .ocr import FixtureOCRProvider, OCRFrameResult, OCRItem, OCRProvider
 from .segmentation import (
@@ -21,6 +31,7 @@ __all__ = [
     "FixtureMetadataInspector",
     "FixtureASRProvider",
     "FixtureOCRProvider",
+    "FixtureFusionProvider",
     "FrameCandidate",
     "FrameSampler",
     "DeterministicFrameSampler",
@@ -28,6 +39,13 @@ __all__ = [
     "OCRItem",
     "OCRProvider",
     "RepresentativeFrame",
+    "FusionEntity",
+    "FusionOutput",
+    "FusionRelation",
+    "MultimodalBundle",
+    "VLMProvider",
+    "build_extraction_payload",
+    "validate_fusion_output",
     "MetadataInspector",
     "SceneBoundary",
     "SegmenterConfig",

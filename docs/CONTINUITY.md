@@ -12,9 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#5 add dependency-free contract, temporal
-segmentation, timestamped ASR, and visual evidence boundaries; later AI stages and
-application services remain fixture-backed.
+infrastructure directories. Issues #2–#6 add dependency-free contract, temporal
+segmentation, timestamped ASR, visual evidence, and structured multimodal fusion
+boundaries; later AI stages and application services remain fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -68,6 +68,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #6 multimodal fusion
+
+**Issue:** #6
+
+Summary:
+
+- Added timestamp-preserving multimodal input assembly and structured fusion models.
+- Added controlled-ontology/evidence validation and extraction-payload integration.
+- Added beauty, technology, and travel fixture outputs with focused tests.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (14 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
 
 ### 2026-08-20 — Issue #10 deterministic entity resolution
 
@@ -229,10 +245,10 @@ Verification:
 
 ## Active Work
 
-Issues #1–#5 are implemented, including the representative-frame and OCR evidence
-boundaries from issue #5. Issue #21's creator-control slice is implemented on top of the
-issue-20 branch, and issue #22's dataset slice is now implemented. The next AI
-dependency is issue #6's multimodal fusion; the next workstream slice is issue #23's
+Issues #1–#6 are implemented, including representative-frame/OCR evidence and
+timestamp-preserving multimodal fusion. Issue #21's creator-control slice is implemented
+on top of the issue-20 branch, and issue #22's dataset slice is implemented. The next AI
+dependency is issue #7's semantic embeddings; the next workstream slice is issue #23's
 benchmark harness. Shared contracts and live query/indexing/privacy APIs remain
 separate planned work.
 
@@ -282,7 +298,7 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement #6 multimodal fusion on top of the shared evidence models.
+1. Implement #7 semantic embeddings on top of the fusion outputs.
 2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.

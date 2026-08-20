@@ -253,3 +253,27 @@ Model memory requirements, availability, and cost can block integration late in 
 ### Recommended next action
 
 During #24, benchmark the selected VLM/ASR stack on the intended development GPU and keep deployment/provider assumptions out of shared backend contracts.
+
+---
+
+## C-012 — Production multimodal fusion provider is not selected
+
+**Status:** Open
+**Component:** AI Service / VLM Fusion
+
+### Context
+
+Issue #6 provides a structured `VLMProvider` boundary and deterministic beauty,
+technology, and travel fixtures, but no production multimodal model or prompt/runtime
+has been selected.
+
+### Risk
+
+Provider-specific structured-output limits, latency, and evidence grounding behavior
+may differ from the fixture contract and require adapter changes.
+
+### Recommended next action
+
+Select and benchmark a production structured-output provider under #23/#24. Keep the
+fixture provider and shared contract as the offline fallback until that decision is
+measured.
