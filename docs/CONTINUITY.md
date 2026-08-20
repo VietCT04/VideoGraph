@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #15 parallel retrieval orchestration
+
+**Issue:** #15
+
+Summary:
+
+- Added concurrent graph/vector execution with independent timeouts.
+- Added branch status, latency, error, source-result preservation, and partial-success
+  bundle semantics without ranking or response synthesis.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #14 semantic Moment retrieval
 
 **Issue:** #14

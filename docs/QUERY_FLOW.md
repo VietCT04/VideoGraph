@@ -280,6 +280,14 @@ If one branch fails or times out, the other branch may still produce a valid par
 
 The retrieval orchestrator should preserve per-branch latency and failure metadata for debugging/evaluation.
 
+## Issue #15 orchestration slice
+
+`backend/search/orchestrator.py` submits graph and vector callables to two worker
+threads from one validated plan. Each branch has an independent timeout and produces
+`success`, `failed`, or `timeout` status with latency/error metadata. A valid branch's
+results are retained when the other branch fails, and the `RetrievalBundle` exposes a
+`partial_success` signal without performing ranking or response wording.
+
 ---
 
 ## 9. Fusion and Reranking
