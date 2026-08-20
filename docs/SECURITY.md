@@ -108,6 +108,12 @@ branches and does not broaden visibility when one branch fails. Partial-success
 bundles contain only the successful branch's authorized results; timeout/error text is
 internal metadata and must not be exposed as a database exception to viewers.
 
+The #16 fusion layer only combines results already filtered by both retrieval
+boundaries. It deduplicates by canonical entity/Moment IDs and carries exact evidence
+timestamps forward; it cannot restore hidden content or replace missing authorization
+with a ranking score. Direct-answer eligibility is limited to complete, high-confidence
+structured results with relation and Moment evidence.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

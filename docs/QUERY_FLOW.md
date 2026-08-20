@@ -385,6 +385,15 @@ A useful target for planner + retrieval + fusion without final synthesis is roug
 
 The optional synthesis call can add substantial latency and should not be mandatory for simple queries.
 
+## Issue #16 fusion slice
+
+`backend/search/fusion.py` groups graph hits by canonical entity ID and joins vector
+hits through their canonical Moment IDs. It aggregates exact content/timestamp
+evidence, retains graph relation and vector similarity signals, and applies a fixed
+deterministic score with stable ID tie-breaking. Each result carries a
+`direct_answer_eligible` signal; fusion does not invoke a second LLM or write final
+response prose.
+
 ---
 
 ## 12. Simple-Query Fast Path
