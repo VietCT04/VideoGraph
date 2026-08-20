@@ -56,9 +56,10 @@ video
 → Neo4j + pgvector
 ```
 
-The repository now includes a small fixture-backed viewer search demo from issue #20.
-It is executable in a browser as a static preview, but no production frontend or
-backend query endpoint is implemented yet.
+The repository now includes small fixture-backed viewer and creator-control demos from
+issues #20 and #21. They are executable in a browser as static previews, but no
+production frontend, backend query endpoint, indexing API, or privacy API is implemented
+yet.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
@@ -116,9 +117,9 @@ Verification:
 
 ## Active Work
 
-Issue #20's viewer slice is implemented on its stacked branch. The next workstream
-slice is issue #21's creator control UI; shared contracts and live query/indexing APIs
-remain separate planned work.
+Issue #21's creator-control slice is implemented on top of the issue-20 branch. The next
+workstream slice is issue #22's controlled synthetic dataset; shared contracts and live
+query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -166,11 +167,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20 viewer PR and merge it when approved.
-2. Implement issue #21 creator controls against mocked indexing/privacy responses.
+1. Review the stacked issue #20 and #21 draft PRs and merge them in order when approved.
+2. Implement issue #22's controlled synthetic creator-memory dataset.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
 5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Begin #22 controlled dataset early enough that #23 evaluation can measure real progress.
+6. Use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.

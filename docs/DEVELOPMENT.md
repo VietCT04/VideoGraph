@@ -160,6 +160,12 @@ The demo covers `@creator` parsing/autocomplete, loading/error/empty/success sta
 grounded result cards, and exact timestamp jump affordances. It uses local fixtures and
 does not imply that the conceptual `POST /query` endpoint is implemented.
 
+The creator controls preview is available at
+`http://localhost:8080/frontend/demo/creator-controls.html`. It uses a local fixture and
+reducer to demonstrate opt-in, content selection, queued/failed job states, retry, and
+fact review. It does not imply that the planned creator settings, indexing, or privacy
+endpoints are implemented.
+
 ---
 
 ## 7. Provider Abstractions
