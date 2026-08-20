@@ -65,6 +65,23 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #11 pgvector repository
+
+**Issue:** #11
+
+Summary:
+
+- Added a Moment embedding row contract and dependency-free in-memory cosine-search
+  fallback with creator/content/time/visibility filters.
+- Added parameterized DB-API PostgreSQL/pgvector upsert/search/delete operations and
+  the pgvector schema/index migration.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- PostgreSQL/pgvector runtime and backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #10 deterministic entity resolution
 
 **Issue:** #10

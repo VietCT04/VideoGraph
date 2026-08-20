@@ -199,3 +199,17 @@ Resolution decisions are deterministic for the same inputs and configuration. Ev
 decision records its aliases and Moment evidence and can be reverted in the fixture
 resolver, preventing an uncertain mention from becoming an irreversible merge.
 
+## Issue #11 pgvector storage
+
+`backend/search/vector_repository.py` defines the `MomentEmbeddingRow` and
+`VectorRepository` boundary. `InMemoryVectorRepository` supports deterministic cosine
+search for fixtures, creator/content/time/visibility filters, idempotent `moment_id`
+upserts, visibility changes, and content deletion. `PostgresVectorRepository` uses
+DB-API parameter binding for all values and filter inputs; it never interpolates a
+creator ID, content ID, or visibility into SQL.
+
+`backend/search/migrations/001_moment_embeddings.sql` creates the pgvector-backed
+metadata table and creator/content indexes. Embedding dimensions remain deployment
+configuration, and `embedding_model` plus `embedding_version` are stored with every
+row so incompatible models can be rejected or reindexed deliberately.
+
