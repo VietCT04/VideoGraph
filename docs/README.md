@@ -25,7 +25,7 @@ The root [`AGENTS.md`](../AGENTS.md) is the mandatory operating manual for codin
 
 Use this precedence when documents disagree:
 
-1. explicitly approved GitHub Issue proposal / approved architecture decision
+1. explicitly approved GitHub Issue proposal or approved architecture decision
 2. canonical shared contract files under `contracts/`
 3. subsystem documentation in this directory
 4. root `README.md`
