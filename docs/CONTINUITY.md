@@ -471,6 +471,22 @@ Additional important product behaviors to preserve:
 
 ---
 
+### 2026-08-20 — Issue #26 incremental LIVE memory
+
+**Issue:** #26
+
+Summary:
+
+- Added a simulated rolling LIVE memory store with deterministic temporary IDs.
+- Preserved stream-time and wall-clock timestamps through append/update/finalize.
+- Added finalization into backend-owned persistent Moment IDs without direct database writes.
+
+Verification:
+
+- Targeted LIVE memory unit checks and Python compilation were completed through the
+  GitHub branch workflow.
+- Backend/frontend suites, real streaming, and database integrations were not run.
+
 ## Known Concerns
 
 See [`CONCERNS.md`](CONCERNS.md).
