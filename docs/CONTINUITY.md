@@ -57,15 +57,33 @@ video
 → Neo4j + pgvector
 ```
 
-The backend query, indexing-job, and privacy-control slices are implemented as
-framework-neutral, fixture-backed paths on top of issues #12, #15, and #16. Action tools
-remain to be added in the current Workstream D stack.
+The backend query, indexing-job, privacy-control, and action-tool slices are implemented
+as framework-neutral, fixture-backed paths on top of issues #12, #15, and #16.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #25 permissioned action tools
+
+**Issue:** #25
+
+Summary:
+
+- Added typed `jump_to_timestamp`, `find_product`, and `find_similar_products` actions.
+- Resolved jump targets from exact canonical retrieval evidence only.
+- Added a canonical-ID keyed fixture product catalog and deterministic similar-product
+  adapter.
+- Enforced privacy before actions and isolated catalog failures from grounded evidence.
+- Added a framework-neutral action request adapter and fixture-backed coverage.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
 
 ### 2026-08-20 — Issue #19 privacy controls
 
@@ -325,8 +343,8 @@ Verification:
 
 ## Active Work
 
-Issue #19 is implemented on `codex/issue-19-privacy-controls` and is ready for its draft
-PR. The next stacked slice is issue #25 action tools.
+Issue #25 is implemented on `codex/issue-25-action-tools` and is ready for its draft PR.
+All four Workstream D slices are ready for review; none have been merged.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.

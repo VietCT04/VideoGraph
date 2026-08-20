@@ -194,6 +194,13 @@ Action tools such as product search or jump-to-moment must consume authorized ca
 
 Tool failures must not cause the system to expose hidden data or bypass normal permission checks.
 
+Issue #25 implements this boundary with typed action requests. `jump_to_timestamp`
+derives `content_id`, `moment_id`, and timestamps only from a resolved `FusedResult`
+evidence item. Product tools use the result's backend-owned canonical Product ID rather
+than re-identifying a product from raw user text. Privacy is checked before every tool;
+catalog failures return separately from the evidence so a failed enrichment cannot erase
+or replace the grounded creator source.
+
 ## Related Issues
 
 - #12 planner

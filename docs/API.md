@@ -156,6 +156,28 @@ vector visibility before a later query can return results. Delete removes the co
 graph records and vector rows. Viewer query authorization fails closed with
 `403 privacy_denied` when memory is disabled or no included public content remains.
 
+## Permissioned Actions (#25)
+
+The framework-neutral `backend.api.actions.ActionHttpAdapter` accepts an internal
+retrieval-result ID resolved from the current grounded query context:
+
+```json
+{
+  "action": "jump_to_timestamp",
+  "creator_id": "creator-42",
+  "result_id": "entity_creator_42_product_...",
+  "constraints": {}
+}
+```
+
+Supported actions are `jump_to_timestamp`, `find_product`, and
+`find_similar_products`. The adapter never accepts a caller-supplied timestamp,
+canonical product name, or arbitrary URL as the source of truth. The action service
+resolves the canonical retrieved result, checks every evidence content ID through the
+privacy policy, and returns a separate typed tool result. A failed catalog lookup keeps
+the already-grounded evidence in the tool result; hidden/private evidence returns
+`403 privacy_denied` without exposing its timestamps.
+
 ## Implemented internal planner contract (#12)
 
 Before a viewer query endpoint is added, the dependency-free
