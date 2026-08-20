@@ -1,0 +1,33 @@
+"""Semantic storage and retrieval interfaces."""
+
+from .vector_repository import (
+    InMemoryVectorRepository,
+    MomentEmbeddingRow,
+    PostgresVectorRepository,
+    VectorSearchFilters,
+)
+from .embeddings import EmbeddingProvider, FixtureHashEmbeddingProvider
+from .semantic_retrieval import SemanticHit, SemanticMomentRetriever, SemanticSearchResult, index_extraction_fixture
+from .orchestrator import BranchOutcome, HybridRetrievalOrchestrator, RetrievalBundle
+from .fusion import FusedResult, FusionEvidence, FusionResultSet, ResultFusionService
+
+__all__ = [
+    "InMemoryVectorRepository",
+    "MomentEmbeddingRow",
+    "PostgresVectorRepository",
+    "VectorSearchFilters",
+    "EmbeddingProvider",
+    "FixtureHashEmbeddingProvider",
+    "SemanticHit",
+    "SemanticMomentRetriever",
+    "SemanticSearchResult",
+    "index_extraction_fixture",
+    "BranchOutcome",
+    "HybridRetrievalOrchestrator",
+    "RetrievalBundle",
+    "FusedResult",
+    "FusionEvidence",
+    "FusionResultSet",
+    "ResultFusionService",
+]
+

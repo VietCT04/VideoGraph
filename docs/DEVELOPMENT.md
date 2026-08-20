@@ -99,12 +99,14 @@ Do not create hidden cross-component dependencies that defeat this separation.
 
 ## 5. Shared Contracts
 
-Planned contracts:
+Implemented v1 contracts:
 
 ```text
 contracts/
 ├── multimodal-extraction.schema.json
-└── retrieval-plan.schema.json
+├── retrieval-plan.schema.json
+├── ontology.py
+└── validation.py
 ```
 
 Rules:
@@ -114,6 +116,9 @@ Rules:
 - version schemas
 - reject unknown relationship/entity values when the ontology is closed
 - do not maintain divergent backend/AI copies manually
+
+The standard-library validator and fixtures can be run without backend, frontend, or
+model dependencies. See `contracts/test_validation.py`.
 
 See issue #2.
 
@@ -144,6 +149,11 @@ The initial local port convention is recorded in the root `.env.example`:
 
 These are development defaults, not a deployment guarantee. Framework-specific
 configuration belongs to the owning implementation issue.
+
+The dependency-free AI Service fallback can be started from the repository root with
+`PYTHONPATH=ai-service python -m app` (PowerShell users can set `$env:PYTHONPATH` for
+the process). It serves the documented AI job routes on port 8001. FastAPI/ASGI
+deployment remains optional and is not required for the fixture-backed checks.
 
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
 

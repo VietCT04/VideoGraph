@@ -17,7 +17,7 @@ Planned API areas include:
 - grounded query results
 - creator opt-in/settings
 - content selection
-- indexing job creation/status/retry
+- indexing job creation/status/retry (implemented as a framework-neutral adapter in #18)
 - memory inspection/correction/deletion
 - action/tool requests where exposed to clients
 
@@ -34,44 +34,112 @@ GET  /jobs/{job_id}/result
 GET  /health
 ```
 
-The AI Service does not expose Neo4j or pgvector operations.
+The AI Service does not expose Neo4j or pgvector operations. Issue #8 implements these
+routes with a FastAPI adapter when the optional dependency is installed and a matching
+standard-library fallback otherwise.
 
-## Query API Direction
+The #18 backend client uses an asynchronous submit/status/result contract.
+`backend.indexing.AIServiceClient` is the provider-neutral client boundary. The fixture
+adapter is immediate but still exposes submit/status/result methods, so a real HTTP
+client or callback/polling implementation can replace it without changing job
+orchestration.
 
-Planned viewer request:
+#### `POST /jobs/process-video`
 
-```text
-POST /query
-```
-
-Conceptual request:
+Request:
 
 ```json
 {
-  "query": "@alice which red lipstick did she recommend for darker skin?"
+  "content_id": "video_123",
+  "creator_id": "creator_42",
+  "upload_ref": "selected-upload-ref"
 }
 ```
 
-Conceptual backend flow:
+Exactly one of `video_url` or `upload_ref` is required. The response returns immediately:
 
-```text
-resolve creator
-→ small LLM planner
-→ validated RetrievalPlan
-→ Neo4j + pgvector
-→ fusion/rerank
-→ direct result or optional synthesis
+```json
+{
+  "job_id": "opaque-job-id",
+  "status": "queued"
+}
 ```
 
-Conceptual response should preserve grounded evidence:
+#### `GET /jobs/{job_id}`
+
+Returns the job identity and one of the stable states:
+
+```text
+queued
+preprocessing
+transcribing
+segmenting
+extracting_visuals
+fusing
+embedding
+completed
+failed
+```
+
+Failures include a machine-readable `error.code` and an actionable message. No partial
+result is published for a failed job.
+
+#### `GET /jobs/{job_id}/result`
+
+Returns the validated `multimodal-extraction.schema.json` payload when the job is
+`completed`, `202` while it is still running, and `409` with the normalized failure
+object when it is `failed`. Results are temporary service-local data; the main backend
+owns durable application state and persistence.
+
+#### `GET /health`
+
+Returns a small service health object and identifies whether the FastAPI or
+standard-library adapter is serving the routes.
+
+## Query API (#17)
+
+The framework-neutral `backend.api.query.QueryHttpAdapter` is the current HTTP
+boundary for the viewer query path. It accepts the following `POST /query`-shaped
+JSON body and delegates application behavior to
+`backend.query.QueryApplicationService`:
+
+```json
+{
+  "query": "@alice which red lipstick did she recommend for darker skin?",
+  "debug": true
+}
+```
+
+`query` must start with one `@creator` handle and a non-empty question. `debug` is
+optional and defaults to `false`. Unsupported request fields, malformed JSON-shaped
+bodies, invalid handles, and unknown creators return a stable `400 invalid_query`
+error without exposing provider or database exceptions.
+
+The application flow is:
+
+```text
+@creator query
+→ creator resolution + validated planner
+→ concurrent graph/vector retrieval
+→ deterministic fusion/rerank
+→ structured direct result or optional synthesis over evidence
+```
+
+The response preserves canonical result identity and exact source evidence:
 
 ```json
 {
   "creator_id": "creator_42",
+  "answer_type": "structured",
+  "answer": null,
   "results": [
     {
-      "entity_id": "product_99",
+      "result_id": "entity_creator_42_product_...",
+      "entity": {"id": "entity_creator_42_product_...", "name": "Example Lipstick"},
       "label": "Example Lipstick",
+      "score": 0.91,
+      "relations": ["RECOMMENDS"],
+      "direct_answer_eligible": true,
       "evidence": [
         {
           "content_id": "video_123",
@@ -81,11 +149,21 @@ Conceptual response should preserve grounded evidence:
         }
       ]
     }
-  ]
+  ],
+  "warnings": []
 }
 ```
 
-The exact schema is not frozen yet. Once implemented, replace conceptual examples with canonical request/response contracts.
+`answer_type` is `structured` for a direct high-confidence response, `synthesized`
+when an optional provider returns prose from the normalized evidence bundle, `grounded`
+when results exist but the synthesis path is unavailable, and `empty` when no result
+was retrieved. `answer` is populated only for `synthesized` responses. Every result
+evidence item contains `moment_id`, `content_id`, `start_ms`, and `end_ms`; semantic
+text is carried as supporting context when available.
+
+When `debug` is true, the response additionally contains `timing_ms` entries for
+`planner`, `graph`, `vector`, `fusion`, `synthesis`, and `total`, plus non-sensitive
+branch status metadata. Timing is omitted by default.
 
 ### Fixture-backed viewer slice (#20)
 
@@ -112,6 +190,98 @@ adapter enforces the important transition rules: indexing requires explicit opt-
 selection; disabling memory removes all content from the viewer-visible projection; and
 re-enabling memory does not silently restore previously excluded content.
 
+## Indexing Jobs (#18)
+
+The framework-neutral `backend.api.indexing.IndexingHttpAdapter` exposes these
+`POST`/`GET`-shaped operations:
+
+```text
+POST /indexing/jobs
+GET  /indexing/jobs/{job_id}
+POST /indexing/jobs/{job_id}/retry
+```
+
+Create request:
+
+```json
+{
+  "creator_id": "creator-42",
+  "content_id": "beauty-video-001",
+  "pipeline_version": "fixture-v1"
+}
+```
+
+Creation returns `202` and a durable job identity. The backend worker advances the job
+through `queued → submitted → ai_processing → ai_done → ingesting_graph →
+ingesting_vector → ready`; failures expose `failed_stage`, `error_code`, progress,
+attempt count, and per-store completion flags. A retry resumes the failed stage when
+possible, so a vector failure does not rerun GPU extraction or duplicate graph records.
+Invalid request bodies return `400 invalid_indexing_request`, unknown jobs return
+`404 job_not_found`, and non-retryable jobs return `409 job_not_retryable`.
+
+## Privacy Controls (#19)
+
+The framework-neutral `backend.api.privacy.PrivacyHttpAdapter` models creator-only
+management operations. Management requests include both `creator_id` and an authenticated
+`requester_id`; the service checks the owner permission boundary before changing state.
+The adapter exposes:
+
+```text
+POST /creators/{creator_id}/memory
+POST /creators/{creator_id}/content/{content_id}
+GET  /creators/{creator_id}/privacy
+```
+
+Content actions are `select`, `hide`, `exclude`, `correct`, `reject`, and `delete`.
+Exclude/hide/reject operations synchronously update application policy plus graph and
+vector visibility before a later query can return results. Delete removes the content's
+graph records and vector rows. Viewer query authorization fails closed with
+`403 privacy_denied` when memory is disabled or no included public content remains.
+
+## Permissioned Actions (#25)
+
+The framework-neutral `backend.api.actions.ActionHttpAdapter` accepts an internal
+retrieval-result ID resolved from the current grounded query context:
+
+```json
+{
+  "action": "jump_to_timestamp",
+  "creator_id": "creator-42",
+  "result_id": "entity_creator_42_product_...",
+  "constraints": {}
+}
+```
+
+Supported actions are `jump_to_timestamp`, `find_product`, and
+`find_similar_products`. The adapter never accepts a caller-supplied timestamp,
+canonical product name, or arbitrary URL as the source of truth. The action service
+resolves the canonical retrieved result, checks every evidence content ID through the
+privacy policy, and returns a separate typed tool result. A failed catalog lookup keeps
+the already-grounded evidence in the tool result; hidden/private evidence returns
+`403 privacy_denied` without exposing its timestamps.
+
+## Implemented internal planner contract (#12)
+
+Before a viewer query endpoint is added, the dependency-free
+`backend.planner.RetrievalPlanner` provides the internal request boundary. It accepts a
+string beginning with `@creator`, resolves the handle through a backend-owned mapping
+or callback, and returns a validated `RetrievalPlan` plus fallback and latency
+metadata. Planner providers return structured data only; raw Cypher is not an accepted
+field or execution path. The fixture provider is the current local adapter.
+
+The internal `HybridRetrievalOrchestrator` accepts the validated plan and returns a
+bundle containing independent graph/vector outcomes, source result objects, branch
+latencies, timeout/error status, and a partial-success flag. It is an orchestration
+boundary, not a final answer or synthesis API.
+
+The internal `ResultFusionService` consumes a `RetrievalBundle` and returns ranked
+results with graph/vector source scores, relation matches, canonical Moment evidence,
+and a direct-answer eligibility signal. The result set is suitable for a later query
+API but does not perform free-form synthesis. The #17 query application service now
+owns the response boundary: direct structured results bypass synthesis, while complex
+questions may call an injected synthesis provider with only normalized authorized
+evidence.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.
@@ -122,26 +292,14 @@ re-enabling memory does not silently restore previously excluded content.
 - Preserve stable machine-readable error/status values where practical.
 - Update every frontend/backend consumer when response shapes change.
 - Prefer shared/generated contracts under `contracts/` when available.
+- Keep AI Service results content-local and contract-validated; never persist directly
+  to Neo4j or pgvector from this service.
 
-## Planned Indexing Job States
+## AI Pipeline States
 
-Initial direction:
-
-```text
-queued
-preprocessing
-transcribing
-segmenting
-extracting_frames
-running_ocr
-fusing
-embedding
-persisting
-completed
-failed
-```
-
-Final names belong in shared contracts once issue #2 is implemented.
+The detailed AI pipeline states remain internal to the AI Service. Main-backend durable
+job states are defined by issue #18 above and deliberately track orchestration stages,
+not every GPU substep.
 
 ## Related Issues
 

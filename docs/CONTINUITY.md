@@ -10,10 +10,12 @@ Do not use it as a full changelog.
 
 **Date:** 2026-08-20
 
-VideoGraph is at the first fixture-backed implementation stage. The repository contains
-ownership READMEs, viewer and creator-control demos, a synthetic creator-memory dataset,
-and a dependency-free benchmark harness. Production application code and model-backed
-retrieval are still pending.
+VideoGraph is at the first implementation stage. The repository skeleton now exists,
+with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
+infrastructure directories. Issues #2–#8 add dependency-free contract, temporal
+segmentation, timestamped ASR, visual evidence, structured multimodal fusion, semantic
+embeddings, and asynchronous serving boundaries; later application services remain
+fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
 
@@ -68,6 +70,334 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #23 evaluation benchmark harness
+
+**Issue:** #23
+
+Summary:
+
+- Added a dependency-free harness loading the controlled dataset and query fixtures.
+- Computed graph-only, vector-only, and hybrid Recall@5/10, MRR, evidence, and structured-answer metrics.
+- Emitted reproducible JSON/Markdown reports with input hashes and per-stage local timings.
+- Reported video indexing and peak VRAM as not measured because the fixture has no media.
+
+Verification:
+
+- `python benchmarks/run_benchmark.py --format json` passed and the report parsed successfully.
+- `git diff --check` passed; backend/frontend test suites and service/model benchmarks were not run.
+
+### 2026-08-20 — Issue #25 permissioned grounded action tools
+
+**Issue:** #25
+
+Summary:
+
+- Added typed `jump_to_timestamp`, `find_product`, and `find_similar_products` tools.
+- Derived jump targets only from exact evidence on canonical fused retrieval results.
+- Added a canonical-ID keyed fixture product catalog and deterministic similarity adapter.
+- Enforced privacy before every action and isolated catalog failures from grounded evidence.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #19 privacy and deletion controls
+
+**Issue:** #19
+
+Summary:
+
+- Added creator AI Memory opt-in and creator-authorized content management.
+- Added include/exclude/hidden/correction/rejection/deletion state and a framework-neutral privacy adapter.
+- Enforced fail-closed query authorization before hybrid retrieval, fusion, and synthesis.
+- Synchronized graph and vector visibility changes and deleted both representations together.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #18 creator indexing jobs
+
+**Issue:** #18
+
+Summary:
+
+- Added a durable backend-owned indexing job state machine with progress, retry, AI, graph, vector, ready, and failed metadata.
+- Added an asynchronous `AIServiceClient` protocol with a deterministic fixture adapter.
+- Validated the complete extraction payload before graph/vector mutation and reused canonical Moment IDs for idempotent upserts.
+- Added framework-neutral create/status/retry API models and fixture-backed coverage.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #17 grounded viewer query API
+
+**Issue:** #17
+
+Summary:
+
+- Added a framework-neutral `POST /query`-shaped HTTP adapter.
+- Connected `@creator` parsing, creator resolution, planning, parallel graph/vector retrieval, fusion, and grounded evidence serialization.
+- Added direct structured responses and an optional synthesis provider boundary over normalized evidence only.
+- Added debug timing for planner, graph, vector, fusion, synthesis, and total latency.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #16 graph/vector fusion and reranking
+
+**Issue:** #16
+
+Summary:
+
+- Added canonical graph/vector deduplication through entity and Moment IDs.
+- Added deterministic score fusion with relation/evidence features and stable tie-breaking.
+- Preserved exact evidence timestamps and exposed direct-answer eligibility without synthesis.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #15 parallel graph-vector retrieval
+
+**Issue:** #15
+
+Summary:
+
+- Added concurrent graph/vector invocation from one validated plan.
+- Added independent timeouts and failure/partial-success metadata.
+- Preserved branch result objects, evidence, source scores, and latency without fusion.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #14 semantic retrieval
+
+**Issue:** #14
+
+Summary:
+
+- Added embedding-provider and normalized semantic-hit interfaces.
+- Added creator-scoped vector retrieval with content/time/visibility filters and latency metadata.
+- Added deterministic fixture embedding/indexing fallback linked by canonical Moment ID.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Vector-database runtime and backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #13 safe graph tools
+
+**Issue:** #13
+
+Summary:
+
+- Added fixed relation/entity Cypher templates selected only from the shared allowlist.
+- Added creator/visibility/time/content scope and bounded top-k parameters.
+- Added fixture-backed graph execution and normalized evidence-preserving hits.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Neo4j runtime and backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #12 validated query planner
+
+**Issue:** #12
+
+Summary:
+
+- Added strict `@creator` parsing and backend-owned creator resolution.
+- Added planner provider interface and a controlled ontology prompt.
+- Added schema validation, deterministic fixture planning, fallback, and latency metadata.
+- Raw Cypher is neither accepted nor generated.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #11 pgvector repository
+
+**Issue:** #11
+
+Summary:
+
+- Added a Moment embedding row contract and dependency-free in-memory cosine-search fallback with creator/content/time/visibility filters.
+- Added parameterized DB-API PostgreSQL/pgvector upsert/search/delete operations and the pgvector schema/index migration.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- PostgreSQL/pgvector runtime and backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #8 AI Service serving boundary
+
+**Issue:** #8
+
+Summary:
+
+- Added testable in-process asynchronous job orchestration with stable stage states and normalized failures.
+- Added contract-aware completion validation and temporary result retention.
+- Added FastAPI-compatible routes with a standard-library HTTP fallback and an end-to-end fixture pipeline.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (20 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- FastAPI app instantiation and route-table checks passed; backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #7 semantic embeddings
+
+**Issue:** #7
+
+Summary:
+
+- Added replaceable embedding metadata, batch, and provider models.
+- Added a deterministic normalized-hashing fixture with batching and semantic sanity checks.
+- Integrated embeddings over fused `semantic_text` into validated extraction payloads.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (17 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #6 multimodal fusion
+
+**Issue:** #6
+
+Summary:
+
+- Added timestamp-preserving multimodal input assembly and structured fusion models.
+- Added controlled-ontology/evidence validation and extraction-payload integration.
+- Added beauty, technology, and travel fixture outputs with focused tests.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (14 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #10 deterministic entity resolution
+
+**Issue:** #10
+
+Summary:
+
+- Added normalized candidate scoring with exact-ID, alias, compatibility, and optional
+  similarity signals.
+- Added high-confidence merge, reversible ambiguous link, create, alias, and evidence
+  preservation behavior.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
+### 2026-08-20 — Issue #5 representative frames and OCR
+
+**Issue:** #5
+
+Summary:
+
+- Added representative frame candidate/sampling models with anchor selection and near-duplicate reduction.
+- Added timestamped OCR item/frame result models with optional bounding boxes.
+- Added deterministic frame/OCR fixtures and focused tests without OpenCV/Tesseract dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (11 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #4 timestamped ASR
+
+**Issue:** #4
+
+Summary:
+
+- Added replaceable ASR input, segment, result, and configuration models.
+- Added a deterministic fixture provider with no-speech filtering and batching.
+- Added direct conversion from ASR output to temporal segmenter speech spans.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (8 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #9 Neo4j ingestion foundation
+
+**Issue:** #9
+
+Summary:
+
+- Added canonical graph models, stable ID mapping, evidence-preserving ingestion, and an idempotent in-memory repository.
+- Added Neo4j constraints and indexes without embedding storage.
+
+Verification:
+
+- Python compilation and git diff check were completed for the stacked slice.
+- Neo4j runtime and backend/frontend suites were not run.
+
+### 2026-08-20 — Issue #3 temporal segmentation
+
+**Issue:** #3
+
+Summary:
+
+- Added metadata inspection and temporal segmentation interfaces under `ai-service/pipeline/`.
+- Added deterministic speech-boundary merging, strong scene-boundary preservation, long-chunk splitting, and representative timestamps.
+- Added silent fallback and focused unit tests without FFmpeg/OpenCV dependencies.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (5 tests).
+- `python -m compileall -q ai-service` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #2 shared contracts
+
+**Issue:** #2
+
+Summary:
+
+- Added versioned extraction and retrieval-plan JSON Schemas.
+- Added a closed v1 ontology and standard-library boundary validator.
+- Added beauty, technology, and travel extraction fixtures plus targeted tests.
+
+Verification:
+
+- `python -m unittest contracts.test_validation` passed (5 tests).
+- `python -m compileall -q contracts` and `git diff --check` passed.
+- Backend/frontend suites are not in scope.
+
+### 2026-08-20 — Issue #20 viewer search demo
+
+**Issue:** #20
+
+Summary:
+
+- Added a dependency-free viewer search demo with creator mention parsing and autocomplete.
+- Added loading, error, empty, and success states over local query fixtures.
+- Preserved canonical evidence IDs and exact source timestamps with jump-to-moment affordances.
+
+Verification:
+
+- Node syntax check and fixture parsing passed.
+- Browser checks and full frontend/backend suites were not run.
+
 ### 2026-08-20 — Initial project planning
 
 **Issues:** #1–#27
@@ -118,9 +448,14 @@ Verification:
 
 ## Active Work
 
-Issue #23's benchmark slice is implemented on top of the issue-22 branch. The next
-workstream slice is issue #24's deployment assets; shared contracts and live
-query/indexing/privacy APIs remain separate planned work.
+Issues #1–#19, #23, and #25 are implemented, including the AI-service pipeline, canonical graph
+ingestion, entity resolution, pgvector storage, the validated query planner,
+creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
+orchestration, result fusion, the grounded viewer query API, and durable creator
+indexing jobs, privacy/deletion controls, and permissioned grounded actions. Issue #21's
+creator-control slice is implemented on top of the issue-20 branch, and issue #22's
+dataset slice is implemented. The next workstream slice is issue #24's deployment assets;
+shared contracts and live query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -151,6 +486,22 @@ Additional important product behaviors to preserve:
 
 ---
 
+### 2026-08-20 — Issue #26 incremental LIVE memory
+
+**Issue:** #26
+
+Summary:
+
+- Added a simulated rolling LIVE memory store with deterministic temporary IDs.
+- Preserved stream-time and wall-clock timestamps through append/update/finalize.
+- Added finalization into backend-owned persistent Moment IDs without direct database writes.
+
+Verification:
+
+- Targeted LIVE memory unit checks and Python compilation were completed through the
+  GitHub branch workflow.
+- Backend/frontend suites, real streaming, and database integrations were not run.
+
 ## Known Concerns
 
 See [`CONCERNS.md`](CONCERNS.md).
@@ -168,11 +519,12 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Review the stacked issue #20–#23 draft PRs and merge them in order when approved.
-2. Implement issue #24's honest local/deployment configuration and health checks.
-3. Freeze #2 shared extraction and retrieval-plan contracts.
-4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. In parallel, implement AI issues #3–#8 after their proposals are approved.
-6. Connect the benchmark to measured models and services before making production claims.
+1. Implement issue #24's honest local/deployment configuration and health checks.
+2. Freeze #2 shared extraction and retrieval-plan contracts.
+3. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
+4. Connect the benchmark to measured models and services before making production claims.
+5. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
+
+

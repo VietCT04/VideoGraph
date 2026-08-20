@@ -35,20 +35,22 @@ authorized retrieval inputs. The fixture harness alone does not settle that ques
 
 ## C-002 — Controlled graph ontology is not frozen
 
-**Status:** Partially mitigated
+**Status:** Resolved for v1; future additions require a versioned contract change
 **Component:** Contracts / AI Service / Neo4j / Planner
 
 ### Context
 
-Current candidate relations include `USES`, `RECOMMENDS`, `LIKES`, `COMPARES`, `SWITCHED_TO`, and others, but the exact v1 vocabulary is not yet canonical.
+The v1 entity and relation vocabulary is canonical in `contracts/ontology.py` and the
+two JSON Schemas. It is intentionally small and closed.
 
 ### Risk
 
-AI extraction, planner output, and Neo4j tools could independently use different relation names or semantics.
+Future additions could still create incompatible ontology versions if they bypass the
+shared contract.
 
 ### Recommended next action
 
-Freeze the v1 entity/relation vocabulary in issue #2 and use it from:
+Future ontology work must use the v1 vocabulary from:
 
 - extraction schema
 - VLM structured output
@@ -56,18 +58,18 @@ Freeze the v1 entity/relation vocabulary in issue #2 and use it from:
 - graph ingestion
 - graph query tools
 
-Reject unknown predicates at validation boundaries.
+Reject unknown predicates at validation boundaries and version any incompatible change.
 
 ---
 
 ## C-003 — Embedding model and dimension are not selected
 
-**Status:** Open  
+**Status:** Open; deterministic fixture baseline recorded, production choice pending
 **Component:** AI Service / pgvector / Search
 
 ### Context
 
-The architecture assumes one fused `semantic_text` embedding per searchable Moment, but no final model/dimension has been chosen.
+The architecture assumes one fused `semantic_text` embedding per searchable Moment. Issue #7 records a deterministic `hashing-fixture` v1 baseline at dimension 32 for offline tests, but no production model or final dimension has been chosen.
 
 ### Risk
 
@@ -75,7 +77,7 @@ AI Service and backend pgvector schema could become incompatible, and switching 
 
 ### Recommended next action
 
-Choose a baseline embedding model before #7/#11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable.
+Choose and benchmark a production embedding model before #11 integration, record model/version/dimension in the shared contract, and keep the provider replaceable. Do not treat the dimension-32 fixture as a production benchmark.
 
 ---
 
@@ -218,6 +220,11 @@ Excluding/deleting content in one store while leaving it searchable in another c
 
 Issue #19 must define deletion/suppression propagation and retrieval filters across every representation. Add integration tests that verify hidden content cannot surface through either graph or vector paths.
 
+Issue #19 now provides the fixture policy boundary and synchronized graph/vector
+suppression, including creator opt-in and fail-closed query authorization. The concern
+remains open for production database transactions, cache invalidation, and integration
+coverage across real Neo4j/pgvector deployments.
+
 ---
 
 ## C-010 — Final synthesis LLM can hide retrieval quality
@@ -237,6 +244,52 @@ The demo may overstate retrieval correctness and lose the evidence-backed produc
 
 Keep direct structured results as the default for simple queries. Evaluate retrieval/evidence correctness separately from synthesis quality. Always expose exact source Moments.
 
+Issue #17 keeps this boundary explicit: direct structured results do not call a synthesis
+provider, and the optional provider receives only a normalized grounded evidence bundle.
+The risk remains open until synthesis grounding and answer quality are measured by #23.
+
+## C-012 — Indexing job fixture store is not process-durable
+
+**Status:** Open
+**Component:** Backend / PostgreSQL / Indexing
+
+### Context
+
+Issue #18 defines the durable job contract and state transitions, but the current local
+implementation uses `InMemoryIndexingJobRepository` so the fixture path has no database
+dependency.
+
+### Risk
+
+Jobs, progress, retry counts, and completed-store flags are lost when the process exits;
+the fixture cannot yet provide crash recovery or multi-worker coordination.
+
+### Recommended next action
+
+Implement the PostgreSQL job repository and migration before production indexing. Keep
+the processing-key uniqueness and explicit state transitions identical to the fixture
+contract.
+
+## C-013 — Product action catalog is a fixture boundary
+
+**Status:** Open
+**Component:** Action Tools / Commerce
+
+### Context
+
+Issue #25 uses a deterministic local catalog so canonical Product-to-action behavior can
+be demonstrated without an external commerce provider.
+
+### Risk
+
+Fixture prices, URLs, similarity behavior, and availability are not live commerce data
+and must not be presented as current market information.
+
+### Recommended next action
+
+Add an approved commerce adapter with provider-specific freshness, failure, and privacy
+policies before exposing product actions beyond the demo.
+
 ---
 
 ## C-011 — GPU/provider choice remains open
@@ -255,3 +308,50 @@ Model memory requirements, availability, and cost can block integration late in 
 ### Recommended next action
 
 During #24, benchmark the selected VLM/ASR stack on the intended development GPU and keep deployment/provider assumptions out of shared backend contracts.
+
+---
+
+## C-012 — Production multimodal fusion provider is not selected
+
+**Status:** Open
+**Component:** AI Service / VLM Fusion
+
+### Context
+
+Issue #6 provides a structured `VLMProvider` boundary and deterministic beauty,
+technology, and travel fixtures, but no production multimodal model or prompt/runtime
+has been selected.
+
+### Risk
+
+Provider-specific structured-output limits, latency, and evidence grounding behavior
+may differ from the fixture contract and require adapter changes.
+
+### Recommended next action
+
+Select and benchmark a production structured-output provider under #23/#24. Keep the
+fixture provider and shared contract as the offline fallback until that decision is
+measured.
+
+---
+
+## C-013 — AI Service worker and result retention are process-local
+
+**Status:** Open
+**Component:** AI Service / Deployment
+
+### Context
+
+Issue #8 uses an in-process thread pool and memory-only result store so the API can be
+tested without Redis, a broker, or a database. The main backend remains the owner of
+durable indexing state.
+
+### Risk
+
+Process restart, multiple replicas, or worker failure can lose queued jobs and temporary
+results. This is not a production reliability guarantee.
+
+### Recommended next action
+
+Define the production queue, retry, idempotency, and result handoff under the deployment
+and indexing issues before connecting this service to durable backend jobs.
