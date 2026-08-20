@@ -16,6 +16,27 @@ Owns normal application state, including planned data such as:
 - indexing jobs and status
 - processing/provider metadata where appropriate
 
+Issue #18's job model is expected to persist at least:
+
+```text
+job_id
+creator_id
+content_id
+pipeline_version
+state
+progress
+attempts
+ai_job_id
+graph_complete
+vector_complete
+failed_stage
+error_code
+```
+
+The uniqueness key is `(creator_id, content_id, pipeline_version)`. It prevents a
+duplicate submission from creating a second logical processing job while allowing an
+explicit retry to resume a failed persistence stage.
+
 ### Neo4j
 
 Owns canonical structured creator memory:
@@ -125,6 +146,10 @@ Re-ingesting the same logical content must not create duplicate canonical Moment
 
 Indexing/retry behavior should use stable identifiers and explicit upsert semantics.
 
+The #18 fixture repository implements this contract in memory for local development.
+A production PostgreSQL repository must preserve the same processing-key uniqueness,
+state transitions, progress, retry metadata, and completed-store flags.
+
 ## Deletion / Visibility
 
 The same content can appear in multiple stores, so deletion/exclusion must propagate consistently.
@@ -171,6 +196,14 @@ Before database structure changes:
 - #18 indexing jobs
 - #19 privacy/deletion
 - #24 infrastructure
+
+## Issue #18 indexing implementation
+
+`backend/indexing/jobs.py` owns the backend job state machine. It validates the complete
+AI extraction payload before mutating either persistent representation, uses the graph
+ingestor and vector upsert boundary with the same canonical Moment IDs, and records
+which store completed. `InMemoryIndexingJobRepository` is a fixture-backed durable
+boundary for one process; it is intentionally replaceable by PostgreSQL.
 
 ## Issue #9 implementation slice
 

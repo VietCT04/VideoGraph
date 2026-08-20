@@ -115,6 +115,13 @@ repository handle and cannot widen retrieval scope. Synthesis failures preserve 
 already-grounded results and return a non-sensitive warning rather than a provider or
 database exception.
 
+The #18 indexing service validates the complete AI extraction contract before calling
+the graph or vector persistence boundaries. The AI Service client returns candidate
+facts only; it has no database access and cannot choose canonical IDs or visibility.
+Retries use the backend-owned processing key and completed-store flags, so a failed
+vector stage resumes only the missing stage and does not silently restore excluded
+content or duplicate canonical Moments.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

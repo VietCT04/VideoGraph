@@ -57,15 +57,36 @@ video
 → Neo4j + pgvector
 ```
 
-The backend query application slice is now implemented as a framework-neutral,
-fixture-backed path on top of issues #12, #15, and #16. Indexing, privacy controls, and
-action tools remain to be added in the current Workstream D stack.
+The backend query application and indexing-job slices are implemented as
+framework-neutral, fixture-backed paths on top of issues #12, #15, and #16. Privacy
+controls and action tools remain to be added in the current Workstream D stack.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #18 indexing jobs
+
+**Issue:** #18
+
+Summary:
+
+- Added a durable job state machine with explicit AI, graph, vector, ready, and failed
+  stages plus progress, retry, and completed-store metadata.
+- Added an asynchronous AI Service client protocol and deterministic fixture adapter.
+- Validated extraction payloads before graph/vector mutation and reused canonical Moment
+  IDs for idempotent cross-store orchestration.
+- Added retry behavior that resumes a missing vector stage without rerunning extraction
+  or duplicating graph records.
+- Added framework-neutral create/status/retry API models and fixture-backed coverage.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
 
 ### 2026-08-20 — Issue #17 query application service
 
@@ -284,9 +305,9 @@ Verification:
 
 ## Active Work
 
-Issue #17 is implemented on `codex/issue-17-query-api` and is ready for its draft PR.
-The next stacked slice is issue #18 indexing jobs; after that continue with #19 privacy
-controls and #25 action tools.
+Issue #18 is implemented on `codex/issue-18-indexing-jobs` and is ready for its draft
+PR. The next stacked slice is issue #19 privacy controls; after that continue with #25
+action tools.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.

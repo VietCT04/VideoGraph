@@ -237,6 +237,28 @@ Issue #17 keeps this boundary explicit: direct structured results do not call a 
 provider, and the optional provider receives only a normalized grounded evidence bundle.
 The risk remains open until synthesis grounding and answer quality are measured by #23.
 
+## C-012 — Indexing job fixture store is not process-durable
+
+**Status:** Open
+**Component:** Backend / PostgreSQL / Indexing
+
+### Context
+
+Issue #18 defines the durable job contract and state transitions, but the current local
+implementation uses `InMemoryIndexingJobRepository` so the fixture path has no database
+dependency.
+
+### Risk
+
+Jobs, progress, retry counts, and completed-store flags are lost when the process exits;
+the fixture cannot yet provide crash recovery or multi-worker coordination.
+
+### Recommended next action
+
+Implement the PostgreSQL job repository and migration before production indexing. Keep
+the processing-key uniqueness and explicit state transitions identical to the fixture
+contract.
+
 ---
 
 ## C-011 — GPU/provider choice remains open

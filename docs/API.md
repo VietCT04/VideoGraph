@@ -17,7 +17,7 @@ Planned API areas include:
 - grounded query results
 - creator opt-in/settings
 - content selection
-- indexing job creation/status/retry
+- indexing job creation/status/retry (implemented as a framework-neutral adapter in #18)
 - memory inspection/correction/deletion
 - action/tool requests where exposed to clients
 
@@ -25,7 +25,7 @@ Planned API areas include:
 
 The backend communicates with the AI Service over an asynchronous job API.
 
-Planned endpoints:
+The #18 backend client uses an asynchronous submit/status/result contract:
 
 ```text
 POST /jobs/process-video
@@ -34,7 +34,10 @@ GET  /jobs/{job_id}/result
 GET  /health
 ```
 
-The AI Service does not expose Neo4j or pgvector operations.
+`backend.indexing.AIServiceClient` is the provider-neutral client boundary. The fixture
+adapter is immediate but still exposes submit/status/result methods, so a real HTTP
+client or callback/polling implementation can replace it without changing job
+orchestration. The AI Service does not expose Neo4j or pgvector operations.
 
 ## Query API (#17)
 
@@ -105,6 +108,35 @@ When `debug` is true, the response additionally contains `timing_ms` entries for
 `planner`, `graph`, `vector`, `fusion`, `synthesis`, and `total`, plus non-sensitive
 branch status metadata. Timing is omitted by default.
 
+## Indexing Jobs (#18)
+
+The framework-neutral `backend.api.indexing.IndexingHttpAdapter` exposes these
+`POST`/`GET`-shaped operations:
+
+```text
+POST /indexing/jobs
+GET  /indexing/jobs/{job_id}
+POST /indexing/jobs/{job_id}/retry
+```
+
+Create request:
+
+```json
+{
+  "creator_id": "creator-42",
+  "content_id": "beauty-video-001",
+  "pipeline_version": "fixture-v1"
+}
+```
+
+Creation returns `202` and a durable job identity. The backend worker advances the job
+through `queued → submitted → ai_processing → ai_done → ingesting_graph →
+ingesting_vector → ready`; failures expose `failed_stage`, `error_code`, progress,
+attempt count, and per-store completion flags. A retry resumes the failed stage when
+possible, so a vector failure does not rerun GPU extraction or duplicate graph records.
+Invalid request bodies return `400 invalid_indexing_request`, unknown jobs return
+`404 job_not_found`, and non-retryable jobs return `409 job_not_retryable`.
+
 ## Implemented internal planner contract (#12)
 
 Before a viewer query endpoint is added, the dependency-free
@@ -138,25 +170,11 @@ evidence.
 - Update every frontend/backend consumer when response shapes change.
 - Prefer shared/generated contracts under `contracts/` when available.
 
-## Planned Indexing Job States
+## AI Pipeline States
 
-Initial direction:
-
-```text
-queued
-preprocessing
-transcribing
-segmenting
-extracting_frames
-running_ocr
-fusing
-embedding
-persisting
-completed
-failed
-```
-
-Final names belong in shared contracts once issue #2 is implemented.
+The detailed AI pipeline states remain internal to the AI Service. Main-backend durable
+job states are defined by issue #18 above and deliberately track orchestration stages,
+not every GPU substep.
 
 ## Related Issues
 
