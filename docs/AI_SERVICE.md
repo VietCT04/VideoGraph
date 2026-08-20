@@ -270,6 +270,12 @@ The shared contract belongs under:
 contracts/multimodal-extraction.schema.json
 ```
 
+The v1 schema and its dependency-free Python validator are implemented. The closed
+ontology is shared with `retrieval-plan.schema.json`: unknown entity types and relation
+predicates are rejected before any graph or vector operation. The examples under
+`contracts/examples/` cover beauty, technology, and travel content so consumers can
+develop without model dependencies. Local extraction IDs remain content-local.
+
 Conceptual payload:
 
 ```json

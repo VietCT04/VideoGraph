@@ -33,20 +33,22 @@ The demo should include at least one cross-video structured/temporal query where
 
 ## C-002 — Controlled graph ontology is not frozen
 
-**Status:** Open  
+**Status:** Resolved for v1; future additions require a versioned contract change
 **Component:** Contracts / AI Service / Neo4j / Planner
 
 ### Context
 
-Current candidate relations include `USES`, `RECOMMENDS`, `LIKES`, `COMPARES`, `SWITCHED_TO`, and others, but the exact v1 vocabulary is not yet canonical.
+The v1 entity and relation vocabulary is canonical in `contracts/ontology.py` and the
+two JSON Schemas. It is intentionally small and closed.
 
 ### Risk
 
-AI extraction, planner output, and Neo4j tools could independently use different relation names or semantics.
+Future additions could still create incompatible ontology versions if they bypass the
+shared contract.
 
 ### Recommended next action
 
-Freeze the v1 entity/relation vocabulary in issue #2 and use it from:
+Future ontology work must use the v1 vocabulary from:
 
 - extraction schema
 - VLM structured output
@@ -54,7 +56,7 @@ Freeze the v1 entity/relation vocabulary in issue #2 and use it from:
 - graph ingestion
 - graph query tools
 
-Reject unknown predicates at validation boundaries.
+Reject unknown predicates at validation boundaries and version any incompatible change.
 
 ---
 
