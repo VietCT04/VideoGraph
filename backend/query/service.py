@@ -59,6 +59,13 @@ class SynthesisProvider(Protocol):
         ...
 
 
+class QueryPrivacyPolicy(Protocol):
+    """Backend-owned creator authorization check for viewer retrieval."""
+
+    def authorize_creator(self, creator_id: str) -> None:
+        ...
+
+
 class FixtureSynthesisProvider:
     """Deterministic prose adapter used to exercise the synthesis boundary."""
 
@@ -79,6 +86,7 @@ class QueryApplicationService:
         fusion: ResultFusionService | None = None,
         synthesis: SynthesisProvider | None = None,
         allowed_visibility: Iterable[str] = ("public",),
+        privacy_policy: QueryPrivacyPolicy | None = None,
     ) -> None:
         visibility = tuple(allowed_visibility)
         if not visibility:
@@ -88,10 +96,13 @@ class QueryApplicationService:
         self.fusion = fusion or ResultFusionService()
         self.synthesis = synthesis
         self.allowed_visibility = visibility
+        self.privacy_policy = privacy_policy
 
     def execute(self, raw_query: str, debug: bool = False) -> dict[str, Any]:
         started = time.perf_counter()
         planner_result = self.planner.plan(raw_query)
+        if self.privacy_policy is not None:
+            self.privacy_policy.authorize_creator(planner_result.plan["creator_id"])
         bundle = self.retrieval.retrieve(planner_result.plan)
         fused = self.fusion.fuse(bundle)
         synthesis_latency_ms = 0.0

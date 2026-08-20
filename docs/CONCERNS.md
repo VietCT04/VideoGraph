@@ -216,6 +216,11 @@ Excluding/deleting content in one store while leaving it searchable in another c
 
 Issue #19 must define deletion/suppression propagation and retrieval filters across every representation. Add integration tests that verify hidden content cannot surface through either graph or vector paths.
 
+Issue #19 now provides the fixture policy boundary and synchronized graph/vector
+suppression, including creator opt-in and fail-closed query authorization. The concern
+remains open for production database transactions, cache invalidation, and integration
+coverage across real Neo4j/pgvector deployments.
+
 ---
 
 ## C-010 — Final synthesis LLM can hide retrieval quality

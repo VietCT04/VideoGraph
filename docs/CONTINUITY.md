@@ -70,6 +70,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #19 privacy and deletion controls
+
+**Issue:** #19
+
+Summary:
+
+- Added creator AI Memory opt-in and creator-authorized content management.
+- Added include/exclude/hidden/correction/rejection/deletion state and a framework-neutral privacy adapter.
+- Enforced fail-closed query authorization before hybrid retrieval, fusion, and synthesis.
+- Synchronized graph and vector visibility changes and deleted both representations together.
+
+Verification:
+
+- `python -m compileall -q backend contracts` and `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #18 creator indexing jobs
 
 **Issue:** #18
@@ -400,15 +416,14 @@ Verification:
 
 ## Active Work
 
-Issues #1–#18 are implemented, including the AI-service pipeline, canonical graph
+Issues #1–#19 are implemented, including the AI-service pipeline, canonical graph
 ingestion, entity resolution, pgvector storage, the validated query planner,
 creator-scoped safe graph tools, semantic retrieval, parallel graph/vector
 orchestration, result fusion, the grounded viewer query API, and durable creator
-indexing jobs. Issue #21's creator-control slice is implemented on top of the issue-20
-branch, and issue #22's dataset slice is implemented. The next graph/query dependency
-is issue #19's privacy/deletion propagation; the next workstream slice is issue #23's
-benchmark harness. Shared contracts and live query/indexing/privacy APIs remain
-separate planned work.
+indexing jobs and privacy/deletion controls. Issue #21's creator-control slice is
+implemented on top of the issue-20 branch, and issue #22's dataset slice is implemented.
+The next workstream slice is issue #23's benchmark harness; shared contracts and live
+query/indexing/privacy APIs remain separate planned work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -456,11 +471,10 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement #19 privacy/deletion propagation across indexing and retrieval stores.
-2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
+1. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. Continue issue #19 privacy/deletion and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+5. Use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.
