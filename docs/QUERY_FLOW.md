@@ -394,6 +394,32 @@ deterministic score with stable ID tie-breaking. Each result carries a
 `direct_answer_eligible` signal; fusion does not invoke a second LLM or write final
 response prose.
 
+## Issue #17 query application slice
+
+`backend/query/service.py` composes the existing planner, hybrid retrieval, and fusion
+boundaries. `QueryApplicationService.execute()` resolves the `@creator` query through
+the planner, sends the validated plan to both retrieval branches, and serializes fused
+results with exact canonical Moment/content evidence. The framework-neutral
+`backend/api/query.py` adapter exposes the same behavior as a `POST /query`-shaped
+request without choosing FastAPI, Flask, or another web framework before one is part of
+the repository.
+
+The direct/synthesis decision remains explicit:
+
+```text
+fused results
+   ├─ high-confidence structured query → structured response
+   └─ complex or non-eligible query → optional provider over GroundedEvidenceBundle
+```
+
+The synthesis provider receives only creator ID, the remaining question, normalized
+result labels/relations/scores, exact evidence timestamps, and a partial-success flag.
+It cannot access graph/vector repositories or raw planner/database exceptions. If no
+provider is configured or it fails, the API preserves the grounded results and returns
+`grounded` with a machine-readable warning. Debug responses report planner, graph,
+vector, fusion, synthesis, and total latency separately; these values are instrumentation
+only until measured by the evaluation harness.
+
 ---
 
 ## 12. Simple-Query Fast Path

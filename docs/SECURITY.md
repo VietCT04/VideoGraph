@@ -107,6 +107,14 @@ timestamps forward; it cannot restore hidden content or replace missing authoriz
 with a ranking score. Direct-answer eligibility is limited to complete, high-confidence
 structured results with relation and Moment evidence.
 
+The #17 query application service keeps the same creator and visibility scope from
+planner through graph/vector retrieval and fusion. Its optional synthesis boundary
+accepts only a normalized `GroundedEvidenceBundle` containing authorized result labels,
+relations, scores, and exact Moment/content timestamps. The synthesis provider has no
+repository handle and cannot widen retrieval scope. Synthesis failures preserve the
+already-grounded results and return a non-sensitive warning rather than a provider or
+database exception.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

@@ -57,13 +57,35 @@ video
 → Neo4j + pgvector
 ```
 
-No application implementation should be assumed complete yet.
+The backend query application slice is now implemented as a framework-neutral,
+fixture-backed path on top of issues #12, #15, and #16. Indexing, privacy controls, and
+action tools remain to be added in the current Workstream D stack.
 
 The root `AGENTS.md` now includes the repository's full issue proposal/approval workflow, documentation synchronization rules, user-story convention, testing policy, database/API/security rules, and component-specific safety rules.
 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #17 query application service
+
+**Issue:** #17
+
+Summary:
+
+- Added a framework-neutral `POST /query`-shaped adapter and application service.
+- Connected `@creator` parsing, creator resolution, planner, concurrent graph/vector
+  retrieval, deterministic fusion, and canonical evidence serialization.
+- Added direct structured responses and an optional synthesis provider boundary that
+  receives only normalized grounded evidence.
+- Added debug timing for planner, graph, vector, fusion, synthesis, and total latency.
+- Added fixture-backed query service coverage over the shared beauty extraction fixture.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
 
 ### 2026-08-20 — Issue #16 deterministic result fusion
 
@@ -262,8 +284,9 @@ Verification:
 
 ## Active Work
 
-Issue #1 is implemented on the issue branch for its PR. Issue #2 is implemented on the
-stacked branch for review; the next dependency is temporal segmentation in issue #3.
+Issue #17 is implemented on `codex/issue-17-query-api` and is ready for its draft PR.
+The next stacked slice is issue #18 indexing jobs; after that continue with #19 privacy
+controls and #25 action tools.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
