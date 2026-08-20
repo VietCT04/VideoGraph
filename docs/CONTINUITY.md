@@ -12,9 +12,9 @@ Do not use it as a full changelog.
 
 VideoGraph is at the first implementation stage. The repository skeleton now exists,
 with explicit ownership READMEs under the frontend, backend, AI Service, contracts, and
-infrastructure directories. Issues #2–#7 add dependency-free contract, temporal
-segmentation, timestamped ASR, visual evidence, structured multimodal fusion, and
-semantic embedding boundaries; later AI stages and application services remain
+infrastructure directories. Issues #2–#8 add dependency-free contract, temporal
+segmentation, timestamped ASR, visual evidence, structured multimodal fusion, semantic
+embeddings, and asynchronous serving boundaries; later application services remain
 fixture-backed.
 
 The repository has a complete initial GitHub issue backlog covering:
@@ -69,6 +69,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 ---
 
 ## Latest Completed Work
+
+### 2026-08-20 — Issue #8 AI Service serving boundary
+
+**Issue:** #8
+
+Summary:
+
+- Added testable in-process asynchronous job orchestration with stable stage states and normalized failures.
+- Added contract-aware completion validation and temporary result retention.
+- Added FastAPI-compatible routes with a standard-library HTTP fallback and an end-to-end fixture pipeline.
+
+Verification:
+
+- `python -m unittest discover -s ai-service/tests -p 'test_*.py'` passed (20 tests).
+- `python -m compileall -q ai-service contracts` and `git diff --check` passed.
+- FastAPI app instantiation and route-table checks passed; backend/frontend suites are not in scope.
 
 ### 2026-08-20 — Issue #7 semantic embeddings
 
@@ -262,12 +278,13 @@ Verification:
 
 ## Active Work
 
-Issues #1–#7 are implemented, including representative-frame/OCR evidence,
-timestamp-preserving multimodal fusion, and semantic embeddings. Issue #21's
-creator-control slice is implemented on top of the issue-20 branch, and issue #22's
-dataset slice is implemented. The next AI dependency is issue #8's AI-service serving
-boundary; the next workstream slice is issue #23's benchmark harness. Shared contracts
-and live query/indexing/privacy APIs remain separate planned work.
+Issues #1–#8 are implemented, including representative-frame/OCR evidence,
+timestamp-preserving multimodal fusion, semantic embeddings, and the asynchronous
+AI-service serving boundary. Issue #21's creator-control slice is implemented on top of
+the issue-20 branch, and issue #22's dataset slice is implemented. The next graph/query
+dependency is issue #11's planner; the next workstream slice is issue #23's benchmark
+harness. Shared contracts and live query/indexing/privacy APIs remain separate planned
+work.
 
 Do not mark later implementation issues complete solely because their directories or
 documentation exist.
@@ -315,11 +332,11 @@ Highest-priority unresolved concerns currently include:
 
 ## Next Recommended Steps
 
-1. Implement #8 the AI-service serving boundary over the fusion and embedding outputs.
+1. Implement #11 the validated query planner over the graph and semantic contracts.
 2. Implement issue #23's reproducible graph/vector/hybrid benchmark harness.
 3. Freeze #2 shared extraction and retrieval-plan contracts.
 4. Build a thin seeded-data query path through Neo4j + pgvector + planner before waiting for full video inference.
-5. Continue AI issues #7–#8 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
+5. Continue graph/query issues #12–#19 and use #23 to measure graph-only, vector-only, and hybrid retrieval against the dataset.
 6. Keep media licensing and audiovisual validity explicit if clips are added later.
 
 Do not start stretch issues #26/#27 before the core path is demonstrable unless the team explicitly reprioritizes them.

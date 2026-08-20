@@ -277,3 +277,26 @@ may differ from the fixture contract and require adapter changes.
 Select and benchmark a production structured-output provider under #23/#24. Keep the
 fixture provider and shared contract as the offline fallback until that decision is
 measured.
+
+---
+
+## C-013 — AI Service worker and result retention are process-local
+
+**Status:** Open
+**Component:** AI Service / Deployment
+
+### Context
+
+Issue #8 uses an in-process thread pool and memory-only result store so the API can be
+tested without Redis, a broker, or a database. The main backend remains the owner of
+durable indexing state.
+
+### Risk
+
+Process restart, multiple replicas, or worker failure can lose queued jobs and temporary
+results. This is not a production reliability guarantee.
+
+### Recommended next action
+
+Define the production queue, retry, idempotency, and result handoff under the deployment
+and indexing issues before connecting this service to durable backend jobs.

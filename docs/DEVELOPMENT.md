@@ -150,6 +150,11 @@ The initial local port convention is recorded in the root `.env.example`:
 These are development defaults, not a deployment guarantee. Framework-specific
 configuration belongs to the owning implementation issue.
 
+The dependency-free AI Service fallback can be started from the repository root with
+`PYTHONPATH=ai-service python -m app` (PowerShell users can set `$env:PYTHONPATH` for
+the process). It serves the documented AI job routes on port 8001. FastAPI/ASGI
+deployment remains optional and is not required for the fixture-backed checks.
+
 Use `.env.example` files for documented configuration and keep real `.env` files untracked.
 
 ### Fixture-backed viewer demo
