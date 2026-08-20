@@ -78,9 +78,20 @@ Initial planning target:
 - split around 12–15 seconds when needed
 - use small visual padding around boundaries where useful
 
+Issue #3 provides this boundary in `ai-service/pipeline/segmentation.py`. Speech spans
+and optional scene boundaries are merged into ordered `TemporalChunk` descriptors. Tiny
+non-strong fragments are merged, long intervals are split at a deterministic target,
+and each result carries three representative timestamps plus a `has_speech` flag.
+
 ### Silent / low-speech content
 
 Speech cannot be the only temporal signal.
+
+When no speech spans are supplied, the same segmenter uses scene boundaries when
+available and falls back to deterministic target-duration chunks. It never fabricates
+transcript evidence. Metadata inspection is an adapter boundary in
+`ai-service/pipeline/metadata.py`; the checked-in fixture inspector avoids requiring
+FFmpeg/OpenCV for unit tests.
 
 Fallback direction:
 
@@ -125,6 +136,12 @@ The ASR component does not own final semantic chunk construction.
 
 A provider abstraction should allow model replacement without changing downstream interfaces.
 
+Issue #4 implements this boundary in `ai-service/pipeline/asr.py`. `ASRProvider` returns
+ordered `ASRSegment` values, language and speech-ratio metadata, an explicit `no_speech`
+flag, and provider/model metadata. `ASRResult.to_speech_spans()` maps directly to the
+temporal segmenter. The checked-in `FixtureASRProvider` filters high no-speech
+probability segments and supports deterministic batching without loading Whisper.
+
 ---
 
 ## 5. Representative Frames and OCR
@@ -148,6 +165,14 @@ OCR output must preserve:
 - bounding box when available
 
 OCR is evidence, not automatically a canonical entity.
+
+Issue #5 implements `FrameCandidate`, `RepresentativeFrame`, and
+`DeterministicFrameSampler` in `ai-service/pipeline/frames.py`. The sampler considers
+chunk start/middle/end anchors and scene-change candidates, removes near duplicates by
+a cheap fingerprint similarity check, and returns at most the configured frame count.
+`ai-service/pipeline/ocr.py` provides timestamped `OCRFrameResult` and `OCRItem` models,
+including optional bounding boxes, plus a fixture provider. No OpenCV, FFmpeg, or OCR
+model is required by the focused tests.
 
 ---
 
