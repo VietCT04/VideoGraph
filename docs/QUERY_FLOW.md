@@ -87,6 +87,16 @@ contracts/retrieval-plan.schema.json
 
 Unknown relations/entity types must be rejected by validation.
 
+The #12 planner slice implements this boundary in `backend/planner/`. The parser
+requires an `@creator` prefix, resolves the handle to a backend `creator_id`, and
+passes only the remaining question to a provider interface. The fixture provider is
+model-free and deterministic; a real provider must return structured JSON that is
+validated by `contracts.validation.validate_retrieval_plan` before retrieval.
+
+Planner results include `used_fallback`, provider error text suitable for internal
+metrics, and `latency_ms`. Invalid provider output falls back to a validated plan with
+separate graph intent and semantic text. Creator scope never comes from model output.
+
 ---
 
 ## 4. Why the Planner Produces Two Representations
@@ -440,3 +450,4 @@ The graph should remain in the architecture only if evaluation/demo use cases sh
 - #17 query API
 - #20 viewer UI
 - #23 evaluation
+

@@ -79,6 +79,11 @@ bound parameters, including user-provided identifiers and visibility lists. The
 database migration keeps the vector index and searchable metadata together so a
 filtered result cannot be reconstructed from an unscoped vector-only query.
 
+The #12 planner resolves creator scope before invoking a provider and validates all
+provider output against the closed shared schema. Invalid or unknown fields cause a
+deterministic fallback; provider output cannot inject Cypher, change authorization
+scope, or introduce an unknown ontology value.
+
 ## AI Service Safety
 
 The AI Service must not own authorization or persistent creator-memory decisions.

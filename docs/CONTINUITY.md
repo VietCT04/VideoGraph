@@ -65,6 +65,22 @@ The root `AGENTS.md` now includes the repository's full issue proposal/approval 
 
 ## Latest Completed Work
 
+### 2026-08-20 — Issue #12 validated @creator planner
+
+**Issue:** #12
+
+Summary:
+
+- Added strict `@creator` parsing, creator resolution, provider abstraction, and a
+  deterministic fixture provider.
+- Added schema validation, safe fallback plans, and planner latency instrumentation.
+
+Verification:
+
+- `python -m compileall -q backend contracts` passed.
+- `git diff --check` passed.
+- Backend/frontend test suites were not run by direction.
+
 ### 2026-08-20 — Issue #11 pgvector repository
 
 **Issue:** #11

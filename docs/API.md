@@ -87,6 +87,15 @@ Conceptual response should preserve grounded evidence:
 
 The exact schema is not frozen yet. Once implemented, replace conceptual examples with canonical request/response contracts.
 
+## Implemented internal planner contract (#12)
+
+Before a viewer query endpoint is added, the dependency-free
+`backend.planner.RetrievalPlanner` provides the internal request boundary. It accepts a
+string beginning with `@creator`, resolves the handle through a backend-owned mapping
+or callback, and returns a validated `RetrievalPlan` plus fallback and latency
+metadata. Planner providers return structured data only; raw Cypher is not an accepted
+field or execution path. The fixture provider is the current local adapter.
+
 ## API Rules
 
 - Validate all external input at the backend boundary.
@@ -127,3 +136,4 @@ Final names belong in shared contracts once issue #2 is implemented.
 - #19 creator privacy/deletion
 - #20 viewer UI
 - #21 creator UI
+
