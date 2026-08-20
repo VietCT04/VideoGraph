@@ -1,0 +1,145 @@
+{
+  "dataset_id": "videograph-synthetic-creator-memory-v1",
+  "version": 1,
+  "description": "Synthetic creator-memory metadata for fixture-backed retrieval evaluation.",
+  "media_policy": "No media blobs are included. Content records are synthetic labels for future local recordings.",
+  "license": "CC0-1.0 for the original synthetic metadata in this directory; no third-party media is redistributed.",
+  "creators": [
+    { "creator_id": "creator_alice", "handle": "alicebeauty", "display_name": "Alice Beauty" },
+    { "creator_id": "creator_bob", "handle": "bobbuilds", "display_name": "Bob Builds" }
+  ],
+  "content": [
+    { "content_id": "alice_video_001", "creator_id": "creator_alice", "title": "Everyday Base Routine", "kind": "video", "duration_ms": 58000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_002", "creator_id": "creator_alice", "title": "Summer Makeup Guide", "kind": "video", "duration_ms": 74000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_003", "creator_id": "creator_alice", "title": "Red Lipstick Comparison", "kind": "video", "duration_ms": 68000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_004", "creator_id": "creator_alice", "title": "Foundation Check-in", "kind": "video", "duration_ms": 62000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_005", "creator_id": "creator_alice", "title": "Silent GRWM Packaging Close-up", "kind": "video", "duration_ms": 42000, "audio_mode": "silent", "synthetic_media_ref": null },
+    { "content_id": "alice_video_006", "creator_id": "creator_alice", "title": "This One Close-up", "kind": "video", "duration_ms": 36000, "audio_mode": "low_speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_007", "creator_id": "creator_alice", "title": "Dry Skin Prep", "kind": "video", "duration_ms": 51000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_008", "creator_id": "creator_alice", "title": "Brushes I Actually Use", "kind": "video", "duration_ms": 47000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_009", "creator_id": "creator_alice", "title": "Winter Lip Update", "kind": "video", "duration_ms": 55000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_010", "creator_id": "creator_alice", "title": "Travel Makeup Bag", "kind": "video", "duration_ms": 49000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_011", "creator_id": "creator_alice", "title": "Soft Brow Routine", "kind": "video", "duration_ms": 44000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_live_001", "creator_id": "creator_alice", "title": "July LIVE", "kind": "live", "duration_ms": 1800000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_013", "creator_id": "creator_alice", "title": "Fall Favorites", "kind": "video", "duration_ms": 59000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_014", "creator_id": "creator_alice", "title": "Office Makeup", "kind": "video", "duration_ms": 53000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "alice_video_015", "creator_id": "creator_alice", "title": "Foundation Long-wear Follow-up", "kind": "video", "duration_ms": 61000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "bob_video_001", "creator_id": "creator_bob", "title": "Floating Shelf Build", "kind": "video", "duration_ms": 63000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "bob_video_002", "creator_id": "creator_bob", "title": "Compact Drill Comparison", "kind": "video", "duration_ms": 57000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "bob_video_003", "creator_id": "creator_bob", "title": "Tools I Would Not Buy Again", "kind": "video", "duration_ms": 46000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "bob_video_004", "creator_id": "creator_bob", "title": "Workshop Tour", "kind": "video", "duration_ms": 72000, "audio_mode": "speech", "synthetic_media_ref": null },
+    { "content_id": "bob_video_005", "creator_id": "creator_bob", "title": "Silent Cabinet Assembly", "kind": "video", "duration_ms": 39000, "audio_mode": "silent", "synthetic_media_ref": null }
+  ],
+  "entities": [
+    { "entity_id": "product_rare_humble", "type": "Product", "label": "Rare Beauty Humble" },
+    { "entity_id": "product_dior_999", "type": "Product", "label": "Dior Rouge 999" },
+    { "entity_id": "product_rare_inspire", "type": "Product", "label": "Rare Beauty Inspire" },
+    { "entity_id": "product_foundation_a", "type": "Product", "label": "Foundation A" },
+    { "entity_id": "product_foundation_b", "type": "Product", "label": "Foundation B" },
+    { "entity_id": "product_blue_drill", "type": "Product", "label": "Compact Blue Drill" },
+    { "entity_id": "product_red_drill", "type": "Product", "label": "Compact Red Drill" },
+    { "entity_id": "topic_deeper_skin_tones", "type": "Topic", "label": "deeper skin tones" },
+    { "entity_id": "topic_dry_skin", "type": "Topic", "label": "dry skin" },
+    { "entity_id": "topic_floating_shelf", "type": "Topic", "label": "floating shelf" }
+  ],
+  "moments": [
+    {
+      "moment_id": "moment_alice_video_001_9000_15000", "creator_id": "creator_alice", "content_id": "alice_video_001", "start_ms": 9000, "end_ms": 15000,
+      "transcript": "I use Rare Beauty Humble for an easy everyday base.", "visual_text": "Rare Beauty Humble", "contexts": ["everyday base", "lightweight makeup"], "entities": ["product_rare_humble"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "USES", "object_id": "product_rare_humble" }]
+    },
+    {
+      "moment_id": "moment_alice_video_002_12000_19000", "creator_id": "creator_alice", "content_id": "alice_video_002", "start_ms": 12000, "end_ms": 19000,
+      "transcript": "For deeper skin tones, I recommend Dior Rouge 999.", "visual_text": "Dior Rouge 999", "contexts": ["red lipstick", "deeper skin tones"], "entities": ["product_dior_999", "topic_deeper_skin_tones"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "RECOMMENDS", "object_id": "product_dior_999" }]
+    },
+    {
+      "moment_id": "moment_alice_video_003_21000_29000", "creator_id": "creator_alice", "content_id": "alice_video_003", "start_ms": 21000, "end_ms": 29000,
+      "transcript": "Dior 999 is bolder than Rare Beauty Inspire, which is softer.", "visual_text": "Dior Rouge 999 / Rare Beauty Inspire", "contexts": ["red lipstick comparison", "bold versus soft"], "entities": ["product_dior_999", "product_rare_inspire"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "COMPARES", "object_id": "product_dior_999" }, { "subject_id": "product_dior_999", "predicate": "PREFERS_OVER", "object_id": "product_rare_inspire" }]
+    },
+    {
+      "moment_id": "moment_alice_video_004_17000_24000", "creator_id": "creator_alice", "content_id": "alice_video_004", "start_ms": 17000, "end_ms": 24000,
+      "transcript": "I switched from Foundation A to Foundation B because it wears longer.", "visual_text": "Foundation A → Foundation B", "contexts": ["foundation change", "long wear"], "entities": ["product_foundation_a", "product_foundation_b"],
+      "relations": [{ "subject_id": "product_foundation_a", "predicate": "SWITCHED_TO", "object_id": "product_foundation_b" }]
+    },
+    {
+      "moment_id": "moment_alice_video_005_8000_16000", "creator_id": "creator_alice", "content_id": "alice_video_005", "start_ms": 8000, "end_ms": 16000,
+      "transcript": "", "visual_text": "Rare Beauty Humble packaging", "contexts": ["silent GRWM", "packaging close-up", "visual product identification"], "entities": ["product_rare_humble"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "MENTIONS", "object_id": "product_rare_humble" }]
+    },
+    {
+      "moment_id": "moment_alice_video_006_6000_13000", "creator_id": "creator_alice", "content_id": "alice_video_006", "start_ms": 6000, "end_ms": 13000,
+      "transcript": "This one is the softer shade I keep reaching for.", "visual_text": "Rare Beauty Inspire", "contexts": ["vague reference", "this one", "soft lipstick"], "entities": ["product_rare_inspire"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "USES", "object_id": "product_rare_inspire" }]
+    },
+    {
+      "moment_id": "moment_alice_video_007_11000_18000", "creator_id": "creator_alice", "content_id": "alice_video_007", "start_ms": 11000, "end_ms": 18000,
+      "transcript": "This hydrating layer works best when my skin is dry.", "visual_text": "Hydrating base", "contexts": ["dry skin", "skin prep", "hydrating layer"], "entities": ["topic_dry_skin"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "ABOUT", "object_id": "topic_dry_skin" }]
+    },
+    {
+      "moment_id": "moment_alice_video_008_7000_12000", "creator_id": "creator_alice", "content_id": "alice_video_008", "start_ms": 7000, "end_ms": 12000,
+      "transcript": "The small angled brush gives me the most control.", "visual_text": "Small angled brush", "contexts": ["makeup tools", "brush technique"], "entities": [], "relations": []
+    },
+    {
+      "moment_id": "moment_alice_video_009_14000_20000", "creator_id": "creator_alice", "content_id": "alice_video_009", "start_ms": 14000, "end_ms": 20000,
+      "transcript": "I still like Dior 999, but I reach for Inspire when I want something softer.", "visual_text": "Dior Rouge 999 / Rare Beauty Inspire", "contexts": ["winter lip", "soft red", "preference update"], "entities": ["product_dior_999", "product_rare_inspire"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "PREFERS_OVER", "object_id": "product_rare_inspire" }]
+    },
+    {
+      "moment_id": "moment_alice_video_010_10000_16000", "creator_id": "creator_alice", "content_id": "alice_video_010", "start_ms": 10000, "end_ms": 16000,
+      "transcript": "Dior 999 is coming with me for the trip.", "visual_text": "Dior Rouge 999", "contexts": ["travel makeup bag", "red lipstick"], "entities": ["product_dior_999"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "OWNS", "object_id": "product_dior_999" }]
+    },
+    {
+      "moment_id": "moment_alice_video_011_9000_14000", "creator_id": "creator_alice", "content_id": "alice_video_011", "start_ms": 9000, "end_ms": 14000,
+      "transcript": "I use a soft brown pencil for the brow routine.", "visual_text": "Soft brown brow pencil", "contexts": ["brow routine", "soft brown"], "entities": [], "relations": []
+    },
+    {
+      "moment_id": "moment_alice_live_001_842000_856000", "creator_id": "creator_alice", "content_id": "alice_live_001", "start_ms": 842000, "end_ms": 856000,
+      "transcript": "Someone asked for a red lipstick for deeper skin, and I still recommend Dior Rouge 999.", "visual_text": "Dior Rouge 999", "contexts": ["LIVE question", "red lipstick", "deeper skin tones"], "entities": ["product_dior_999", "topic_deeper_skin_tones"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "RECOMMENDS", "object_id": "product_dior_999" }]
+    },
+    {
+      "moment_id": "moment_alice_video_013_16000_23000", "creator_id": "creator_alice", "content_id": "alice_video_013", "start_ms": 16000, "end_ms": 23000,
+      "transcript": "For fall I prefer the deeper red because it reads richer on camera.", "visual_text": "Deep red lip", "contexts": ["fall favorites", "deeper red", "camera"], "entities": ["product_dior_999"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "LIKES", "object_id": "product_dior_999" }]
+    },
+    {
+      "moment_id": "moment_alice_video_014_12000_18000", "creator_id": "creator_alice", "content_id": "alice_video_014", "start_ms": 12000, "end_ms": 18000,
+      "transcript": "The soft shade is my office makeup choice.", "visual_text": "Rare Beauty Inspire", "contexts": ["office makeup", "soft shade"], "entities": ["product_rare_inspire"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "USES", "object_id": "product_rare_inspire" }]
+    },
+    {
+      "moment_id": "moment_alice_video_015_18000_25000", "creator_id": "creator_alice", "content_id": "alice_video_015", "start_ms": 18000, "end_ms": 25000,
+      "transcript": "The switch to Foundation B held up through a full workday.", "visual_text": "Foundation B", "contexts": ["foundation follow-up", "long wear", "full workday"], "entities": ["product_foundation_b"],
+      "relations": [{ "subject_id": "creator_alice", "predicate": "PREFERS_OVER", "object_id": "product_foundation_b" }]
+    },
+    {
+      "moment_id": "moment_bob_video_001_18000_26000", "creator_id": "creator_bob", "content_id": "bob_video_001", "start_ms": 18000, "end_ms": 26000,
+      "transcript": "The compact blue drill is the one I used for this floating shelf.", "visual_text": "Compact Blue Drill", "contexts": ["floating shelf", "compact drill"], "entities": ["product_blue_drill", "topic_floating_shelf"],
+      "relations": [{ "subject_id": "creator_bob", "predicate": "USES", "object_id": "product_blue_drill" }]
+    },
+    {
+      "moment_id": "moment_bob_video_002_9000_16000", "creator_id": "creator_bob", "content_id": "bob_video_002", "start_ms": 9000, "end_ms": 16000,
+      "transcript": "The blue drill has better balance than the red drill.", "visual_text": "Compact Blue Drill / Compact Red Drill", "contexts": ["drill comparison", "balance"], "entities": ["product_blue_drill", "product_red_drill"],
+      "relations": [{ "subject_id": "product_blue_drill", "predicate": "PREFERS_OVER", "object_id": "product_red_drill" }]
+    },
+    {
+      "moment_id": "moment_bob_video_003_11000_17000", "creator_id": "creator_bob", "content_id": "bob_video_003", "start_ms": 11000, "end_ms": 17000,
+      "transcript": "I would not buy the red drill again because the battery is weak.", "visual_text": "Compact Red Drill", "contexts": ["tool dislike", "weak battery"], "entities": ["product_red_drill"],
+      "relations": [{ "subject_id": "creator_bob", "predicate": "DISLIKES", "object_id": "product_red_drill" }]
+    },
+    {
+      "moment_id": "moment_bob_video_004_22000_30000", "creator_id": "creator_bob", "content_id": "bob_video_004", "start_ms": 22000, "end_ms": 30000,
+      "transcript": "The blue drill and shelf brackets stay on this workbench.", "visual_text": "Compact Blue Drill", "contexts": ["workshop tour", "workbench"], "entities": ["product_blue_drill"],
+      "relations": [{ "subject_id": "creator_bob", "predicate": "OWNS", "object_id": "product_blue_drill" }]
+    },
+    {
+      "moment_id": "moment_bob_video_005_7000_15000", "creator_id": "creator_bob", "content_id": "bob_video_005", "start_ms": 7000, "end_ms": 15000,
+      "transcript": "", "visual_text": "Compact Blue Drill and floating shelf frame", "contexts": ["silent cabinet assembly", "visual tool identification"], "entities": ["product_blue_drill", "topic_floating_shelf"],
+      "relations": [{ "subject_id": "creator_bob", "predicate": "MENTIONS", "object_id": "product_blue_drill" }]
+    }
+  ]
+}

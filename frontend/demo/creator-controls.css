@@ -1,0 +1,169 @@
+.demo-nav a,
+.footer a {
+  color: #4338ca;
+  font-weight: 700;
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.section-heading h2 {
+  margin-bottom: 0;
+}
+
+.panel + .panel {
+  margin-top: 1.25rem;
+}
+
+.privacy-note {
+  background: #f8f9fc;
+  border-radius: 0.65rem;
+  color: #475467;
+  margin-bottom: 0;
+  padding: 0.75rem;
+}
+
+.content-list,
+.job-list,
+.fact-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.content-item,
+.job-item,
+.fact-item {
+  border: 1px solid #eaecf0;
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+}
+
+.content-item {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.content-item input {
+  flex: 0 0 auto;
+}
+
+.content-copy,
+.job-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.content-copy strong,
+.content-copy span,
+.job-copy strong,
+.job-copy span {
+  display: block;
+}
+
+.content-copy span,
+.job-copy span,
+.fact-meta {
+  color: #667085;
+  font-size: 0.875rem;
+}
+
+.badge {
+  background: #f2f4f7;
+  border-radius: 99rem;
+  color: #475467;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.badge.failed {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.badge.processing {
+  background: #eff8ff;
+  color: #175cd3;
+}
+
+.job-item {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: 1fr auto;
+}
+
+.job-progress {
+  background: #eaecf0;
+  border-radius: 99rem;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.job-progress span {
+  background: #4f46e5;
+  display: block;
+  height: 100%;
+}
+
+.fact-item h3 {
+  margin-bottom: 0.25rem;
+}
+
+.fact-relation {
+  color: #4338ca;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.fact-actions {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.fact-actions input {
+  min-width: 14rem;
+}
+
+.secondary-button {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.danger-button {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.empty-list {
+  color: #667085;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .section-heading,
+  .content-item,
+  .job-item {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-heading button,
+  .content-item input,
+  .fact-actions input,
+  .fact-actions button {
+    width: 100%;
+  }
+}
